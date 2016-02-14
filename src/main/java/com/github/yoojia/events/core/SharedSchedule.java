@@ -21,21 +21,21 @@ public abstract class SharedSchedule implements Schedule {
 
     protected static BlockingQueue<Runnable> QUEUE;
     protected static ThreadPoolExecutor EXECUTOR;
-
-    private static SharedSchedule mDefaultSchedule;
+    protected static SharedSchedule DEF_SCHEDULE;
 
     public static SharedSchedule getDefault(Class<? extends SharedSchedule> type){
         synchronized (SharedSchedule.class) {
-            if (mDefaultSchedule == null) {
+            if (DEF_SCHEDULE == null) {
                 QUEUE = new LinkedBlockingQueue<>();
                 EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, QUEUE, THREAD_FACTORY);
                 try {
-                    mDefaultSchedule = type.newInstance();
+                    DEF_SCHEDULE = type.newInstance();
                 } catch (Exception e) {
+                    System.err.println("Error when instance shared schedule");
                     throw new RuntimeException(e);
                 }
             }
-            return mDefaultSchedule;
+            return DEF_SCHEDULE;
         }
     }
 

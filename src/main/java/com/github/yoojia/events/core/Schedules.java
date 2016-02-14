@@ -79,7 +79,7 @@ public final class Schedules {
         }
     }
 
-    private static class InnerSharedSchedule extends SharedSchedule {
+    static class InnerSharedSchedule extends SharedSchedule {
 
         @Override
         protected void invokeThreading(ThreadPoolExecutor threads, Callable<Void> task, int flags) throws Exception {
