@@ -8,7 +8,7 @@ import com.github.yoojia.events.core.Schedule;
 public enum Runs {
 
     /**
-     * 由调用者线程执行回调
+     * 由主线程执行回调
      */
     ON_MAIN_THREAD(Schedule.FLAG_ON_MAIN_THREAD),
 

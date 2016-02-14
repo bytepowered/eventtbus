@@ -1,11 +1,10 @@
 package com.github.yoojia.events.core;
 
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 任务调度器
- * @author YOOJIA.CHEN (yoojia.chen@gmail.com)
+ * @author YOOJIA.CHEN (yoojiachen@gmail.com)
  */
 public final class Schedules {
 
@@ -37,7 +36,7 @@ public final class Schedules {
 
             @Override
             public void invoke(Callable<Void> task, int scheduleFlags) throws Exception {
-                Schedules.invoke(mThreads, task, scheduleFlags);
+                invokeDispatch(mThreads, task, scheduleFlags);
             }
 
         };
@@ -48,14 +47,24 @@ public final class Schedules {
      * @return Schedule
      */
     public static Schedule sharedThreads(){
-        return SharedSchedule.getDefault();
+        return SharedSchedule.getDefault(InnerSharedSchedule.class);
     }
 
-    public static void certainlyShutdownThreads(){
-        SharedSchedule.EXECUTOR.shutdown();
+    /**
+     * 关闭共享线程池。在确保不会再使用NextEvents的情况下调用。
+     */
+    public static void shutdownSharedThreads(){
+        SharedSchedule.shutdown();
     }
 
-    private static void invoke(ExecutorService threads, final Callable<Void> task, int scheduleFlags) throws Exception{
+    /**
+     * 根据调度标记，调度各个任务。
+     * @param threads 线程池
+     * @param task 任务
+     * @param scheduleFlags 调度标记
+     * @throws Exception
+     */
+    private static void invokeDispatch(ExecutorService threads, final Callable<Void> task, int scheduleFlags) throws Exception{
         switch (scheduleFlags) {
             case Schedule.FLAG_ON_CALLER_THREAD:
                 task.call();
@@ -70,44 +79,12 @@ public final class Schedules {
         }
     }
 
-    private static class SharedSchedule implements Schedule {
-
-        private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
-        private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
-        private static final int MAXIMUM_POOL_SIZE = CPU_COUNT * 2 + 1;
-        private static final int KEEP_ALIVE = 1;
-
-        private static final ThreadFactory THREAD_FACTORY = new ThreadFactory() {
-
-            private final AtomicInteger mCount = new AtomicInteger(1);
-
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "SharedThread #" + mCount.getAndIncrement());
-            }
-        };
-
-        private static BlockingQueue<Runnable> QUEUE;
-        private static ThreadPoolExecutor EXECUTOR;
-
-        private static SharedSchedule mDefaultSchedule;
+    private static class InnerSharedSchedule extends SharedSchedule {
 
         @Override
-        public void invoke(Callable<Void> task, int flags) throws Exception {
-            Schedules.invoke(EXECUTOR, task, flags);
+        protected void invokeThreading(ThreadPoolExecutor threads, Callable<Void> task, int flags) throws Exception {
+            invokeDispatch(threads, task, flags);
         }
-
-        public static SharedSchedule getDefault(){
-            synchronized (SharedSchedule.class) {
-                if (mDefaultSchedule == null) {
-                    QUEUE = new LinkedBlockingQueue<>();
-                    EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
-                            TimeUnit.SECONDS, QUEUE, THREAD_FACTORY);
-                    mDefaultSchedule = new SharedSchedule();
-                }
-                return mDefaultSchedule;
-            }
-        }
-
     }
 
 }
