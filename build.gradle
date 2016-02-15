@@ -59,7 +59,7 @@ bintray {
     publications = ['MavenJava']
     pkg {
         repo = 'maven'
-        name = 'NextInputs'
+        name = 'NextEvents'
         userOrg = 'yoojia'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/yoojia/NextEvents.git'
