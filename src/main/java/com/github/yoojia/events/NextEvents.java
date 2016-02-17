@@ -58,11 +58,13 @@ public class NextEvents {
         // Filter methods and register them
         final InvokableMethods invokable;
         // if not registered, put to register
-        if ( ! mObjectMaps.containsKey(object)) {
-            invokable = new InvokableMethods();
-            mObjectMaps.put(object, invokable);
-        }else{
-            invokable = mObjectMaps.get(object);
+        synchronized (this) {
+            if ( ! mObjectMaps.containsKey(object)) {
+                invokable = new InvokableMethods();
+                mObjectMaps.put(object, invokable);
+            }else{
+                invokable = mObjectMaps.get(object);
+            }
         }
         final List<Method> annotatedMethods = new MethodsFinder()
                 .filter(newMethodFilter(customFilter))

@@ -32,7 +32,7 @@ public class Reactor<T> {
         mOnEventsListener.set(new OnEventsListener<T>() {
             @Override
             public void onWithoutSubscriber(T input) {
-                throw new IllegalStateException("Invoke target is MISSED, Input: " + input);
+                throw new IllegalStateException("Event without a subscriber target! Input: " + input);
             }
         });
     }
@@ -57,17 +57,13 @@ public class Reactor<T> {
     public Reactor<T> emit(final T input) {
         final Schedule schedule = mSchedule.get();
         int hits = 0;
-        for (final Descriptor<T> sub : mDescriptors) {
-            if (sub.accept(input)) {
+        for (final Descriptor<T> descriptor : mDescriptors) {
+            if (descriptor.accept(input)) {
                 hits += 1;
                 try {
-                    schedule.invoke(new CallableTask() {
-                        @Override void onCall() throws Exception {
-                            sub.subscriber.onCall(input);
-                        }
-                    }, sub.scheduleFlag);
+                    schedule.invoke(new CallableTask<>(descriptor, input), descriptor.scheduleFlag);
                 } catch (Exception errorWhenCall) {
-                    sub.subscriber.onErrors(input, errorWhenCall);
+                    descriptor.subscriber.onErrors(input, errorWhenCall);
                 }
             }
         }
@@ -88,15 +84,22 @@ public class Reactor<T> {
         return this;
     }
 
-    private static abstract class CallableTask implements Callable<Void> {
+    private static class CallableTask<T> implements Callable<Void> {
+
+        private final Descriptor<T> mDescriptor;
+        private final T mInput;
+
+        protected CallableTask(Descriptor<T> descriptor, T input) {
+            mDescriptor = descriptor;
+            mInput = input;
+        }
 
         @Override
         public Void call() throws Exception {
-            onCall();
+            mDescriptor.subscriber.onCall(mInput);
             return null;
         }
 
-        abstract void onCall() throws Exception;
     }
 
 }
