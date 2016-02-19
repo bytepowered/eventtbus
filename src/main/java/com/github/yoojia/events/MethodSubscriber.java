@@ -8,7 +8,7 @@ import java.lang.reflect.Method;
  * @author YOOJIA.CHEN (yoojia.chen@gmail.com)
  * @version 2015-11-06
  */
-public class MethodSubscriber implements Subscriber<Meta> {
+public class MethodSubscriber implements Subscriber<Event> {
 
     private final Object mObject;
     private final Method mMethod;
@@ -19,14 +19,14 @@ public class MethodSubscriber implements Subscriber<Meta> {
     }
 
     @Override
-    public void onCall(Meta input) throws Exception {
+    public void onCall(Event input) throws Exception {
         mMethod.setAccessible(true);
         mMethod.invoke(mObject, input.value);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void onErrors(Meta input, Exception errors) {
+    public void onErrors(Event input, Exception errors) {
         throw new RuntimeException(input.toString(), errors);
     }
 

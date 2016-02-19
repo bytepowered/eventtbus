@@ -1,7 +1,6 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.core.*;
-import com.github.yoojia.events.supports.Filter;
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;

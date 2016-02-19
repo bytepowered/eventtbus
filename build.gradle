@@ -9,7 +9,7 @@ plugins {
 }
 
 group 'com.github.yoojia'
-version '1.1-beta'
+version '1.1'
 
 apply plugin: 'java'
 apply plugin: 'maven'
@@ -29,7 +29,7 @@ publishing {
             from components.java
             groupId 'com.github.yoojia'
             artifactId 'next-events'
-            version '1.1-beta'
+            version '1.1'
         }
     }
 }
@@ -74,9 +74,9 @@ bintray {
         labels = ['Java', 'Event bus']
         publicDownloadNumbers = true
         version {
-            name = '1.1-beta'
+            name = '1.1'
             desc = 'NextEvent library 1.1 beta'
-            vcsTag = '1.1-beta'
+            vcsTag = '1.1'
             attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin']
         }
     }

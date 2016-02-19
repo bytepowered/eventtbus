@@ -1,7 +1,6 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.core.*;
-import com.github.yoojia.events.supports.Filter;
 import com.github.yoojia.events.supports.MethodsFinder;
 
 import java.lang.reflect.Method;
@@ -21,7 +20,7 @@ public class NextEvents {
 
     private static final String TAG = "NextEvents";
 
-    private final Reactor<Meta> mReactor;
+    private final Reactor<Event> mReactor;
     private final Map<Object, InvokableMethods> mObjectMaps = new ConcurrentHashMap<>();
 
     /**
@@ -89,12 +88,14 @@ public class NextEvents {
      * @throws NullPointerException If target to unregister is null;
      * @throws IllegalStateException If target was not registered before;
      */
-    public synchronized NextEvents unregister(Object target) {
+    public NextEvents unregister(Object target) {
         notNull(target);
-        final InvokableMethods invokable = mObjectMaps.remove(target);
-        if (invokable != null) {
-            for (Subscriber<Meta> sub : invokable) {
-                unsubscribe(sub);
+        synchronized (this) {
+            final InvokableMethods invokable = mObjectMaps.remove(target);
+            if (invokable != null) {
+                for (Subscriber<Event> sub : invokable) {
+                    unsubscribe(sub);
+                }
             }
         }
         return this;
@@ -113,7 +114,7 @@ public class NextEvents {
      * @throws IllegalArgumentException If event name is null or empty
      * @throws IllegalStateException If the subscriber was registered before
      */
-    public NextEvents subscribe(String defineName, Class<?> defineType, Subscriber<Meta> subscriber, int scheduleFlag) {
+    public NextEvents subscribe(String defineName, Class<?> defineType, Subscriber<Event> subscriber, int scheduleFlag) {
         notNull(subscriber);
         notEmpty(defineName, "Event name cannot be null or empty");
         notNull(defineType);
@@ -127,7 +128,7 @@ public class NextEvents {
      * @return NextEvents
      * @throws NullPointerException If subscriber is null
      */
-    public NextEvents unsubscribe(Subscriber<Meta> subscriber) {
+    public NextEvents unsubscribe(Subscriber<Event> subscriber) {
         notNull(subscriber);
         mReactor.remove(subscriber);
         return this;
@@ -143,7 +144,7 @@ public class NextEvents {
     public NextEvents emit(String eventName, Object eventObject) {
         notNull(eventName);
         notNull(eventObject);
-        mReactor.emit(Meta.with(eventName, eventObject));
+        mReactor.emit(Event.create(eventName, eventObject));
         return this;
     }
 
@@ -164,7 +165,7 @@ public class NextEvents {
      * @param listener Listener
      * @return NextEvents
      */
-    public NextEvents setEventsListener(OnEventsListener<Meta> listener){
+    public NextEvents setEventsListener(OnEventsListener<Event> listener){
         mReactor.onEventsListener(listener);
         return this;
     }

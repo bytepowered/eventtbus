@@ -1,4 +1,4 @@
-package com.github.yoojia.events.supports;
+package com.github.yoojia.events;
 
 /**
  * @author 陈小锅 (yoojia.chen@gmail.com)

@@ -1,6 +1,6 @@
 package com.github.yoojia.events.core;
 
-import com.github.yoojia.events.supports.Filter;
+import com.github.yoojia.events.Filter;
 
 /**
  * 订阅者构建帮助类

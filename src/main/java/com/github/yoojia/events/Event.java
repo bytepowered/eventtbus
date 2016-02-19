@@ -4,19 +4,30 @@ import com.github.yoojia.events.supports.ClassTypes;
 
 /**
  * @author YOOJIA.CHEN (yoojia.chen@gmail.com)
- * @version 2015-11-07
+ * @since 1.1
  */
-public class Meta {
+public class Event {
 
+    /**
+     * Event name
+     */
     public final String name;
-    public final Object value;
-    final Class<?> type;
 
-    Meta(String name, Object value) {
+    /**
+     * Event value (payload)
+     */
+    public final Object value;
+
+    /**
+     * Event valueType (Wrapper type)
+     */
+    public final Class<?> valueType;
+
+    Event(String name, Object value) {
         this.name = name;
         this.value = value;
         final Class<?> type = value.getClass();
-        this.type = ClassTypes.wrap(type);
+        this.valueType = ClassTypes.wrap(type);
     }
 
     @Override
@@ -24,7 +35,7 @@ public class Meta {
         return "{name=" + name +  ", value=" + value + "}";
     }
 
-    static Meta with(String name, Object value) {
-        return new Meta(name, value);
+    static Event create(String name, Object value) {
+        return new Event(name, value);
     }
 }
