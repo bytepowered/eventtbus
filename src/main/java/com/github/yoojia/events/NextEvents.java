@@ -94,7 +94,7 @@ public class NextEvents {
             final InvokableMethods invokable = mObjectMaps.remove(target);
             if (invokable != null) {
                 for (Subscriber<Event> sub : invokable) {
-                    unsubscribe(sub);
+                    mReactor.remove(sub);
                 }
             }
         }
@@ -171,7 +171,6 @@ public class NextEvents {
     }
 
     /**
-     * 提供可Override的访问权限，给子类改写默认处理过程的可能性
      * @param object Object
      * @param method Method with annotation
      * @param invokable Invokable
@@ -181,8 +180,31 @@ public class NextEvents {
         final MethodSubscriber subscriber = new MethodSubscriber(object, method);
         invokable.add(subscriber);
         final String defineName = subscribe.on();
+        notEmpty(defineName, "Event name cannot be null or empty");
         final Class<?> defineType = method.getParameterTypes()[0];
-        subscribe(defineName, defineType, subscriber, subscribe.run().scheduleFlag);
+        final Class<? extends Filter<Event>>[] filterTypes = subscribe.filters();
+        // Single filter
+        if (filterTypes.length == 0) {
+            mReactor.add(Descriptors.create1(
+                    subscriber,
+                    subscribe.run().scheduleFlag,
+                    EventsFilter.with(defineName, defineType)));
+        }else{
+            // Filters
+            final List<Filter<Event>> filters = new ArrayList<>(filterTypes.length + 1);
+            filters.add(EventsFilter.with(defineName, defineType));
+            try{
+                for (Class<? extends Filter<Event>> type: filterTypes) {
+                    filters.add(type.newInstance());
+                }
+            }catch (Exception err) {
+                throw new IllegalAccessError("Filters Type in @Subscriber must has a non-params constructor method!");
+            }
+            mReactor.add(Descriptors.createWithFilters(
+                    subscriber,
+                    subscribe.run().scheduleFlag,
+                    filters));
+        }
     }
 
     protected Filter<Method> newMethodFilter(final Filter<Method> customFilter) {

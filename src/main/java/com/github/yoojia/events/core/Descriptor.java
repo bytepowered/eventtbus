@@ -4,6 +4,7 @@ import com.github.yoojia.events.Filter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * 事件订阅描述对象，封装事件订阅处理都及调度标识
@@ -18,13 +19,13 @@ public class Descriptor<T> {
 
     private final ArrayList<Filter<T>> mFilters = new ArrayList<>(COUNT_OF_PER_SUBSCRIBER_MAY_HAS_FILTERS);
 
-    Descriptor(Subscriber<T> subscriber, int scheduleFlag, Filter<T>[] filters) {
+    Descriptor(Subscriber<T> subscriber, int scheduleFlag, List<Filter<T>> filters) {
         this.subscriber = subscriber;
         this.scheduleFlag = scheduleFlag;
-        if (filters.length <= 0) {
+        if (filters.size() <= 0) {
             throw new IllegalArgumentException("Filter is required!");
         }
-        mFilters.addAll(Arrays.asList(filters));
+        mFilters.addAll(filters);
     }
 
     /* hide for Reactor */

@@ -25,4 +25,10 @@ public @interface Subscribe {
      * @return Runs flag
      */
     Runs run() default Runs.ON_CALLER_THREAD;
+
+    /**
+     * 事件过滤器
+     * @return Filter Array
+     */
+    Class<? extends Filter<Event>>[] filters() default {};
 }
