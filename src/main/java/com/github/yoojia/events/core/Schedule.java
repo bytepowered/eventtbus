@@ -55,6 +55,10 @@ public class Schedule {
         }
     }
 
+    public ExecutorService getWorkerThreads(){
+        return mWorkerThreads;
+    }
+
     protected void invoke(int type, EventMessage event, EventHandler handler) {
         switch (type) {
             case Schedule.ON_THREADS:
