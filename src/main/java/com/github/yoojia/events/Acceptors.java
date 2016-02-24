@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.3
+ * @since 1.2
  */
 final class Acceptors extends ArrayList<Acceptor> {
 

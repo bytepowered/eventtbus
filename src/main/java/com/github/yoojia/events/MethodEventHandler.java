@@ -7,8 +7,8 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
 /**
- * @author YOOJIA.CHEN (yoojia.chen@gmail.com)
- * @version 0.1
+ * @author Yoojia Chen (yoojiachen@gmail.com)
+ * @since 1.2
  */
 class MethodEventHandler implements EventHandler {
 

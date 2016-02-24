@@ -3,8 +3,8 @@ package com.github.yoojia.events;
 import com.github.yoojia.events.supports.ClassTypes;
 
 /**
- * @author YOOJIA.CHEN (yoojia.chen@gmail.com)
- * @since 1.1
+ * @author Yoojia Chen (yoojiachen@gmail.com)
+ * @since 1.2
  */
 public class Event {
 

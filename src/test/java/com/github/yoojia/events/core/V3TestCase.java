@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.3
+ * @since 1.2
  */
 public class V3TestCase {
 

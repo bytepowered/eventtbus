@@ -5,8 +5,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
- * @author 陈小锅 (yoojia.chen@gmail.com)
- * @since 1.0
+ * @author Yoojia Chen (yoojiachen@gmail.com)
+ * @since 1.2
  */
 public class AnnotatedMethod extends Annotated<Method> {
 

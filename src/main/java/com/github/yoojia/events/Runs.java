@@ -3,8 +3,8 @@ package com.github.yoojia.events;
 import com.github.yoojia.events.core.Schedule;
 
 /**
- * @author YOOJIA.CHEN (yoojia.chen@gmail.com)
- * @since 0.1
+ * @author Yoojia Chen (yoojiachen@gmail.com)
+ * @since 1.0
  */
 public enum Runs {
 

@@ -5,7 +5,7 @@ import com.github.yoojia.events.core.EventMessage;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.3
+ * @since 1.2
  */
 class DefaultEventFilter implements EventFilter {
 

@@ -7,8 +7,8 @@ import java.util.List;
 import static com.github.yoojia.events.supports.Preconditions.notNull;
 
 /**
- * @author 陈小锅 (yoojia.chen@gmail.com)
- * @since 1.0
+ * @author Yoojia Chen (yoojiachen@gmail.com)
+ * @since 1.2
  */
 public abstract class Annotated<T extends AnnotatedElement> {
 

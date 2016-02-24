@@ -1,5 +1,9 @@
 package com.github.yoojia.events.core;
 
+/**
+ * @author Yoojia Chen (yoojiachen@gmail.com)
+ * @since 1.2
+ */
 public class EventRunner implements Runnable{
 
     private final EventMessage mEvent;

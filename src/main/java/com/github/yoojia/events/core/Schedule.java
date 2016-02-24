@@ -7,7 +7,7 @@ import java.util.concurrent.ExecutorService;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.0
+ * @since 1.2
  */
 public class Schedule {
 

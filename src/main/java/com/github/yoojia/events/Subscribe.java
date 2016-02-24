@@ -9,8 +9,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * @author YOOJIA.CHEN (yoojia.chen@gmail.com)
- * @since 0.1
+ * @author Yoojia Chen (yoojiachen@gmail.com)
+ * @since 1.0
  */
 @Inherited
 @Target(ElementType.METHOD)
@@ -33,6 +33,7 @@ public @interface Subscribe {
     /**
      * 自定义事件过滤器
      * @return Filter Types
+     * @since 1.2
      */
     Class<? extends EventFilter>[] filters() default {};
 
