@@ -1,7 +1,5 @@
 package com.github.yoojia.events.supports;
 
-import com.github.yoojia.events.Filter;
-
 import java.lang.reflect.AnnotatedElement;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,28 +10,21 @@ import static com.github.yoojia.events.supports.Preconditions.notNull;
  * @author 陈小锅 (yoojia.chen@gmail.com)
  * @since 1.0
  */
-public abstract class AnnotatedFinder<T extends AnnotatedElement> {
+public abstract class Annotated<T extends AnnotatedElement> {
 
-    protected Filter<T> mResourceFilter;
+    protected List<Filter<T>> mResourceFilters = new ArrayList<>();
     protected Filter<Class<?>> mTypeFilter;
 
-    public AnnotatedFinder() {
-        // Init Resource filter
-        filter(new Filter<T>() {
-            @Override
-            public boolean accept(T res) {
-                return true;
-            }
-        });
-        // Init types filter
+    public Annotated() {
         // Ignore java,javax,android objects
-        types(new Filter<Class<?>>() {
+        setTypesFilter(new Filter<Class<?>>() {
             @Override
             public boolean accept(Class<?> type) {
                 final String name = type.getName();
                 if (name.startsWith("java.")
                         || name.startsWith("javax.")
-                        || name.startsWith("android.")) {
+                        || name.startsWith("android.")
+                        || name.startsWith("com.android.")) {
                     return false;
                 }else{
                     return true;
@@ -43,23 +34,23 @@ public abstract class AnnotatedFinder<T extends AnnotatedElement> {
     }
 
     /**
-     * 设置注解目标对象的过滤处理接口
+     * 添加注解目标对象的过滤处理接口
      * @param filter 过滤处理接口
-     * @return AnnotatedFinder
+     * @return Annotated
      */
-    public AnnotatedFinder<T> filter(Filter<T> filter) {
-        notNull(filter, "Resource filter must not be null !");
-        mResourceFilter = filter;
+    public Annotated<T> addResourceFilter(Filter<T> filter) {
+        notNull(filter, "filter == null");
+        mResourceFilters.add(filter);
         return this;
     }
 
     /**
      * 设置注解目标类型过滤的处理接口
      * @param filter 过滤处理接口
-     * @return AnnotatedFinder
+     * @return Annotated
      */
-    public AnnotatedFinder<T> types(Filter<Class<?>> filter) {
-        notNull(filter, "Type filter must not be null !");
+    public Annotated<T> setTypesFilter(Filter<Class<?>> filter) {
+        notNull(filter, "filter == null");
         mTypeFilter = filter;
         return this;
     }
@@ -70,15 +61,19 @@ public abstract class AnnotatedFinder<T extends AnnotatedElement> {
      * @return 注解内容列表
      */
     public List<T> find(Class<?> targetType) {
-        notNull(targetType, "Subscriber type must not be null !");
+        notNull(targetType, "Class target type == null");
         final List<T> output = new ArrayList<>();
         Class<?> type = targetType;
         while (! Object.class.equals(type) && mTypeFilter.accept(type)){
-            final T[] resources = resourcesFromType(type);
+            final T[] resources = getResource(type);
+            resources:
             for (T res : resources){
-                // Check resource
-                if(mResourceFilter.accept(res)){
-                    output.add(res);
+                for (Filter<T> filter : mResourceFilters) {
+                    if (filter.accept(res)) {
+                        output.add(res);
+                    }else{
+                        continue resources;
+                    }
                 }
             }
             type = type.getSuperclass();
@@ -86,6 +81,6 @@ public abstract class AnnotatedFinder<T extends AnnotatedElement> {
         return output;
     }
 
-    protected abstract T[] resourcesFromType(Class<?> type);
+    protected abstract T[] getResource(Class<?> type);
 
 }

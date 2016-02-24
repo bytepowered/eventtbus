@@ -1,7 +1,6 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.core.Schedule;
-import com.github.yoojia.events.core.Schedules;
 import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;
@@ -28,12 +27,12 @@ public class StressTest extends BaseTester{
         }
 
         @Subscribe(on = "str", run = Runs.ON_THREADS)
-        public void onEvents(String start){
+        public void onEvents(Event evt){
             hitEvt1();
         }
 
         @Subscribe(on = "long", run = Runs.ON_THREADS)
-        public void onEvents1(long start){
+        public void onEvents1(Event evt){
             hitEvt2();
         }
 
@@ -46,12 +45,12 @@ public class StressTest extends BaseTester{
         }
 
         @Subscribe(on = "str", run = Runs.ON_CALLER_THREAD)
-        public void onEvents(String start){
+        public void onEvents(Event evt){
             hitEvt1();
         }
 
         @Subscribe(on = "long", run = Runs.ON_CALLER_THREAD)
-        public void onEvents1(long start){
+        public void onEvents1(Event evt){
             hitEvt2();
         }
 
@@ -64,13 +63,13 @@ public class StressTest extends BaseTester{
         }
 
         @Subscribe(on = "str", run = Runs.ON_THREADS)
-        public void onEvents(String start) throws InterruptedException {
+        public void onEvents(Event evt) throws InterruptedException {
             Thread.sleep(1);
             hitEvt1();
         }
 
         @Subscribe(on = "long", run = Runs.ON_THREADS)
-        public void onEvents1(long start) throws InterruptedException {
+        public void onEvents1(Event evt) throws InterruptedException {
             Thread.sleep(1);
             hitEvt2();
         }
@@ -84,13 +83,13 @@ public class StressTest extends BaseTester{
         }
 
         @Subscribe(on = "str", run = Runs.ON_CALLER_THREAD)
-        public void onEvents(String start) throws InterruptedException {
+        public void onEvents(Event evt) throws InterruptedException {
             Thread.sleep(1);
             hitEvt1();
         }
 
         @Subscribe(on = "long", run = Runs.ON_CALLER_THREAD)
-        public void onEvents1(long start) throws InterruptedException {
+        public void onEvents1(Event evt) throws InterruptedException {
             Thread.sleep(1);
             hitEvt2();
         }
@@ -132,16 +131,16 @@ public class StressTest extends BaseTester{
     private void testStress(Payload payload, Schedule schedule, String tag){
         final NextEvents events = new NextEvents(schedule);
 
-        events.register(payload, null);
+        events.register(payload);
 
         final long timeBeforeEmits = NOW();
         for (int i = 0; i < payload.perEvtCount; i++) {
 
-            final long intEvent = NOW();
-            events.emit("long", intEvent);
+            final long longEvent = NOW();
+            events.emit(new Event("long", longEvent));
 
             final String strEvent = String.valueOf(NOW());
-            events.emit("str", strEvent);
+            events.emit(new Event("str", strEvent));
         }
 
         final long timeAfterEmits = NOW();

@@ -13,48 +13,53 @@ import static org.junit.Assert.fail;
  * @author 陈小锅 (yoojia.chen@gmail.com)
  * @since 1.0
  */
-public class ReactorTest extends BaseTester {
+public class DispatcherTest extends BaseTester {
 
     private final static int COUNT_PAYLOAD = 1000;
     private final static int COUNT_NOP = COUNT_PAYLOAD * 1000 * 5;
 
-    private static class TestSubscriber extends Payload implements Subscriber<String> {
+    private static class TestEventHandler extends Payload implements EventHandler {
 
-        protected TestSubscriber(int count) {
+        protected TestEventHandler(int count) {
             super(count);
         }
 
         @Override
-        public void onCall(String input) throws Exception {
+        public void onEvent(EventMessage event) throws Exception {
             hitEvt1();
             hitEvt2();
         }
 
         @Override
-        public void onErrors(String input, Exception errors) {
+        public void onErrors(Exception errors) {
 
+        }
+
+        @Override
+        public int scheduleType() {
+            return Schedule.ON_CALLER_THREAD;
         }
     }
 
     @Test
     public void test(){
 
-        Reactor<String> reactor = new Reactor<>(Schedules.newCaller());
+        Dispatcher dispatcher = new Dispatcher(SharedSchedule.getDefault());
 
-        TestSubscriber payload = new TestSubscriber(COUNT_NOP);
+        TestEventHandler payload = new TestEventHandler(COUNT_NOP);
 
-        reactor.add(Descriptors.create1(payload, Schedule.FLAG_ON_CALLER_THREAD, new Filter<String>() {
+        dispatcher.addHandler(payload, new EventFilter() {
             @Override
-            public boolean accept(String item) {
+            public boolean accept(EventMessage event) {
                 return true;
             }
-        }));
+        });
 
         final long timeBeforeEmits = System.nanoTime();
 
         for (int i = 0; i < payload.perEvtCount; i++) {
             final String strEvent = String.valueOf(NOW());
-            reactor.emit(strEvent);
+            dispatcher.emit(new EventMessage(strEvent));
         }
 
         final long timeAfterEmits = NOW();
@@ -62,10 +67,10 @@ public class ReactorTest extends BaseTester {
         try {
             payload.await();
         } catch (InterruptedException e) {
-            fail("Reactor Test, Wait fail");
+            fail("EventDispatcher Test, Wait fail");
         }
 
-        reactor.remove(payload);
+        dispatcher.removeHandler(payload);
 
         assertThat(payload.evt1Calls.get(), equalTo(payload.perEvtCount));
         assertThat(payload.evt2Calls.get(), equalTo(payload.perEvtCount));
@@ -75,11 +80,12 @@ public class ReactorTest extends BaseTester {
         final long deliveredMicros = (timeWhenAllFinished - timeBeforeEmits) / 1000;
         int deliveryRate = (int) (payload.totalCalls / (deliveredMicros / 1000000d));
 
-        System.err.println("Reactor\t ### " +
+        System.err.println("EventDispatcher\t ### " +
                         "Delivered:" + deliveryRate + "/s" +
                         "\t\tEmit:" + TimeUnit.MICROSECONDS.toMillis(emitMicros) + "ms" +
                         "\t\tRuns:" + TimeUnit.MICROSECONDS.toMillis(deliveredMicros) + "ms" +
                         "\t\tCalls:" + payload.totalCalls
         );
+        // MBP: 6707866, 6300427, 6865571
     }
 }

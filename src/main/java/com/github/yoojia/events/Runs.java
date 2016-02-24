@@ -4,23 +4,24 @@ import com.github.yoojia.events.core.Schedule;
 
 /**
  * @author YOOJIA.CHEN (yoojia.chen@gmail.com)
+ * @since 0.1
  */
 public enum Runs {
 
     /**
      * 由主线程执行回调
      */
-    ON_MAIN_THREAD(Schedule.FLAG_ON_MAIN_THREAD),
+    ON_MAIN_THREAD(Schedule.ON_MAIN_THREAD),
 
     /**
      * 由调用者线程执行回调
      */
-    ON_CALLER_THREAD(Schedule.FLAG_ON_CALLER_THREAD),
+    ON_CALLER_THREAD(Schedule.ON_CALLER_THREAD),
 
     /**
      * 由线程池的线程执行回调
      */
-    ON_THREADS(Schedule.FLAG_ON_THREADS);
+    ON_THREADS(Schedule.ON_THREADS);
 
     final int scheduleFlag;
 
