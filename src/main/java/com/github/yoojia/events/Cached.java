@@ -2,10 +2,9 @@ package com.github.yoojia.events;
 
 import com.github.yoojia.events.core.Acceptor;
 import com.github.yoojia.events.core.EventFilter;
+import com.github.yoojia.events.supports.Filter;
 
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -16,25 +15,27 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 class Cached {
 
-    private final Map<Object, Acceptors> mAcceptorHolder = new ConcurrentHashMap<>();
-    private final Object mHolderLock = new Object();
+    private final Map<Object, Acceptors> mAcceptorCache = new ConcurrentHashMap<>();
+    private final Object mLock = new Object();
 
     @SuppressWarnings("unchecked")
-    public Acceptors find(Object object) {
-        final List<Method> methods = Methods.getAnnotated(object.getClass());
+    public Acceptors find(Object object, Filter<Method> filter) {
+        final List<Method> methods = Methods.getAnnotated(object.getClass(), filter);
         if (methods.isEmpty()) {
             return Acceptors.empty();
         }else{
-            synchronized (mHolderLock) {
-                final Acceptors cached = mAcceptorHolder.get(object);
+            synchronized (mLock) {
+                final Acceptors cached = mAcceptorCache.get(object);
                 if (cached != null) {
                     return cached;
                 }else{
-                    final Acceptors acceptors = new Acceptors(methods.size());
-                    for (Method method : methods) {
+                    final int size = methods.size();
+                    final Acceptors acceptors = new Acceptors(size);
+                    for (int i = 0; i < size; i++) {
+                        final Method method = methods.get(i);
                         acceptors.add(create(object, method, Methods.parse(method)));
                     }
-                    mAcceptorHolder.put(object, acceptors);
+                    mAcceptorCache.put(object, acceptors);
                     return acceptors;
                 }
             }
@@ -42,11 +43,11 @@ class Cached {
     }
 
     public Acceptors getPresent(Object object) {
-        return mAcceptorHolder.getOrDefault(object, Acceptors.empty());
+        return mAcceptorCache.getOrDefault(object, Acceptors.empty());
     }
 
     public void remove(Object object) {
-        mAcceptorHolder.remove(object);
+        mAcceptorCache.remove(object);
     }
 
     @SuppressWarnings("unchecked")

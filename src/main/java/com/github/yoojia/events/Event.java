@@ -19,11 +19,11 @@ public class Event {
     public final Object payload;
 
     /**
-     * Event valueType (Wrapper type)
+     * Event value type (Wrapper type)
      */
     public final Class<?> valueType;
 
-    Event(String name, Object payload) {
+    public Event(String name, Object payload) {
         this.name = name;
         this.payload = payload;
         this.valueType = ClassTypes.wrap(payload.getClass());

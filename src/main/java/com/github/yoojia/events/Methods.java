@@ -21,10 +21,13 @@ class Methods {
 
     private static final Filter<Method> SIGNATURE_FILTER = new SignatureFilter();
 
-    public static List<Method> getAnnotated(Class<?> clazz) {
-        return new AnnotatedMethod(Subscribe.class)
-                .addResourceFilter(Methods.SIGNATURE_FILTER)
-                .find(clazz);
+    public static List<Method> getAnnotated(Class<?> clazz, Filter<Method> filter) {
+        final AnnotatedMethod methods = new AnnotatedMethod(Subscribe.class);
+        methods.addResourceFilter(Methods.SIGNATURE_FILTER);
+        if (filter != null) {
+            methods.addResourceFilter(filter);
+        }
+        return methods.find(clazz);
     }
 
     public static Object[] parse(Method method) {
