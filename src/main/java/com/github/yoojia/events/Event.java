@@ -3,8 +3,8 @@ package com.github.yoojia.events;
 import com.github.yoojia.events.supports.ClassTypes;
 
 /**
- * @author YOOJIA.CHEN (yoojia.chen@gmail.com)
- * @since 1.1
+ * @author Yoojia Chen (yoojiachen@gmail.com)
+ * @since 1.2
  */
 public class Event {
 
@@ -14,28 +14,24 @@ public class Event {
     public final String name;
 
     /**
-     * Event value (payload)
+     * Event payload
      */
-    public final Object value;
+    public final Object payload;
 
     /**
      * Event valueType (Wrapper type)
      */
     public final Class<?> valueType;
 
-    Event(String name, Object value) {
+    Event(String name, Object payload) {
         this.name = name;
-        this.value = value;
-        final Class<?> type = value.getClass();
-        this.valueType = ClassTypes.wrap(type);
+        this.payload = payload;
+        this.valueType = ClassTypes.wrap(payload.getClass());
     }
 
     @Override
     public String toString() {
-        return "{name=" + name +  ", value=" + value + "}";
+        return "{name=" + name +  ", value=" + payload + "}";
     }
 
-    static Event create(String name, Object value) {
-        return new Event(name, value);
-    }
 }

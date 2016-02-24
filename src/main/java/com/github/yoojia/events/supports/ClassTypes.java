@@ -1,8 +1,8 @@
 package com.github.yoojia.events.supports;
 
 /**
- * @author YOOJIA.CHEN (yoojia.chen@gmail.com)
- * @version 1.0
+ * @author Yoojia Chen (yoojiachen@gmail.com)
+ * @since 1.0
  */
 public class ClassTypes {
 
