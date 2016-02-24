@@ -75,17 +75,7 @@ public class DispatcherTest extends BaseTestCase {
         assertThat(payload.evt1Calls.get(), equalTo(payload.perEvtCount));
         assertThat(payload.evt2Calls.get(), equalTo(payload.perEvtCount));
 
-        final long timeWhenAllFinished = NOW();
-        final long emitMicros = (timeAfterEmits - timeBeforeEmits) / 1000;
-        final long deliveredMicros = (timeWhenAllFinished - timeBeforeEmits) / 1000;
-        int deliveryRate = (int) (payload.totalCalls / (deliveredMicros / 1000000d));
-
-        System.err.println("EventDispatcher\t ### " +
-                        "Delivered:" + deliveryRate + "/s" +
-                        "\t\tEmit:" + TimeUnit.MICROSECONDS.toMillis(emitMicros) + "ms" +
-                        "\t\tRuns:" + TimeUnit.MICROSECONDS.toMillis(deliveredMicros) + "ms" +
-                        "\t\tCalls:" + payload.totalCalls
-        );
         // MBP: 6707866, 6300427, 6865571
+        printStatistics("Dispatch", timeBeforeEmits, timeAfterEmits, payload.totalCalls);
     }
 }

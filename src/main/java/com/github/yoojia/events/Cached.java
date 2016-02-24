@@ -14,16 +14,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.3
  */
-class ObjectAccessor {
+class Cached {
 
     private final Map<Object, Acceptors> mAcceptorHolder = new ConcurrentHashMap<>();
     private final Object mHolderLock = new Object();
 
     @SuppressWarnings("unchecked")
-    public List<Acceptor> find(Object object) {
+    public Acceptors find(Object object) {
         final List<Method> methods = Methods.getAnnotated(object.getClass());
         if (methods.isEmpty()) {
-            return Collections.emptyList();
+            return Acceptors.empty();
         }else{
             synchronized (mHolderLock) {
                 final Acceptors cached = mAcceptorHolder.get(object);
@@ -41,8 +41,8 @@ class ObjectAccessor {
         }
     }
 
-    public List<Acceptor> getPresent(Object object) {
-        return mAcceptorHolder.getOrDefault(object, new Acceptors(0));
+    public Acceptors getPresent(Object object) {
+        return mAcceptorHolder.getOrDefault(object, Acceptors.empty());
     }
 
     public void remove(Object object) {
@@ -58,12 +58,6 @@ class ObjectAccessor {
         final MethodEventHandler handler = new MethodEventHandler(scheduleType, object, method);
         filters.add(new DefaultEventFilter(defineName, defineType));
         return new Acceptor(handler, filters);
-    }
-
-    private static class Acceptors extends ArrayList<Acceptor>{
-        public Acceptors(int initialCapacity) {
-            super(initialCapacity);
-        }
     }
 
 }

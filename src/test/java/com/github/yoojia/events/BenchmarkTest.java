@@ -6,7 +6,6 @@ import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -237,20 +236,6 @@ public class BenchmarkTest extends BaseTestCase {
         assertThat(payload.evt2Calls.get(), equalTo(payload.perEvtCount));
 
         printStatistics(tag, timeBeforeEmits, timeAfterEmits, payload.totalCalls);
-    }
-
-    private void printStatistics(String tag, long timeBeforeEmits, long timeAfterEmits, long totalCalls){
-        final long timeWhenAllFinished = NOW();
-        final long emitMicros = (timeAfterEmits - timeBeforeEmits) / 1000;
-        final long deliveredMicros = (timeWhenAllFinished - timeBeforeEmits) / 1000;
-        int deliveryRate = (int) (totalCalls / (deliveredMicros / 1000000d));
-
-        System.err.println(tag + "\t ### " +
-                "Delivered:" + deliveryRate + "/s" +
-                "\t\tEmit:" + TimeUnit.MICROSECONDS.toMillis(emitMicros) + "ms" +
-                "\t\tRuns:" + TimeUnit.MICROSECONDS.toMillis(deliveredMicros) + "ms" +
-                "\t\tCalls:" + totalCalls
-        );
     }
 
 }

@@ -11,7 +11,7 @@ import java.util.List;
 public class NextEvents {
 
     private final Dispatcher mDispatcher;
-    private final ObjectAccessor mObjectAccessor;
+    private final Cached mCached;
 
     public NextEvents() {
         this(SharedSchedule.getDefault());
@@ -19,7 +19,7 @@ public class NextEvents {
 
     public NextEvents(Schedule schedule) {
         mDispatcher = new Dispatcher(schedule);
-        mObjectAccessor = new ObjectAccessor();
+        mCached = new Cached();
     }
 
     public void addHandler(EventHandler handler, EventFilter filter) {
@@ -31,14 +31,14 @@ public class NextEvents {
     }
 
     public void register(Object object) {
-        final List<Acceptor> acceptors = mObjectAccessor.find(object);
+        final List<Acceptor> acceptors = mCached.find(object);
         for (Acceptor acceptor : acceptors) {
             mDispatcher.addHandler(acceptor.handler, acceptor.filters);
         }
     }
 
     public void unregister(Object object) {
-        final List<Acceptor> acceptors = mObjectAccessor.getPresent(object);
+        final List<Acceptor> acceptors = mCached.getPresent(object);
         for (Acceptor acceptor : acceptors) {
             mDispatcher.removeHandler(acceptor.handler);
         }

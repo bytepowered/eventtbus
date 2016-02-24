@@ -15,8 +15,10 @@ public class Filters {
         if (src == null || src.isEmpty()) {
             return Collections.emptyList();
         }else{
-            final List<T> output = new ArrayList<>(src.size());
-            for (T item : src) {
+            final int size = src.size();
+            final List<T> output = new ArrayList<>(size);
+            for (int i = 0; i < size; i++) {
+                final T item = src.get(i);
                 if (filter.accept(item)) {
                     output.add(item);
                 }

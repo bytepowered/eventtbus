@@ -18,7 +18,7 @@ public class Schedule {
     private final Queue<Element> mLoopTasks = new ConcurrentLinkedQueue<>();
     private final ExecutorService mWorkerThreads;
 
-    private final Looper mLooper = new Looper() {
+    private final ScheduleLooper mLooper = new ScheduleLooper() {
         @Override
         protected void step() {
             final Element element = mLoopTasks.poll();
@@ -45,7 +45,7 @@ public class Schedule {
             final int type = handler.scheduleType();
             // Caller方式,直接执行. 其它方式在线程池处理
             if (Schedule.ON_CALLER_THREAD == type) {
-                new RunnableWrapper(event, handler).run();
+                new EventRunner(event, handler).run();
             }else{
                 mLoopTasks.offer(new Element(event, handler));
                 synchronized (mLooper) {
@@ -58,13 +58,13 @@ public class Schedule {
     protected void invoke(int type, EventMessage event, EventHandler handler) {
         switch (type) {
             case Schedule.ON_THREADS:
-                mWorkerThreads.submit(new RunnableWrapper(event, handler));
+                mWorkerThreads.submit(new EventRunner(event, handler));
                 break;
             case Schedule.ON_MAIN_THREAD:
-                handler.onErrors(new IllegalArgumentException("Unsupported <ON_MAIN_THREAD> Schedule Type! " ));
+                handler.onErrors(new IllegalArgumentException("Unsupported <ON_MAIN_THREAD> schedule type! " ));
                 break;
             default:
-                handler.onErrors(new IllegalArgumentException("Unsupported Schedule Type: " + type));
+                handler.onErrors(new IllegalArgumentException("Unsupported schedule type: " + type));
                 break;
         }
     }
@@ -81,20 +81,4 @@ public class Schedule {
 
     }
 
-    protected static class RunnableWrapper extends Element implements Runnable{
-
-        private RunnableWrapper(EventMessage event, EventHandler handler) {
-            super(event, handler);
-        }
-
-        @Override
-        public void run() {
-            try{
-                handler.onEvent(event);
-            }catch (Exception errors) {
-                handler.onErrors(errors);
-            }
-        }
-
-    }
 }

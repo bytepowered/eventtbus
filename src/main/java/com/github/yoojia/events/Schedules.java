@@ -1,9 +1,6 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.core.EventHandler;
-import com.github.yoojia.events.core.EventMessage;
-import com.github.yoojia.events.core.Schedule;
-import com.github.yoojia.events.core.SharedSchedule;
+import com.github.yoojia.events.core.*;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -31,11 +28,7 @@ public class Schedules {
                     if (Schedule.ON_CALLER_THREAD != type) {
                         System.err.println("Ignore <ScheduleType> on Caller Schedule");
                     }
-                    try{
-                        handler.onEvent(event);
-                    }catch (Exception errors) {
-                        handler.onErrors(errors);
-                    }
+                    new EventRunner(event, handler).run();
                 }
             }
         };

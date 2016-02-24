@@ -24,6 +24,10 @@ class MethodEventHandler implements EventHandler {
 
     @Override
     public void onEvent(EventMessage event) throws Exception {
+        final Object host = mObjectRef.get();
+        if (host == null) {
+            throw new IllegalStateException("Host object is dead for method: " + mMethod);
+        }
         mMethod.setAccessible(true);
         mMethod.invoke(mObjectRef.get(), event.getEvent());
     }

@@ -37,11 +37,14 @@ public class SharedSchedule extends Schedule {
                 QUEUE = new LinkedBlockingQueue<>();
                 EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
                         TimeUnit.SECONDS, QUEUE, THREAD_FACTORY);
-                try {
-                    DEF_SCHEDULE = type.newInstance();
-                } catch (Exception e) {
-                    System.err.println("Error when instance shared schedule");
-                    throw new RuntimeException(e);
+                if (SharedSchedule.class.equals(type)) {
+                    DEF_SCHEDULE = new SharedSchedule();
+                }else{
+                    try {
+                        DEF_SCHEDULE = type.newInstance();
+                    } catch (Exception cause) {
+                        throw new RuntimeException("When create shared schedule instance", cause);
+                    }
                 }
             }
             return DEF_SCHEDULE;

@@ -4,7 +4,7 @@ package com.github.yoojia.events.core;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.3
  */
-abstract class Looper implements Runnable{
+abstract class ScheduleLooper implements Runnable{
 
     @Override
     public void run() {
