@@ -1,5 +1,7 @@
-package com.github.yoojia.events;
+package com.github.yoojia.events.core;
 
+import com.github.yoojia.events.BaseTestCase;
+import com.github.yoojia.events.Payload;
 import com.github.yoojia.events.core.*;
 import org.junit.Test;
 
@@ -13,7 +15,7 @@ import static org.junit.Assert.fail;
  * @author 陈小锅 (yoojia.chen@gmail.com)
  * @since 1.0
  */
-public class DispatcherTest extends BaseTestCase {
+public class DispatcherQPSTest extends BaseTestCase {
 
     private final static int COUNT_PAYLOAD = 1000;
     private final static int COUNT_NOP = COUNT_PAYLOAD * 1000 * 5;
@@ -76,6 +78,6 @@ public class DispatcherTest extends BaseTestCase {
         assertThat(payload.evt2Calls.get(), equalTo(payload.perEvtCount));
 
         // MBP: 6707866, 6300427, 6865571
-        printStatistics("Dispatch", timeBeforeEmits, timeAfterEmits, payload.totalCalls);
+        printStatistics("Dispatch.QPS", timeBeforeEmits, timeAfterEmits, payload.totalCalls);
     }
 }

@@ -21,11 +21,11 @@ public class Schedule {
     private final ScheduleLooper mLooper = new ScheduleLooper() {
         @Override
         protected void step() {
-            final Element element = mLoopTasks.poll();
-            if (element == null) {
+            final Element e = mLoopTasks.poll();
+            if (e == null) {
                 await();
             }else{
-                invoke(element.handler.scheduleType(), element.event, element.handler);
+                invoke(e.handler.scheduleType(), e.event, e.handler);
             }
         }
     };

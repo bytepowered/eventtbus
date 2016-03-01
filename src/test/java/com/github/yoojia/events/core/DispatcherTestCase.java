@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
-public class V3TestCase {
+public class DispatcherTestCase {
 
     @Test
     public void test() throws InterruptedException {

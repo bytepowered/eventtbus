@@ -5,6 +5,7 @@ import com.github.yoojia.events.core.EventFilter;
 import com.github.yoojia.events.supports.Filter;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,7 +54,7 @@ class Cached {
     @SuppressWarnings("unchecked")
     private static Acceptor create(Object object, Method method, Object[] args) {
         final int scheduleType = (int) args[Methods.IDX_SCHEDULE_TYPE];
-        final List<EventFilter> filters = (List<EventFilter>) args[Methods.IDX_FILTERS];
+        final ArrayList<EventFilter> filters = (ArrayList<EventFilter>) args[Methods.IDX_FILTERS];
         final String defineName = (String) args[Methods.IDX_EVENT_NAME];
         final Class<?> defineType = (Class<?>) args[Methods.IDX_EVENT_TYPE];
         final MethodEventHandler handler = new MethodEventHandler(scheduleType, object, method);

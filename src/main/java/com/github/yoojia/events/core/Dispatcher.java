@@ -15,7 +15,7 @@ import static com.github.yoojia.events.supports.Filters.filter;
  */
 public class Dispatcher {
 
-    private static final int GUESS = 4;
+    private static final int GUESS = 2;
 
     private final Schedule mSchedule;
     private final CopyOnWriteArrayList<Acceptor> mAcceptors = new CopyOnWriteArrayList<>();
@@ -43,10 +43,10 @@ public class Dispatcher {
 
     public void emit(EventMessage event) {
         // 快速匹配触发事件的EventHandler, 然后由调度器来处理
-        mSchedule.submit(event, findHandlers(event));
+        mSchedule.submit(event, matchedHandlers(event));
     }
 
-    private List<EventHandler> findHandlers(EventMessage event) {
+    private List<EventHandler> matchedHandlers(EventMessage event) {
         final ArrayList<EventHandler> handlers = new ArrayList<>(GUESS);
         final int size = mAcceptors.size();
         for (int i = 0; i < size; i++) {

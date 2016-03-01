@@ -3,7 +3,7 @@ package com.github.yoojia.events;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
-class Payload {
+public class Payload {
 
     public final AtomicInteger evt1Calls = new AtomicInteger(0);
     public final AtomicInteger evt2Calls = new AtomicInteger(0);

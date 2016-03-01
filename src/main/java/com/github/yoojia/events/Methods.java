@@ -34,7 +34,7 @@ class Methods {
         final Subscribe annotation = method.getDeclaredAnnotation(Subscribe.class);
         final int scheduleType = annotation.run().scheduleFlag;
         final Class<? extends EventFilter>[] types = annotation.filters();
-        final List<EventFilter> filters = new ArrayList<>(types.length);
+        final ArrayList<EventFilter> filters = new ArrayList<>(types.length);
         try{
             for (Class<? extends EventFilter> type: types) {
                 filters.add(type.newInstance());

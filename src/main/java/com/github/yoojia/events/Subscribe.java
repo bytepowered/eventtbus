@@ -25,7 +25,7 @@ public @interface Subscribe {
 
     /**
      * 回调方式。
-     * - 默认方式为 ON_CALLER_THREAD；
+     * - 默认方式为 Runs.ON_CALLER_THREAD；
      * @return Runs flag
      */
     Runs run() default Runs.ON_CALLER_THREAD;
