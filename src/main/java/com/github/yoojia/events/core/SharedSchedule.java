@@ -3,7 +3,11 @@ package com.github.yoojia.events.core;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class SharedSchedule implements Schedule {
+/**
+ * @author Yoojia Chen (yoojiachen@gmail.com)
+ * @since 1.2
+ */
+public class SharedSchedule extends Schedule {
 
     protected static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     protected static final int CORE_POOL_SIZE = CPU_COUNT + 1;
@@ -23,30 +27,36 @@ public abstract class SharedSchedule implements Schedule {
     protected static ThreadPoolExecutor EXECUTOR;
     protected static SharedSchedule DEF_SCHEDULE;
 
+    public static SharedSchedule getDefault() {
+        return getDefault(SharedSchedule.class);
+    }
+
     public static SharedSchedule getDefault(Class<? extends SharedSchedule> type){
         synchronized (SharedSchedule.class) {
             if (DEF_SCHEDULE == null) {
                 QUEUE = new LinkedBlockingQueue<>();
-                EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, QUEUE, THREAD_FACTORY);
-                try {
-                    DEF_SCHEDULE = type.newInstance();
-                } catch (Exception e) {
-                    System.err.println("Error when instance shared schedule");
-                    throw new RuntimeException(e);
+                EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
+                        TimeUnit.SECONDS, QUEUE, THREAD_FACTORY);
+                if (SharedSchedule.class.equals(type)) {
+                    DEF_SCHEDULE = new SharedSchedule();
+                }else{
+                    try {
+                        DEF_SCHEDULE = type.newInstance();
+                    } catch (Exception cause) {
+                        throw new RuntimeException("When create shared schedule instance", cause);
+                    }
                 }
             }
             return DEF_SCHEDULE;
         }
     }
 
-    @Override
-    final public void invoke(Callable<Void> task, int flags) throws Exception {
-        invokeThreading(EXECUTOR, task, flags);
-    }
-
     public static void shutdown(){
         EXECUTOR.shutdown();
     }
 
-    protected abstract void invokeThreading(ThreadPoolExecutor threads, Callable<Void> task, int flags) throws Exception;
+    public SharedSchedule() {
+        super(EXECUTOR, EXECUTOR);
+    }
+
 }

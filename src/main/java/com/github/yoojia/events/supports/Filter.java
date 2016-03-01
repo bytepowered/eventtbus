@@ -1,7 +1,7 @@
 package com.github.yoojia.events.supports;
 
 /**
- * @author 陈小锅 (yoojia.chen@gmail.com)
+ * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.0
  */
 public interface Filter<T> {
