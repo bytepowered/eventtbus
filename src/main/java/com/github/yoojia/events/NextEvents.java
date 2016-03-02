@@ -1,6 +1,6 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.core.*;
+import com.github.yoojia.events.internal.*;
 import com.github.yoojia.events.supports.Filter;
 
 import java.lang.reflect.Method;

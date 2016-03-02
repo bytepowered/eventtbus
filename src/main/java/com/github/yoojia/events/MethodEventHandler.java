@@ -1,7 +1,7 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.core.EventHandler;
-import com.github.yoojia.events.core.EventMessage;
+import com.github.yoojia.events.internal.EventHandler;
+import com.github.yoojia.events.internal.EventMessage;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;

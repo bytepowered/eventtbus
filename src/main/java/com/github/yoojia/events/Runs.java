@@ -1,6 +1,6 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.core.Schedule;
+import com.github.yoojia.events.internal.Schedule;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)

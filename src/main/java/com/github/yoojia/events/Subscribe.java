@@ -1,6 +1,6 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.core.EventFilter;
+import com.github.yoojia.events.internal.EventFilter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -25,7 +25,7 @@ public @interface Subscribe {
 
     /**
      * 回调方式。
-     * - 默认方式为 ON_CALLER_THREAD；
+     * - 默认方式为 Runs.ON_CALLER_THREAD；
      * @return Runs flag
      */
     Runs run() default Runs.ON_CALLER_THREAD;

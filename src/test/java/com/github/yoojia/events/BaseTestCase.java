@@ -20,9 +20,9 @@ public class BaseTestCase {
         int deliveryRate = (int) (totalCalls / (deliveredMicros / 1000000d));
 
         System.err.println(tag + "\t ### " +
-                "Delivered:" + deliveryRate + "/s" +
+                "QPS:" + deliveryRate+
                 "\t\tEmit:" + TimeUnit.MICROSECONDS.toMillis(emitMicros) + "ms" +
-                "\t\tRuns:" + TimeUnit.MICROSECONDS.toMillis(deliveredMicros) + "ms" +
+                "\t\tRun:" + TimeUnit.MICROSECONDS.toMillis(deliveredMicros) + "ms" +
                 "\t\tCalls:" + totalCalls
         );
     }

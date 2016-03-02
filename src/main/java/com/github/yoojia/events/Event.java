@@ -2,6 +2,9 @@ package com.github.yoojia.events;
 
 import com.github.yoojia.events.supports.ClassTypes;
 
+import static com.github.yoojia.events.supports.Preconditions.notEmpty;
+import static com.github.yoojia.events.supports.Preconditions.notNull;
+
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
@@ -14,24 +17,26 @@ public class Event {
     public final String name;
 
     /**
-     * Event payload
+     * Event payload value
      */
-    public final Object payload;
+    public final Object payloadValue;
 
     /**
-     * Event value type (Wrapper type)
+     * Event payload value type (Wrapper type)
      */
-    public final Class<?> valueType;
+    public final Class<?> payloadType;
 
     public Event(String name, Object payload) {
+        notEmpty(name, "name is empty");
+        notNull(payload, "payloadValue is null");
         this.name = name;
-        this.payload = payload;
-        this.valueType = ClassTypes.wrap(payload.getClass());
+        this.payloadValue = payload;
+        this.payloadType = ClassTypes.wrap(payload.getClass());
     }
 
     @Override
     public String toString() {
-        return "{name=" + name +  ", value=" + payload + "}";
+        return "{name=" + name +  ", value=" + payloadValue + "}";
     }
 
 }

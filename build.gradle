@@ -9,7 +9,7 @@ plugins {
 }
 
 ext{
-    publishVersion = '1.2.1'
+    publishVersion = '1.2.2'
 }
 
 group 'com.github.yoojia'
@@ -19,8 +19,8 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = JavaVersion.VERSION_1_7
+targetCompatibility = JavaVersion.VERSION_1_7
 
 repositories {
     jcenter()
@@ -75,7 +75,7 @@ bintray {
         userOrg = 'yoojia'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/yoojia/NextEvents.git'
-        labels = ['Java', 'Event bus']
+        labels = ['Java', 'Event Bus']
         publicDownloadNumbers = true
         version {
             name = publishVersion
