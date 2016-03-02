@@ -22,7 +22,7 @@ public class EventRunner implements Runnable{
             try{
                 mHandler.onErrors(errors);
             }catch (Throwable throwable) {
-                // Throws when handling errors, just log. Like Guava.EventBus
+                // 在处理错误时还抛出异常,那就只打印异常栈信息了
                 throwable.printStackTrace();
             }
         }
