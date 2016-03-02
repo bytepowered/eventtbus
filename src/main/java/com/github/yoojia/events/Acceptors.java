@@ -1,6 +1,6 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.core.Acceptor;
+import com.github.yoojia.events.internal.Acceptor;
 
 import java.util.ArrayList;
 import java.util.Collection;

@@ -1,4 +1,4 @@
-package com.github.yoojia.events.core;
+package com.github.yoojia.events.internal;
 
 import java.util.List;
 import java.util.Queue;

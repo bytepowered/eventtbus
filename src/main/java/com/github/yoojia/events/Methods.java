@@ -1,6 +1,6 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.core.EventFilter;
+import com.github.yoojia.events.internal.EventFilter;
 import com.github.yoojia.events.supports.AnnotatedMethod;
 import com.github.yoojia.events.supports.Filter;
 
@@ -40,7 +40,7 @@ class Methods {
                 filters.add(type.newInstance());
             }
         }catch (Exception err) {
-            throw new IllegalAccessError("Filters Type in @EventHandler must has a non-params constructor method!");
+            throw new IllegalAccessError("Filters Type in @Subscribe must has a non-params constructor method!");
         }
         final Object[] args = new Object[4];
         args[IDX_SCHEDULE_TYPE] = scheduleType;

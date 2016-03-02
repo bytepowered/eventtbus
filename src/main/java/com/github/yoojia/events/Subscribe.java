@@ -1,6 +1,6 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.core.EventFilter;
+import com.github.yoojia.events.internal.EventFilter;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

@@ -1,11 +1,8 @@
-package com.github.yoojia.events.core;
+package com.github.yoojia.events.internal;
 
 import com.github.yoojia.events.BaseTestCase;
 import com.github.yoojia.events.Payload;
-import com.github.yoojia.events.core.*;
 import org.junit.Test;
-
-import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;

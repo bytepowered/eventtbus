@@ -1,7 +1,7 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.core.Acceptor;
-import com.github.yoojia.events.core.EventFilter;
+import com.github.yoojia.events.internal.Acceptor;
+import com.github.yoojia.events.internal.EventFilter;
 import com.github.yoojia.events.supports.Filter;
 
 import java.lang.reflect.Method;
@@ -26,9 +26,9 @@ class Cached {
             return Acceptors.empty();
         }else{
             synchronized (mLock) {
-                final Acceptors cached = mAcceptorCache.get(object);
-                if (cached != null) {
-                    return cached;
+                final Acceptors present = mAcceptorCache.get(object);
+                if (present != null) {
+                    return present;
                 }else{
                     final int size = methods.size();
                     final Acceptors acceptors = new Acceptors(size);
@@ -58,7 +58,8 @@ class Cached {
         final String defineName = (String) args[Methods.IDX_EVENT_NAME];
         final Class<?> defineType = (Class<?>) args[Methods.IDX_EVENT_TYPE];
         final MethodEventHandler handler = new MethodEventHandler(scheduleType, object, method);
-        filters.add(new DefaultEventFilter(defineName, defineType));
+        // 将默认的EventFilter设置在Filters列表的首位
+        filters.add(0, new DefaultEventFilter(defineName, defineType));
         return new Acceptor(handler, filters);
     }
 
