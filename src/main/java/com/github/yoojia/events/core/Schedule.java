@@ -16,7 +16,9 @@ public class Schedule {
     public static final int ON_THREADS = 3000;
 
     private final Queue<Element> mLoopTasks = new ConcurrentLinkedQueue<>();
+
     private final ExecutorService mWorkerThreads;
+    private final ExecutorService mLoopThread;
 
     private final ScheduleLooper mLooper = new ScheduleLooper() {
         @Override
@@ -32,18 +34,20 @@ public class Schedule {
 
     public Schedule() {
         mWorkerThreads = null;
+        mLoopThread = null;
     }
 
     public Schedule(ExecutorService loopThread, ExecutorService workerThreads) {
         mWorkerThreads = workerThreads;
-        loopThread.submit(mLooper);
+        mLoopThread = loopThread;
+        mLoopThread.submit(mLooper);
     }
 
     public void submit(EventMessage event, List<EventHandler> handlers) {
+        // 如果是 CALLER 方式, 直接在此处执行.
+        // 其它方式在线程池处理再做处理
         for (EventHandler handler : handlers) {
-            // 根据调度类型执行最终运行方式
             final int type = handler.scheduleType();
-            // Caller方式,直接执行. 其它方式在线程池处理
             if (Schedule.ON_CALLER_THREAD == type) {
                 new EventRunner(event, handler).run();
             }else{
@@ -57,6 +61,10 @@ public class Schedule {
 
     public ExecutorService getWorkerThreads(){
         return mWorkerThreads;
+    }
+
+    public ExecutorService getLoopThread() {
+        return mLoopThread;
     }
 
     protected void invoke(int type, EventMessage event, EventHandler handler) {
