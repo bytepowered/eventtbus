@@ -19,7 +19,7 @@ class Methods {
     public static final int IDX_EVENT_NAME =    2;
     public static final int IDX_EVENT_TYPE =    3;
 
-    private static final Filter<Method> SIGNATURE_FILTER = new SignatureFilter();
+    private static final Filter<Method> SIGNATURE_FILTER = new MethodSignFilter();
 
     public static List<Method> getAnnotated(Class<?> clazz, Filter<Method> filter) {
         final AnnotatedMethod methods = new AnnotatedMethod(Subscribe.class);
@@ -50,10 +50,7 @@ class Methods {
         return args;
     }
 
-    /**
-     * 方法签名过滤器
-     */
-    private static class SignatureFilter implements Filter<Method> {
+    private static class MethodSignFilter implements Filter<Method> {
 
         @Override
         public boolean accept(Method method) {
