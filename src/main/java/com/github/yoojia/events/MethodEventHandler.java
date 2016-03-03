@@ -29,6 +29,7 @@ class MethodEventHandler implements EventHandler {
             throw new IllegalStateException("Host object is dead for method: " + mMethod);
         }
         final PayloadEvent payloadPayloadEvent = (PayloadEvent) internalEvent.getValue();
+        mMethod.setAccessible(true);
         mMethod.invoke(mObjectRef.get(), payloadPayloadEvent.payloadValue);
     }
 

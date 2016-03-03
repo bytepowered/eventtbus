@@ -56,9 +56,6 @@ class Methods {
 
         @Override
         public boolean accept(Method method) {
-            if(Modifier.isPrivate(method.getModifiers())) {
-                throw new IllegalArgumentException("Modifier of @Subscribe annotated methods must NOT be <PRIVATE>, method: " + method);
-            }
             if (! Void.TYPE.equals(method.getReturnType())) {
                 throw new IllegalArgumentException("Return type of @Subscribe annotated methods must be <VOID>, method: " + method);
             }
