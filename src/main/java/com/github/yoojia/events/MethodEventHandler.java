@@ -23,12 +23,13 @@ class MethodEventHandler implements EventHandler {
     }
 
     @Override
-    public void onEvent(InternalEvent event) throws Exception {
+    public void onEvent(InternalEvent internalEvent) throws Exception {
         final Object host = mObjectRef.get();
         if (host == null) {
             throw new IllegalStateException("Host object is dead for method: " + mMethod);
         }
-        mMethod.invoke(mObjectRef.get(), event.getValue());
+        final PayloadEvent payloadPayloadEvent = (PayloadEvent) internalEvent.getValue();
+        mMethod.invoke(mObjectRef.get(), payloadPayloadEvent.payloadValue);
     }
 
     @Override

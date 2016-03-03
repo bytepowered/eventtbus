@@ -18,13 +18,12 @@ class DefaultEventFilter implements EventFilter {
     }
 
     @Override
-    public boolean accept(InternalEvent event) {
-        return accept(mDefineType, mDefineName, event);
+    public boolean accept(InternalEvent internalEvent) {
+        return accept(mDefineType, mDefineName, internalEvent);
     }
 
     protected boolean accept(Class<?> defineType, String defineName, InternalEvent payload){
-        final Event event = (Event) payload.getValue();
-        return ! defineType.equals(event.payloadType)
-                && defineName.equals(event.name);
+        final PayloadEvent payloadEvent = (PayloadEvent) payload.getValue();
+        return defineType.equals(payloadEvent.payloadType) && defineName.equals(payloadEvent.name);
     }
 }

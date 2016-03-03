@@ -9,7 +9,7 @@ import static com.github.yoojia.events.supports.Preconditions.notNull;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
-public class Event {
+public class PayloadEvent {
 
     /**
      * Event name
@@ -26,7 +26,7 @@ public class Event {
      */
     public final Class<?> payloadType;
 
-    public Event(String name, Object payload) {
+    public PayloadEvent(String name, Object payload) {
         notEmpty(name, "name is empty");
         notNull(payload, "payload value is null");
         this.name = name;

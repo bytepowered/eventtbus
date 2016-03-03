@@ -27,12 +27,12 @@ public class BenchmarkTest extends BaseTestCase {
         }
 
         @Subscribe(on = "str", run = Runs.ON_THREADS)
-        void onEvents(Event evt){
+        void onEvents(String evt){
             hitEvt1();
         }
 
         @Subscribe(on = "long", run = Runs.ON_THREADS)
-        void onEvents1(Event evt){
+        void onEvents1(Long evt){
             hitEvt2();
         }
 
@@ -45,12 +45,12 @@ public class BenchmarkTest extends BaseTestCase {
         }
 
         @Subscribe(on = "str", run = Runs.ON_CALLER_THREAD)
-        protected void onEvents(Event evt){
+        protected void onEvents(String evt){
             hitEvt1();
         }
 
         @Subscribe(on = "long", run = Runs.ON_CALLER_THREAD)
-        protected void onEvents1(Event evt){
+        protected void onEvents1(Long evt){
             hitEvt2();
         }
 
@@ -63,13 +63,13 @@ public class BenchmarkTest extends BaseTestCase {
         }
 
         @Subscribe(on = "str", run = Runs.ON_THREADS)
-        public void onEvents(Event evt) throws InterruptedException {
+        public void onEvents(String evt) throws InterruptedException {
             Thread.sleep(1);
             hitEvt1();
         }
 
         @Subscribe(on = "long", run = Runs.ON_THREADS)
-        public void onEvents1(Event evt) throws InterruptedException {
+        public void onEvents1(Long evt) throws InterruptedException {
             Thread.sleep(1);
             hitEvt2();
         }
@@ -83,13 +83,13 @@ public class BenchmarkTest extends BaseTestCase {
         }
 
         @Subscribe(on = "str", run = Runs.ON_CALLER_THREAD)
-        public void onEvents(Event evt) throws InterruptedException {
+        public void onEvents(String evt) throws InterruptedException {
             Thread.sleep(1);
             hitEvt1();
         }
 
         @Subscribe(on = "long", run = Runs.ON_CALLER_THREAD)
-        public void onEvents1(Event evt) throws InterruptedException {
+        public void onEvents1(Long evt) throws InterruptedException {
             Thread.sleep(1);
             hitEvt2();
         }
@@ -185,10 +185,10 @@ public class BenchmarkTest extends BaseTestCase {
         for (int i = 0; i < payload.perEvtCount; i++) {
 
             final long longEvent = NOW();
-            events.emit(new Event("long", longEvent));
+            events.emit("long", longEvent);
 
             final String strEvent = String.valueOf(NOW());
-            events.emit(new Event("str", strEvent));
+            events.emit("str", strEvent);
         }
 
         final long timeAfterEmits = NOW();

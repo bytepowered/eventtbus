@@ -47,9 +47,13 @@ public class NextEvents {
         mCached.remove(object);
     }
 
-    public void emit(Event event) {
-        notNull(event, "event == null");
-        mDispatcher.emit(new InternalEvent(event));
+    public void emit(String name, Object payload) {
+        emit(new PayloadEvent(name, payload));
+    }
+
+    public void emit(PayloadEvent payloadEvent) {
+        notNull(payloadEvent, "event == null");
+        mDispatcher.emit(new InternalEvent(payloadEvent));
     }
 
     public void addHandler(EventHandler handler, EventFilter filter) {
