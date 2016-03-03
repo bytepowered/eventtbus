@@ -43,8 +43,13 @@ class Cached {
         }
     }
 
-    public Acceptors getPresent(Object object) {
-        return mAcceptorCache.getOrDefault(object, Acceptors.empty());
+    public Acceptors getSafety(Object object) {
+        final Acceptors present = mAcceptorCache.get(object);
+        if (present == null) {
+            return Acceptors.empty();
+        }else{
+            return present;
+        }
     }
 
     public void remove(Object object) {

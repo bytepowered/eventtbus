@@ -9,7 +9,7 @@ plugins {
 }
 
 ext{
-    publishVersion = '1.2.3'
+    publishVersion = '1.2.4'
 }
 
 group 'com.github.yoojia'

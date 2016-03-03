@@ -40,10 +40,11 @@ public class NextEvents {
 
     public void unregister(Object object) {
         notNull(object, "object == null");
-        final List<Acceptor> acceptors = mCached.getPresent(object);
+        final List<Acceptor> acceptors = mCached.getSafety(object);
         for (Acceptor acceptor : acceptors) {
             mDispatcher.removeHandler(acceptor.handler);
         }
+        mCached.remove(object);
     }
 
     public void emit(Event event) {
