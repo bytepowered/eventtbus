@@ -20,8 +20,8 @@ public class DispatcherTestCase {
 
         dispatcher.addHandler(new EventHandler() {
             @Override
-            public void onEvent(EventMessage event) throws Exception {
-                System.err.println("- " + event.getEvent() + "\t@Thread: " + Thread.currentThread().getId());
+            public void onEvent(InternalEvent event) throws Exception {
+                System.err.println("- " + event.getValue() + "\t@Thread: " + Thread.currentThread().getId());
             }
 
             @Override
@@ -36,13 +36,13 @@ public class DispatcherTestCase {
 
         }, new EventFilter() {
             @Override
-            public boolean accept(EventMessage event) {
+            public boolean accept(InternalEvent event) {
                 return true;
             }
         });
 
         for (int i = 0; i < 100; i++) {
-            dispatcher.emit(new EventMessage("msg-" + i));
+            dispatcher.emit(new InternalEvent("msg-" + i));
         }
 
         TimeUnit.SECONDS.sleep(1);

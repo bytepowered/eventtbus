@@ -1,7 +1,7 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.internal.EventFilter;
-import com.github.yoojia.events.internal.EventMessage;
+import com.github.yoojia.events.internal.InternalEvent;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
@@ -18,12 +18,12 @@ class DefaultEventFilter implements EventFilter {
     }
 
     @Override
-    public boolean accept(EventMessage event) {
+    public boolean accept(InternalEvent event) {
         return accept(mDefineType, mDefineName, event);
     }
 
-    protected boolean accept(Class<?> defineType, String defineName, EventMessage input){
-        final Event event = (Event) input.getEvent();
+    protected boolean accept(Class<?> defineType, String defineName, InternalEvent payload){
+        final Event event = (Event) payload.getValue();
         return ! defineType.equals(event.payloadType)
                 && defineName.equals(event.name);
     }

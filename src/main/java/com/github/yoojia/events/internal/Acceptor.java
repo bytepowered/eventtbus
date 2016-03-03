@@ -1,6 +1,7 @@
 package com.github.yoojia.events.internal;
 
 import com.github.yoojia.events.supports.Filter;
+import com.github.yoojia.events.supports.ImmutableList;
 
 import java.util.List;
 
@@ -8,22 +9,22 @@ import java.util.List;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
-public class Acceptor implements Filter<EventMessage>{
+public class Acceptor implements Filter<InternalEvent>{
 
     public final EventHandler handler;
-    public final List<EventFilter> filters;
+    public final ImmutableList<EventFilter> filters;
 
-    private final int mSize;
+    private final int mCount;
 
-    public Acceptor(EventHandler handler, List<EventFilter> filters) {
+    public Acceptor(EventHandler handler, List<EventFilter> source) {
         this.handler = handler;
-        this.filters = filters;
-        mSize = filters.size();
+        mCount = source.size();
+        this.filters = new ImmutableList<>(source.toArray(new EventFilter[mCount]));
     }
 
     @Override
-    public boolean accept(EventMessage event) {
-        for (int i = 0; i < mSize; i++) {
+    public boolean accept(InternalEvent event) {
+        for (int i = 0; i < mCount; i++) {
             final EventFilter f = filters.get(i);
             if (! f.accept(event)) return false;
         }

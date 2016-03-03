@@ -1,7 +1,6 @@
 package com.github.yoojia.events.internal;
 
 import com.github.yoojia.events.BaseTestCase;
-import com.github.yoojia.events.Payload;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -17,14 +16,14 @@ public class DispatcherQPSTest extends BaseTestCase {
     private final static int COUNT_PAYLOAD = 1000;
     private final static int COUNT_NOP = COUNT_PAYLOAD * 1000 * 5;
 
-    private static class TestEventHandler extends Payload implements EventHandler {
+    private static class TestEventHandler extends com.github.yoojia.events.Payload implements EventHandler {
 
         protected TestEventHandler(int count) {
             super(count);
         }
 
         @Override
-        public void onEvent(EventMessage event) throws Exception {
+        public void onEvent(InternalEvent event) throws Exception {
             hitEvt1();
             hitEvt2();
         }
@@ -49,7 +48,7 @@ public class DispatcherQPSTest extends BaseTestCase {
 
         dispatcher.addHandler(payload, new EventFilter() {
             @Override
-            public boolean accept(EventMessage event) {
+            public boolean accept(InternalEvent event) {
                 return true;
             }
         });
@@ -58,7 +57,7 @@ public class DispatcherQPSTest extends BaseTestCase {
 
         for (int i = 0; i < payload.perEvtCount; i++) {
             final String strEvent = String.valueOf(NOW());
-            dispatcher.emit(new EventMessage(strEvent));
+            dispatcher.emit(new InternalEvent(strEvent));
         }
 
         final long timeAfterEmits = NOW();

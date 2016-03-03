@@ -11,10 +11,10 @@ public interface EventHandler {
      * @param event Event message
      * @throws Exception Impl can throw exceptions
      */
-    void onEvent(EventMessage event) throws Exception;
+    void onEvent(InternalEvent event) throws Exception;
 
     /**
-     * try onEvent(EventMessage) exceptions
+     * try onEvent(InternalEvent) exceptions
      * @param errors Exception
      */
     void onErrors(Exception errors);

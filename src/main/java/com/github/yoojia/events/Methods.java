@@ -3,8 +3,10 @@ package com.github.yoojia.events;
 import com.github.yoojia.events.internal.EventFilter;
 import com.github.yoojia.events.supports.AnnotatedMethod;
 import com.github.yoojia.events.supports.Filter;
+import com.github.yoojia.events.supports.ImmutableList;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,17 +23,16 @@ class Methods {
 
     private static final Filter<Method> SIGNATURE_FILTER = new MethodSignFilter();
 
-    public static List<Method> getAnnotated(Class<?> clazz, Filter<Method> filter) {
+    public static List<Method> getAnnotated(Class<?> clazz, Filter<Method> customMethodFilter) {
         final AnnotatedMethod methods = new AnnotatedMethod(Subscribe.class);
         methods.addResourceFilter(Methods.SIGNATURE_FILTER);
-        if (filter != null) {
-            methods.addResourceFilter(filter);
+        if (customMethodFilter != null) {
+            methods.addResourceFilter(customMethodFilter);
         }
         return methods.find(clazz);
     }
 
     public static Object[] parse(Method method) {
-        // Method.getDeclaredAnnotation , since: Java_1_8
         final Subscribe annotation = method.getAnnotation(Subscribe.class);
         final int scheduleType = annotation.run().scheduleFlag;
         final Class<? extends EventFilter>[] types = annotation.filters();
@@ -55,12 +56,15 @@ class Methods {
 
         @Override
         public boolean accept(Method method) {
+            if(Modifier.isPrivate(method.getModifiers())) {
+                throw new IllegalArgumentException("Modifier of @Subscribe annotated methods must NOT be <PRIVATE>, method: " + method);
+            }
             if (! Void.TYPE.equals(method.getReturnType())) {
-                throw new IllegalArgumentException("Return type of @Subscribe annotated methods must be <VOID> , method: " + method);
+                throw new IllegalArgumentException("Return type of @Subscribe annotated methods must be <VOID>, method: " + method);
             }
             final Class<?>[] params = method.getParameterTypes();
             if (params.length != 1) {
-                throw new IllegalArgumentException("@Subscribe annotated methods must has a single param , method: " + method);
+                throw new IllegalArgumentException("@Subscribe annotated methods must has a single param, method: " + method);
             }
             return false;
         }

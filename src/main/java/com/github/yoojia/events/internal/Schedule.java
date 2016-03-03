@@ -43,7 +43,7 @@ public class Schedule {
         mLoopThread.submit(mLooper);
     }
 
-    public void submit(EventMessage event, List<EventHandler> handlers) {
+    public void submit(InternalEvent event, List<EventHandler> handlers) {
         // 如果是 CALLER 方式, 直接在此处执行.
         // 其它方式在线程池处理再做处理
         for (EventHandler handler : handlers) {
@@ -59,15 +59,15 @@ public class Schedule {
         }
     }
 
-    public ExecutorService getWorkerThreads(){
+    public final ExecutorService getWorkerThreads(){
         return mWorkerThreads;
     }
 
-    public ExecutorService getLoopThread() {
+    public final ExecutorService getLoopThread() {
         return mLoopThread;
     }
 
-    protected void invoke(int type, EventMessage event, EventHandler handler) {
+    protected void invoke(int type, InternalEvent event, EventHandler handler) {
         switch (type) {
             case Schedule.ON_THREADS:
                 mWorkerThreads.submit(new EventRunner(event, handler));
@@ -81,12 +81,12 @@ public class Schedule {
         }
     }
 
-    private static class Element {
+    private final static class Element {
 
-        public final EventMessage event;
+        public final InternalEvent event;
         public final EventHandler handler;
 
-        private Element(EventMessage event, EventHandler handler) {
+        private Element(InternalEvent event, EventHandler handler) {
             this.event = event;
             this.handler = handler;
         }

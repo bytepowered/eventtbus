@@ -27,12 +27,12 @@ public class BenchmarkTest extends BaseTestCase {
         }
 
         @Subscribe(on = "str", run = Runs.ON_THREADS)
-        public void onEvents(Event evt){
+        void onEvents(Event evt){
             hitEvt1();
         }
 
         @Subscribe(on = "long", run = Runs.ON_THREADS)
-        public void onEvents1(Event evt){
+        void onEvents1(Event evt){
             hitEvt2();
         }
 
@@ -45,12 +45,12 @@ public class BenchmarkTest extends BaseTestCase {
         }
 
         @Subscribe(on = "str", run = Runs.ON_CALLER_THREAD)
-        public void onEvents(Event evt){
+        protected void onEvents(Event evt){
             hitEvt1();
         }
 
         @Subscribe(on = "long", run = Runs.ON_CALLER_THREAD)
-        public void onEvents1(Event evt){
+        protected void onEvents1(Event evt){
             hitEvt2();
         }
 

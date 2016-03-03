@@ -41,12 +41,12 @@ public class Dispatcher {
         }));
     }
 
-    public void emit(EventMessage event) {
+    public void emit(InternalEvent event) {
         // 快速匹配触发事件的EventHandler, 然后由调度器来处理
         mSchedule.submit(event, matchedHandlers(event));
     }
 
-    private List<EventHandler> matchedHandlers(EventMessage event) {
+    private List<EventHandler> matchedHandlers(InternalEvent event) {
         final ArrayList<EventHandler> handlers = new ArrayList<>(GUESS);
         final int size = mAcceptors.size();
         for (int i = 0; i < size; i++) {

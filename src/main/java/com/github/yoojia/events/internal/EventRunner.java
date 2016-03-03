@@ -4,12 +4,12 @@ package com.github.yoojia.events.internal;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
-public class EventRunner implements Runnable{
+public final class EventRunner implements Runnable{
 
-    private final EventMessage mEvent;
+    private final InternalEvent mEvent;
     private final EventHandler mHandler;
 
-    public EventRunner(EventMessage event, EventHandler handler) {
+    public EventRunner(InternalEvent event, EventHandler handler) {
         this.mEvent = event;
         this.mHandler = handler;
     }

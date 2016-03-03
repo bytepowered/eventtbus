@@ -19,7 +19,7 @@
 
 在 `MacBook Pro 13' / 2.6 GHz Intel Core i5 / 8 GB 1600 MHz DDR3 / Java(TM) SE Runtime Environment (build 1.8.0_60-b27)`环境下的性能对比情况如下表：
 
-测试类型/负载方式| QPS | 总投递时间 | 总运行时间 | 投递事件量
+测试类型/负载方式| TPS/QPS | 总投递时间 | 总运行时间 | 投递事件量
 ----|----|----|----|----
 MultiThreads(1ms Payload)     | 3008/s           | 38ms              | 664ms        | 2000
 SharedThreads(1ms Payload)    | 3034/s           | 3ms               | 659ms        | 2000
@@ -29,6 +29,19 @@ MultiThreads(Nop Payload)     | 1396836/s           | 1431ms           | 1431ms 
 SharedThreads(Nop Payload)    | 1360313/s           | 1466ms           | 1470ms           | 2000000
 CallerThread(Nop Payload)     | 4635219/s           | 431ms            | 431ms            | 2000000
 GuavaEvents(Nop Payload)      | 2018744/s           | 990ms            | 990ms            | 2000000
+
+`v1.3` 在 `Ubuntu 14.04 LTS / 3.6 GHz AMD A8-5600K / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_65-b17) ` 环境下的性能对比情况如下：
+
+测试类型/负载方式| TPS/QPS | 总投递时间 | 总运行时间 | 投递事件量
+----|----|----|----|----
+MultiThreads(1ms Payload)	 | 3170		| 53ms		| 630ms		| 2000
+SharedThreads(1ms Payload)	 | 3334		| 25ms		| 599ms		| 2000
+CallerThread(1ms Payload)	 | 914		| 2187ms	| 2187ms	| 2000
+GuavaEvents(1ms Payload)	 | 884		| 2260ms	| 2261ms	| 2000
+MultiThreads(Nop Payload)	 | 1160939		| 1629ms		| 1722ms		| 2000000
+SharedThreads(Nop Payload)	 | 1337668		| 1410ms		| 1495ms		| 2000000
+CallerThread(Nop Payload)	 | 5011338		| 398ms		    | 399ms		    | 2000000
+GuavaEvents(Nop Payload)	 | 1714623		| 1166ms		| 1166ms		| 2000000
 
 # License
 

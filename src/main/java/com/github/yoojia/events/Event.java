@@ -28,7 +28,7 @@ public class Event {
 
     public Event(String name, Object payload) {
         notEmpty(name, "name is empty");
-        notNull(payload, "payloadValue is null");
+        notNull(payload, "payload value is null");
         this.name = name;
         this.payloadValue = payload;
         this.payloadType = ClassTypes.wrap(payload.getClass());

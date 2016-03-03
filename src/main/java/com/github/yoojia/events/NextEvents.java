@@ -30,9 +30,9 @@ public class NextEvents {
         register(object, null);
     }
 
-    public void register(Object object, Filter<Method> filter) {
+    public void register(Object object, Filter<Method> customMethodFilter) {
         notNull(object, "object == null");
-        final List<Acceptor> acceptors = mCached.find(object, filter);
+        final List<Acceptor> acceptors = mCached.find(object, customMethodFilter);
         for (Acceptor acceptor : acceptors) {
             mDispatcher.addHandler(acceptor.handler, acceptor.filters);
         }
@@ -49,7 +49,7 @@ public class NextEvents {
 
     public void emit(Event event) {
         notNull(event, "event == null");
-        mDispatcher.emit(new EventMessage(event));
+        mDispatcher.emit(new InternalEvent(event));
     }
 
     public void addHandler(EventHandler handler, EventFilter filter) {

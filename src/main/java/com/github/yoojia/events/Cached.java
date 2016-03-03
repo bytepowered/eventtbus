@@ -20,8 +20,8 @@ class Cached {
     private final Object mLock = new Object();
 
     @SuppressWarnings("unchecked")
-    public Acceptors find(Object object, Filter<Method> filter) {
-        final List<Method> methods = Methods.getAnnotated(object.getClass(), filter);
+    public Acceptors find(Object object, Filter<Method> methodFilter) {
+        final List<Method> methods = Methods.getAnnotated(object.getClass(), methodFilter);
         if (methods.isEmpty()) {
             return Acceptors.empty();
         }else{
@@ -31,11 +31,12 @@ class Cached {
                     return present;
                 }else{
                     final int size = methods.size();
-                    final Acceptors acceptors = new Acceptors(size);
+                    final ArrayList<Acceptor> array = new ArrayList<>(size);
                     for (int i = 0; i < size; i++) {
                         final Method method = methods.get(i);
-                        acceptors.add(create(object, method, Methods.parse(method)));
+                        array.add(create(object, method, Methods.parse(method)));
                     }
+                    final Acceptors acceptors = new Acceptors(array);
                     mAcceptorCache.put(object, acceptors);
                     return acceptors;
                 }
