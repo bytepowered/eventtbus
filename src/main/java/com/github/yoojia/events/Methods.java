@@ -31,7 +31,8 @@ class Methods {
     }
 
     public static Object[] parse(Method method) {
-        final Subscribe annotation = method.getDeclaredAnnotation(Subscribe.class);
+        // Method.getDeclaredAnnotation , since: Java_1_8
+        final Subscribe annotation = method.getAnnotation(Subscribe.class);
         final int scheduleType = annotation.run().scheduleFlag;
         final Class<? extends EventFilter>[] types = annotation.filters();
         final ArrayList<EventFilter> filters = new ArrayList<>(types.length);
