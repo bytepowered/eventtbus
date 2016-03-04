@@ -36,10 +36,14 @@ class InternalEventFilter implements EventFilter {
             return false;
         }else{
             // 判断方法参数类型与负载参数类型是否相同
+            // FIXME 算法错误
             int flags = 0;
             for (Class<?> define : mArgs.defineTypes) {
                 for (Class<?> event : eventTypes) {
-                    if (define.equals(event)) flags += 1;
+                    if (define.equals(event)) {
+                        flags += 1;
+                        break;
+                    }
                 }
             }
             return flags == mArgs.defineTypes.length;

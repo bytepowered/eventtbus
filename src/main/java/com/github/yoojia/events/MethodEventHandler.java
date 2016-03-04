@@ -49,6 +49,7 @@ class MethodEventHandler implements EventHandler {
     }
 
     private static Object[] reorder(Class<?>[] defineTypes, PayloadEvent payload) {
+        // FIXME 算法错误
         final Object[] output = new Object[defineTypes.length];
         for (int i = 0; i < defineTypes.length; i++) {
             for (int j = 0; j < payload.eventTypes.length; j++) {

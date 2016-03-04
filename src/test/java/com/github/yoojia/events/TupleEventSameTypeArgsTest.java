@@ -1,6 +1,5 @@
 package com.github.yoojia.events;
 
-import org.junit.Assert;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -10,7 +9,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author 陈小锅 (yoojia.chen@gmail.com)
  * @since 2.0
  */
-public class TupleEventDiffTypeArgsTest {
+public class TupleEventSameTypeArgsTest {
 
     public static final int COUNT = 10;
 
@@ -21,7 +20,7 @@ public class TupleEventDiffTypeArgsTest {
 
         nextEvents.register(payload);
         for (int i = 0; i < payload.perEvtCount; i++) {
-            nextEvents.emit("users", "yoojia", 18, 1024.0f);
+            nextEvents.emit("users", "yoojia", 18, 1024);
         }
 
         payload.await();
@@ -39,13 +38,13 @@ public class TupleEventDiffTypeArgsTest {
         }
 
         @Subscribe(on = "users")
-        public void onTupleEvent(String name, Integer age, Float weight) {
+        public void onTupleEvent(String name, Integer age, Integer weight) {
             System.err.println("name=" + name + ", age=" + age + ", weight=" + weight);
-            assertThat(name, equalTo("yoojia"));
-            assertThat(age, equalTo(18));
-            assertThat(weight, equalTo(1024.0f));
             hitEvt1();
             hitEvt2();
+            assertThat(name, equalTo("yoojia"));
+            assertThat(age, equalTo(18));
+            assertThat(weight, equalTo(1024));
         }
 
     }
