@@ -53,7 +53,7 @@ public class NextEvents {
 
     public void emit(PayloadEvent payloadEvent) {
         notNull(payloadEvent, "event == null");
-        mDispatcher.emit(new InternalEvent(payloadEvent));
+        mDispatcher.emit(payloadEvent);
     }
 
     public void addHandler(EventHandler handler, EventFilter filter) {

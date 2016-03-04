@@ -1,7 +1,6 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.internal.EventHandler;
-import com.github.yoojia.events.internal.InternalEvent;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
@@ -23,12 +22,12 @@ class MethodEventHandler implements EventHandler {
     }
 
     @Override
-    public void onEvent(InternalEvent internalEvent) throws Exception {
+    public void onEvent(Object internalEvent) throws Exception {
         final Object host = mObjectRef.get();
         if (host == null) {
             throw new IllegalStateException("Host object is dead for method: " + mMethod);
         }
-        final PayloadEvent payloadPayloadEvent = (PayloadEvent) internalEvent.getValue();
+        final PayloadEvent payloadPayloadEvent = (PayloadEvent) internalEvent;
         mMethod.setAccessible(true);
         mMethod.invoke(mObjectRef.get(), payloadPayloadEvent.payloadValue);
     }

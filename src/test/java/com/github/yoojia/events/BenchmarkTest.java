@@ -20,7 +20,7 @@ public class BenchmarkTest extends BaseTestCase {
     private final static int COUNT_NOP = 10000 * 100;
     private final static int COUNT_PAYLOAD = 1000;
 
-    private static class ThreadsNopPayload extends Payload{
+    private static class ThreadsNopPayload extends TestPayload {
 
         protected ThreadsNopPayload(int count) {
             super(count);
@@ -38,7 +38,7 @@ public class BenchmarkTest extends BaseTestCase {
 
     }
 
-    private static class CallerNopPayload extends Payload{
+    private static class CallerNopPayload extends TestPayload {
 
         protected CallerNopPayload(int count) {
             super(count);
@@ -56,7 +56,7 @@ public class BenchmarkTest extends BaseTestCase {
 
     }
 
-    private static class Threads1msPayload extends Payload{
+    private static class Threads1msPayload extends TestPayload {
 
         protected Threads1msPayload(int count) {
             super(count);
@@ -76,7 +76,7 @@ public class BenchmarkTest extends BaseTestCase {
 
     }
 
-    private static class Caller1msPayload extends Payload{
+    private static class Caller1msPayload extends TestPayload {
 
         protected Caller1msPayload(int count) {
             super(count);
@@ -96,7 +96,7 @@ public class BenchmarkTest extends BaseTestCase {
 
     }
 
-    private static class GuavaCallerNopPayload extends Payload{
+    private static class GuavaCallerNopPayload extends TestPayload {
 
         protected GuavaCallerNopPayload(int count) {
             super(count);
@@ -114,7 +114,7 @@ public class BenchmarkTest extends BaseTestCase {
 
     }
 
-    private static class GuavaCaller1msPayload extends Payload{
+    private static class GuavaCaller1msPayload extends TestPayload {
 
         protected GuavaCaller1msPayload(int count) {
             super(count);
@@ -176,7 +176,7 @@ public class BenchmarkTest extends BaseTestCase {
         testGuava(new GuavaCaller1msPayload(COUNT_PAYLOAD), "GuavaEvents(1ms Payload)");
     }
 
-    private void testNextEvent(Payload payload, Schedule schedule, String tag){
+    private void testNextEvent(TestPayload payload, Schedule schedule, String tag){
         final NextEvents events = new NextEvents(schedule);
 
         events.register(payload);
@@ -207,7 +207,7 @@ public class BenchmarkTest extends BaseTestCase {
         printStatistics(tag, timeBeforeEmits, timeAfterEmits, payload.totalCalls);
     }
 
-    private void testGuava(Payload payload, String tag){
+    private void testGuava(TestPayload payload, String tag){
         EventBus events = new EventBus("guava");
 
         events.register(payload);

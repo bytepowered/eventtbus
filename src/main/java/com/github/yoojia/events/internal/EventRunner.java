@@ -6,10 +6,10 @@ package com.github.yoojia.events.internal;
  */
 public final class EventRunner implements Runnable{
 
-    private final InternalEvent mEvent;
+    private final Object mEvent;
     private final EventHandler mHandler;
 
-    public EventRunner(InternalEvent event, EventHandler handler) {
+    public EventRunner(Object event, EventHandler handler) {
         this.mEvent = event;
         this.mHandler = handler;
     }
