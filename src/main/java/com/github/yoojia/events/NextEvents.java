@@ -51,9 +51,9 @@ public class NextEvents {
         emit(new PayloadEvent(name, payload));
     }
 
-    public void emit(PayloadEvent payloadEvent) {
-        notNull(payloadEvent, "event == null");
-        mDispatcher.emit(payloadEvent);
+    public void emit(PayloadEvent event) {
+        notNull(event, "event == null");
+        mDispatcher.emit(event);
     }
 
     public void addHandler(EventHandler handler, EventFilter filter) {

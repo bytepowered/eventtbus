@@ -8,21 +8,25 @@ import com.github.yoojia.events.internal.EventFilter;
  */
 class DefaultEventFilter implements EventFilter {
 
-    private final String mDefineName;
-    private final Class<?> mDefineType;
+    private final MethodArgs mArgs;
 
-    public DefaultEventFilter(String defineName, Class<?> defineType) {
-        mDefineName = defineName;
-        mDefineType = defineType;
+    public DefaultEventFilter(MethodArgs args) {
+        mArgs = args;
     }
 
     @Override
     public boolean accept(Object internalEvent) {
-        return accept(mDefineType, mDefineName, internalEvent);
+        return accept(mArgs.defineTypes, mArgs.defineNames, internalEvent);
     }
 
-    protected boolean accept(Class<?> defineType, String defineName, Object payload){
+    protected boolean accept(Class<?>[] defineTypes, String defineName, Object payload){
         final PayloadEvent payloadEvent = (PayloadEvent) payload;
-        return defineType.equals(payloadEvent.payloadType) && defineName.equals(payloadEvent.name);
+        if (defineTypes.length == 0) {
+            return defineName.equals(payloadEvent.name);
+        }else{
+            return defineName.equals(payloadEvent.name)
+                    && defineTypes[0].equals(payloadEvent.payloadType);
+        }
     }
+
 }

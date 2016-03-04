@@ -2,6 +2,7 @@ package com.github.yoojia.events.internal;
 
 import org.junit.Test;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -12,15 +13,18 @@ import java.util.concurrent.TimeUnit;
  */
 public class DispatcherTestCase {
 
+    public static final int COUNT = 100;
+
     @Test
     public void test() throws InterruptedException {
         ExecutorService loop = Executors.newSingleThreadExecutor();
         ExecutorService worker = Executors.newCachedThreadPool();
         Dispatcher dispatcher = new Dispatcher(new Schedule(loop, worker));
-
+        final CountDownLatch countDownLatch = new CountDownLatch(COUNT);
         dispatcher.addHandler(new EventHandler() {
             @Override
             public void onEvent(Object event) throws Exception {
+                countDownLatch.countDown();
                 System.err.println("- " + event + "\t@Thread: " + Thread.currentThread().getId());
             }
 
@@ -41,10 +45,10 @@ public class DispatcherTestCase {
             }
         });
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < COUNT; i++) {
             dispatcher.emit("msg-" + i);
         }
 
-        TimeUnit.SECONDS.sleep(1);
+        countDownLatch.await();
     }
 }

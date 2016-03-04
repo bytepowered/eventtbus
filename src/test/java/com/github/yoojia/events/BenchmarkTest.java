@@ -32,7 +32,7 @@ public class BenchmarkTest extends BaseTestCase {
         }
 
         @Subscribe(on = "long", run = Runs.ON_THREADS)
-        void onEvents1(Long evt){
+        void onEvents1(){
             hitEvt2();
         }
 
@@ -45,7 +45,7 @@ public class BenchmarkTest extends BaseTestCase {
         }
 
         @Subscribe(on = "str", run = Runs.ON_CALLER_THREAD)
-        protected void onEvents(String evt){
+        protected void onEvents(){
             hitEvt1();
         }
 
@@ -69,7 +69,7 @@ public class BenchmarkTest extends BaseTestCase {
         }
 
         @Subscribe(on = "long", run = Runs.ON_THREADS)
-        public void onEvents1(Long evt) throws InterruptedException {
+        public void onEvents1() throws InterruptedException {
             Thread.sleep(1);
             hitEvt2();
         }
@@ -83,7 +83,7 @@ public class BenchmarkTest extends BaseTestCase {
         }
 
         @Subscribe(on = "str", run = Runs.ON_CALLER_THREAD)
-        public void onEvents(String evt) throws InterruptedException {
+        public void onEvents() throws InterruptedException {
             Thread.sleep(1);
             hitEvt1();
         }

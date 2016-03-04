@@ -58,15 +58,11 @@ class Cached {
     }
 
     @SuppressWarnings("unchecked")
-    private static Acceptor create(Object object, Method method, Object[] args) {
-        final int scheduleType = (int) args[Methods.IDX_SCHEDULE_TYPE];
-        final ArrayList<EventFilter> filters = (ArrayList<EventFilter>) args[Methods.IDX_FILTERS];
-        final String defineName = (String) args[Methods.IDX_EVENT_NAME];
-        final Class<?> defineType = (Class<?>) args[Methods.IDX_EVENT_TYPE];
-        final MethodEventHandler handler = new MethodEventHandler(scheduleType, object, method);
-        // 将默认的EventFilter设置在Filters列表的首位
-        filters.add(0, new DefaultEventFilter(defineName, defineType));
-        return new Acceptor(handler, filters);
+    private static Acceptor create(Object object, Method method, MethodArgs args) {
+        final ArrayList<EventFilter> filters = new ArrayList<>(1);
+        filters.add(new DefaultEventFilter(args));
+        return new Acceptor(MethodEventHandler.create(args.scheduleType, object, method, args),
+                filters);
     }
 
 }

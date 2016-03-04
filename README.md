@@ -43,6 +43,31 @@ SharedThreads(Nop Payload)	 | 1337668		| 1410ms		| 1495ms		| 2000000
 CallerThread(Nop Payload)	 | 5011338		| 398ms		    | 399ms		    | 2000000
 GuavaEvents(Nop Payload)	 | 1714623		| 1166ms		| 1166ms		| 2000000
 
+## 事件处理目标触发条件
+
+在注解模式下，即@Subscribe注解的方法中，如：
+
+1. `事件名相同，参数类型相同`，即事件处理方法关注事件的具体；
+1. `事件名相同，无参数`，即事件处理方法只关注事件是否发生，不关注事件内容；
+
+```java
+// 回调方法带参数
+@Subscribe(on="test-event")
+void handleWithArgEvents(String evt) {
+    ...
+}
+
+// 回调方法不带参数
+@Subscribe(on="text-event")
+void handleNoArgEvent( ) {
+    ...
+}
+
+// 发送事件，以上两个方法都被回调
+nextEvents.emit("test-event", new String("this is an event payload"))
+
+```
+
 # License
 
     Copyright 2015 Yoojia Chen

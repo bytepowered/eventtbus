@@ -14,11 +14,13 @@ class MethodEventHandler implements EventHandler {
     private final int mScheduleType;
     private final Method mMethod;
     private final WeakReference<Object> mObjectRef;
+    private final MethodArgs mArgs;
 
-    public MethodEventHandler(int scheduleType, Object object, Method method) {
+    private MethodEventHandler(int scheduleType, Object object, Method method, MethodArgs args) {
         mScheduleType = scheduleType;
-        mObjectRef = new WeakReference<>(object);
         mMethod = method;
+        mObjectRef = new WeakReference<>(object);
+        mArgs = args;
     }
 
     @Override
@@ -27,9 +29,13 @@ class MethodEventHandler implements EventHandler {
         if (host == null) {
             throw new IllegalStateException("Host object is dead for method: " + mMethod);
         }
-        final PayloadEvent payloadPayloadEvent = (PayloadEvent) internalEvent;
+        final PayloadEvent payloadEvent = (PayloadEvent) internalEvent;
         mMethod.setAccessible(true);
-        mMethod.invoke(mObjectRef.get(), payloadPayloadEvent.payloadValue);
+        if (mArgs.defineTypes.length == 0) {
+            mMethod.invoke(mObjectRef.get());
+        }else{
+            mMethod.invoke(mObjectRef.get(), payloadEvent.payloadValue);
+        }
     }
 
     @Override
@@ -41,4 +47,9 @@ class MethodEventHandler implements EventHandler {
     public int scheduleType() {
         return mScheduleType;
     }
+
+    public static MethodEventHandler create(int scheduleType, Object object, Method method, MethodArgs args) {
+        return new MethodEventHandler(scheduleType, object, method, args);
+    }
+
 }
