@@ -8,11 +8,11 @@ final class MethodArgs {
 
     public final int scheduleType;
     public final Class<?>[] defineTypes;
-    public final String defineNames;
+    public final String defineName;
 
-    MethodArgs(int scheduleType, Class<?>[] defineTypes, String defineNames) {
+    MethodArgs(int scheduleType, Class<?>[] defineTypes, String defineName) {
         this.scheduleType = scheduleType;
         this.defineTypes = defineTypes;
-        this.defineNames = defineNames;
+        this.defineName = defineName;
     }
 }

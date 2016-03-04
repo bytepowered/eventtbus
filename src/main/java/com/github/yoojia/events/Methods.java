@@ -1,6 +1,7 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.supports.AnnotatedMethod;
+import com.github.yoojia.events.supports.ClassTypes;
 import com.github.yoojia.events.supports.Filter;
 
 import java.lang.reflect.Method;
@@ -27,8 +28,12 @@ class Methods {
         final Subscribe annotation = method.getAnnotation(Subscribe.class);
         final int scheduleType = annotation.run().scheduleFlag;
         final String defineNames = annotation.on();
-        final Class<?>[] defineTypes = method.getParameterTypes();
-        return new MethodArgs(scheduleType, defineTypes, defineNames);
+        final Class<?>[] rawTypes = method.getParameterTypes();
+        final Class<?>[] wrapTypes = new Class[rawTypes.length];
+        for (int i = 0; i < rawTypes.length; i++) {
+            wrapTypes[i] = ClassTypes.wrap(rawTypes[i]);
+        }
+        return new MethodArgs(scheduleType, wrapTypes, defineNames);
     }
 
     private static class MethodSignFilter implements Filter<Method> {

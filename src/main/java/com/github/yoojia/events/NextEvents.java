@@ -47,8 +47,11 @@ public class NextEvents {
         mCached.remove(object);
     }
 
-    public void emit(String name, Object payload) {
-        emit(new PayloadEvent(name, payload));
+    public void emit(String name, Object...payloads) {
+        if (payloads == null || payloads.length == 0){
+            throw new IllegalArgumentException("payloads is empty");
+        }
+        emit(new PayloadEvent(name, payloads));
     }
 
     public void emit(PayloadEvent event) {

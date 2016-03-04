@@ -4,9 +4,9 @@
 
 - 支持使用EventHandler接口回调；
 - 支持使用@Subscribe注解方法回调；
-- @ Subscribe注解支持添加自定义事件过滤过滤器；
 - 支持多种回调方式: CallerThread / Threads / MainThread(Not impl yet)
 - 支持自定义回调目标的调度处理 Schedule
+- 支持提交事件元组
 
 ## 未来支持特性
 
@@ -63,8 +63,26 @@ void handleNoArgEvent( ) {
     ...
 }
 
-// 发送事件，以上两个方法都被回调
+// 提交事件，以上两个方法都被回调
 nextEvents.emit("test-event", new String("this is an event payload"))
+
+```
+
+## 事件元组
+
+**注意：使用事件元组的回调方法的参数列表，它们的类型必须各不相同！相同类型的参数将按发送顺序填充！**
+
+在提交事件时，将多个事件对象以元组（Object[]实现）的方式提交，回调方法中定义对应类型的参数即可。参数顺序可以随意，但类型必须各不相同。
+如果相同类型的参数，回调方法中数值填充的顺序将与emit(...)的参数顺序相同。
+
+
+```java
+@Subscribe(on="users")
+void handleEvent(String name, int age, float weight) {
+    ...
+}
+
+nextEvents.emit("users", "yoojia", 18, 1024.0f)
 
 ```
 
