@@ -28,12 +28,8 @@ class Methods {
         final Subscribe annotation = method.getAnnotation(Subscribe.class);
         final int scheduleType = annotation.run().scheduleFlag;
         final String defineNames = annotation.on();
-        final Class<?>[] rawTypes = method.getParameterTypes();
-        final Class<?>[] wrapTypes = new Class[rawTypes.length];
-        for (int i = 0; i < rawTypes.length; i++) {
-            wrapTypes[i] = ClassTypes.wrap(rawTypes[i]);
-        }
-        return new MethodDefine(scheduleType, wrapTypes, defineNames);
+        final Class<?>[] defineTypes = method.getParameterTypes();
+        return new MethodDefine(scheduleType, defineTypes, defineNames);
     }
 
     private static class MethodSignFilter implements Filter<Method> {

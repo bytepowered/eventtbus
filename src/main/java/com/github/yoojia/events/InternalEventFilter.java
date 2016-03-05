@@ -1,6 +1,7 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.internal.EventFilter;
+import com.github.yoojia.events.supports.ClassTypes;
 
 import java.util.BitSet;
 
@@ -31,26 +32,25 @@ class InternalEventFilter implements EventFilter {
         return mDefine.name.equals(eventName);
     }
 
-    static boolean isTypesMatched(Class<?>[] define, Class<?>[] source) {
+    static boolean isTypesMatched(Class<?>[] defines, Class<?>[] sources) {
         // 在@Subscriber定义了参数的情况下：
         // 如果Method中，参数数量与发送的事件负载数量不一致，则不匹配。
-        if (define.length != source.length) {
+        if (defines.length != sources.length) {
             return false;
         }else{
-            // 判断方法参数类型与负载参数类型是否相同
+            // 判断方法参数类型数组与负载参数类型数组是否相同，顺序可以不一致。
             int hits = 0;
-            final BitSet flags = new BitSet(source.length);
-            // flags.default : false
-            for (Class<?> def : define) {
-                for (int i = 0; i < source.length; i++) {
-                    if ( ! flags.get(i) && def.equals(source[i])) {
+            final boolean[] used = new boolean[sources.length];
+            for (Class<?> def : defines) {
+                for (int i = 0; i < sources.length; i++) {
+                    if ( !used[i] && ClassTypes.equalsIgnoreWrapType(def, sources[i])) {
                         hits += 1;
-                        flags.set(i, true);
+                        used[i] = true;
                         break;
                     }
                 }
             }
-            return hits == define.length;
+            return hits == defines.length;
         }
     }
 

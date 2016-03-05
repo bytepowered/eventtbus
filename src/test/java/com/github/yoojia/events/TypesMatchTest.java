@@ -2,6 +2,12 @@ package com.github.yoojia.events;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.omg.CORBA.Object;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
 
 import static com.github.yoojia.events.InternalEventFilter.isTypesMatched;
 
@@ -11,27 +17,63 @@ import static com.github.yoojia.events.InternalEventFilter.isTypesMatched;
  */
 public class TypesMatchTest {
 
+    static final Class<?>[] DEFINE = new Class<?>[]{String.class, Integer.class, Integer.class, Double.class, Double.class};
+
     @Test
-    public void test(){
-
-        Class<?>[] define = new Class<?>[]{String.class, Integer.class, Integer.class, Double.class, Double.class};
-        Class<?>[] pass1 = new Class<?>[]{Integer.class, Integer.class, Double.class, String.class, Double.class};
-        Class<?>[] pass2 = new Class<?>[]{Integer.class, Double.class, String.class, Integer.class, Double.class};
-
-        Class<?>[] fail0 = new Class<?>[]{String.class, Integer.class, Integer.class, Integer.class, Double.class};
-        Class<?>[] fail1 = new Class<?>[]{Integer.class, Integer.class, Float.class, String.class, Double.class};
-        Class<?>[] fail2 = new Class<?>[]{Integer.class, Integer.class};
-        Class<?>[] fail3 = new Class<?>[]{Integer.class, Integer.class, Integer.class, Integer.class, Integer.class};
-        Class<?>[] fail4 = new Class<?>[]{String.class, String.class, String.class, String.class, String.class};
-
-        Assert.assertTrue("Should be TRUE", isTypesMatched(define, pass1));
-        Assert.assertTrue("Should be TRUE", isTypesMatched(define, pass2));
-
-        Assert.assertFalse("Should be FALSE", isTypesMatched(define, fail0));
-        Assert.assertFalse("Should be FALSE", isTypesMatched(define, fail1));
-        Assert.assertFalse("Should be FALSE", isTypesMatched(define, fail2));
-        Assert.assertFalse("Should be FALSE", isTypesMatched(define, fail3));
-        Assert.assertFalse("Should be FALSE", isTypesMatched(define, fail4));
-
+    public void testPass1(){
+        Class<?>[] pass = new Class<?>[]{Integer.class, Integer.class, Double.class, String.class, Double.class};
+        Assert.assertTrue("Should be TRUE", isTypesMatched(DEFINE, pass));
     }
+
+    @Test
+    public void testPass2(){
+        Class<?>[] pass = new Class<?>[]{Integer.class, Double.class, String.class, Integer.class, Double.class};
+        Assert.assertTrue("Should be TRUE", isTypesMatched(DEFINE, pass));
+    }
+
+    @Test
+    public void testPassRandomOrder(){
+        // test 100 times
+        Random rnd = new Random();
+        for (int i = 0; i < 100; i++) {
+            final List<Class<?>> rndOrderTypes = new ArrayList<>(Arrays.asList(DEFINE));
+            for (int j = 0; j < DEFINE.length; j++) {
+                final int rndIdx = rnd.nextInt(DEFINE.length);
+                Class<?> rm = rndOrderTypes.remove(rndIdx);
+                rndOrderTypes.add(rm);
+            }
+            Assert.assertTrue("Should be TRUE", isTypesMatched(DEFINE, rndOrderTypes.toArray(new Class<?>[DEFINE.length])));
+        }
+    }
+
+    @Test
+    public void testFail(){
+        Class<?>[] fail = new Class<?>[]{Integer.class};
+        Assert.assertFalse("Should be FALSE", isTypesMatched(DEFINE, fail));
+    }
+
+    @Test
+    public void testFail1(){
+        Class<?>[] fail = new Class<?>[]{String.class, Integer.class, Integer.class, Double.class, Double.class, Object.class};
+        Assert.assertFalse("Should be FALSE", isTypesMatched(DEFINE, fail));
+    }
+
+    @Test
+    public void testFail2(){
+        Class<?>[] fail = new Class<?>[]{String.class, Integer.class, Integer.class, Integer.class, Double.class};
+        Assert.assertFalse("Should be FALSE", isTypesMatched(DEFINE, fail));
+    }
+
+    @Test
+    public void testFail3(){
+        Class<?>[] fail = new Class<?>[]{String.class, Integer.class, Integer.class, Integer.class, Integer.class};
+        Assert.assertFalse("Should be FALSE", isTypesMatched(DEFINE, fail));
+    }
+
+    @Test
+    public void testFail4(){
+        Class<?>[] fail = new Class<?>[]{Integer.class, Integer.class, Integer.class, Integer.class, Integer.class};
+        Assert.assertFalse("Should be FALSE", isTypesMatched(DEFINE, fail));
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.internal.EventHandler;
+import com.github.yoojia.events.supports.ClassTypes;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
@@ -48,17 +49,19 @@ class MethodEventHandler implements EventHandler {
         return mScheduleType;
     }
 
-    private static Object[] reorder(Class<?>[] defineTypes, PayloadEvent payload) {
-        // FIXME 算法错误
-        final Object[] output = new Object[defineTypes.length];
+    static Object[] reorder(Class<?>[] defineTypes, PayloadEvent payload) {
+        final Object[] values = new Object[defineTypes.length];
+        final boolean[] used = new boolean[values.length];
         for (int i = 0; i < defineTypes.length; i++) {
-            for (int j = 0; j < payload.types.length; j++) {
-                if (defineTypes[i].equals(payload.types[j])) {
-                    output[i] = payload.values[j];
+            for (int j = 0; j < values.length; j++) {
+                if (!used[j] && ClassTypes.equalsIgnoreWrapType(defineTypes[i], payload.types[j])) {
+                    values[i] = payload.values[j];
+                    used[j] = true;
+                    break;
                 }
             }
         }
-        return output;
+        return values;
     }
 
     public static MethodEventHandler create(int scheduleType, Object object, Method method, MethodDefine args) {

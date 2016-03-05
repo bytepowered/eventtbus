@@ -38,7 +38,7 @@ public class TupleEventSameTypeArgsTest {
         }
 
         @Subscribe(on = "users")
-        public void onTupleEvent(String name, Integer age, Integer weight) {
+        public void onTupleEvent(String name, int age, int weight) {
             System.err.println("name=" + name + ", age=" + age + ", weight=" + weight);
             hitEvt1();
             hitEvt2();

@@ -21,7 +21,7 @@ public class TupleEventDiffTypeArgsTest {
 
         nextEvents.register(payload);
         for (int i = 0; i < payload.perEvtCount; i++) {
-            nextEvents.emit("users", "yoojia", 18, 1024.0f);
+            nextEvents.emit("users", "yoojia", 99, 2048.0f);
         }
 
         payload.await();
@@ -39,11 +39,11 @@ public class TupleEventDiffTypeArgsTest {
         }
 
         @Subscribe(on = "users")
-        public void onTupleEvent(String name, Integer age, Float weight) {
+        public void onTupleEvent(String name, int age, Float weight) {
             System.err.println("name=" + name + ", age=" + age + ", weight=" + weight);
             assertThat(name, equalTo("yoojia"));
-            assertThat(age, equalTo(18));
-            assertThat(weight, equalTo(1024.0f));
+            assertThat(age, equalTo(99));
+            assertThat(weight, equalTo(2048f));
             hitEvt1();
             hitEvt2();
         }

@@ -28,10 +28,10 @@ public class PayloadEvent {
             values = (Object[]) payload;
             types = new Class[values.length];
             for (int i = 0; i < values.length; i++) {
-                types[i] = ClassTypes.wrap(values[i].getClass());
+                types[i] = values[i].getClass();
             }
         }else{
-            types = new Class[]{ClassTypes.wrap(payloadType)};
+            types = new Class[]{payloadType};
             values = new Object[]{payload};
         }
     }
