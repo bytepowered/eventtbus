@@ -14,9 +14,9 @@ class MethodEventHandler implements EventHandler {
     private final int mScheduleType;
     private final Method mMethod;
     private final WeakReference<Object> mObjectRef;
-    private final MethodArgs mArgs;
+    private final MethodDefine mArgs;
 
-    private MethodEventHandler(int scheduleType, Object object, Method method, MethodArgs args) {
+    private MethodEventHandler(int scheduleType, Object object, Method method, MethodDefine args) {
         mScheduleType = scheduleType;
         mMethod = method;
         mObjectRef = new WeakReference<>(object);
@@ -31,10 +31,10 @@ class MethodEventHandler implements EventHandler {
         }
         final PayloadEvent payload = (PayloadEvent) event;
         mMethod.setAccessible(true);
-        if (mArgs.defineTypes.length == 0) {
+        if (mArgs.types.length == 0) {
             mMethod.invoke(mObjectRef.get());
         }else{
-            mMethod.invoke(mObjectRef.get(), reorder(mArgs.defineTypes, payload));
+            mMethod.invoke(mObjectRef.get(), reorder(mArgs.types, payload));
         }
     }
 
@@ -52,16 +52,16 @@ class MethodEventHandler implements EventHandler {
         // FIXME 算法错误
         final Object[] output = new Object[defineTypes.length];
         for (int i = 0; i < defineTypes.length; i++) {
-            for (int j = 0; j < payload.eventTypes.length; j++) {
-                if (defineTypes[i].equals(payload.eventTypes[j])) {
-                    output[i] = payload.eventValues[j];
+            for (int j = 0; j < payload.types.length; j++) {
+                if (defineTypes[i].equals(payload.types[j])) {
+                    output[i] = payload.values[j];
                 }
             }
         }
         return output;
     }
 
-    public static MethodEventHandler create(int scheduleType, Object object, Method method, MethodArgs args) {
+    public static MethodEventHandler create(int scheduleType, Object object, Method method, MethodDefine args) {
         return new MethodEventHandler(scheduleType, object, method, args);
     }
 

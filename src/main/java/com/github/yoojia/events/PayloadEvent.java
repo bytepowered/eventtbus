@@ -15,9 +15,9 @@ public class PayloadEvent {
 
     public final String name;
 
-    public final Object[] eventValues;
+    public final Object[] values;
 
-    public final Class<?>[] eventTypes;
+    public final Class<?>[] types;
 
     public PayloadEvent(String name, Object payload) {
         notEmpty(name, "name is empty");
@@ -25,14 +25,14 @@ public class PayloadEvent {
         this.name = name;
         final Class<?> payloadType = payload.getClass();
         if (payloadType.isArray()) {
-            eventValues = (Object[]) payload;
-            eventTypes = new Class[eventValues.length];
-            for (int i = 0; i < eventValues.length; i++) {
-                eventTypes[i] = ClassTypes.wrap(eventValues[i].getClass());
+            values = (Object[]) payload;
+            types = new Class[values.length];
+            for (int i = 0; i < values.length; i++) {
+                types[i] = ClassTypes.wrap(values[i].getClass());
             }
         }else{
-            eventTypes = new Class[]{ClassTypes.wrap(payloadType)};
-            eventValues = new Object[]{payload};
+            types = new Class[]{ClassTypes.wrap(payloadType)};
+            values = new Object[]{payload};
         }
     }
 
@@ -40,7 +40,7 @@ public class PayloadEvent {
     public String toString() {
         return "{" +
                 "name='" + name + '\'' +
-                ", values=" + Arrays.toString(eventValues) +
+                ", values=" + Arrays.toString(values) +
                 '}';
     }
 }

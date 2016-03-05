@@ -2,51 +2,55 @@ package com.github.yoojia.events;
 
 import com.github.yoojia.events.internal.EventFilter;
 
+import java.util.BitSet;
+
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
 class InternalEventFilter implements EventFilter {
 
-    private final MethodArgs mArgs;
+    private final MethodDefine mDefine;
 
-    public InternalEventFilter(MethodArgs args) {
-        mArgs = args;
+    public InternalEventFilter(MethodDefine define) {
+        mDefine = define;
     }
 
     @Override
     public boolean accept(Object event) {
         final PayloadEvent payload = (PayloadEvent) event;
-        if (mArgs.defineTypes.length == 0) {
+        if (mDefine.types.length == 0) {
             return isNamesMatched(payload.name);
         }else{
             return isNamesMatched(payload.name)
-                    && isTypesMatched(payload.eventTypes);
+                    && isTypesMatched(mDefine.types, payload.types);
         }
     }
 
     private boolean isNamesMatched(String eventName) {
-        return mArgs.defineName.equals(eventName);
+        return mDefine.name.equals(eventName);
     }
 
-    private boolean isTypesMatched(Class<?>[] eventTypes) {
+    static boolean isTypesMatched(Class<?>[] define, Class<?>[] source) {
         // 在@Subscriber定义了参数的情况下：
         // 如果Method中，参数数量与发送的事件负载数量不一致，则不匹配。
-        if (mArgs.defineTypes.length != eventTypes.length) {
+        if (define.length != source.length) {
             return false;
         }else{
             // 判断方法参数类型与负载参数类型是否相同
-            // FIXME 算法错误
-            int flags = 0;
-            for (Class<?> define : mArgs.defineTypes) {
-                for (Class<?> event : eventTypes) {
-                    if (define.equals(event)) {
-                        flags += 1;
+            int hits = 0;
+            final BitSet flags = new BitSet(source.length);
+            // flags.default : false
+            for (Class<?> def : define) {
+                for (int i = 0; i < source.length; i++) {
+                    if ( ! flags.get(i) && def.equals(source[i])) {
+                        hits += 1;
+                        flags.set(i, true);
                         break;
                     }
                 }
             }
-            return flags == mArgs.defineTypes.length;
+            return hits == define.length;
         }
     }
 

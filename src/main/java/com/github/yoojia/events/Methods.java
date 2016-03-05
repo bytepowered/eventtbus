@@ -24,7 +24,7 @@ class Methods {
         return methods.find(clazz);
     }
 
-    public static MethodArgs parse(Method method) {
+    public static MethodDefine parse(Method method) {
         final Subscribe annotation = method.getAnnotation(Subscribe.class);
         final int scheduleType = annotation.run().scheduleFlag;
         final String defineNames = annotation.on();
@@ -33,7 +33,7 @@ class Methods {
         for (int i = 0; i < rawTypes.length; i++) {
             wrapTypes[i] = ClassTypes.wrap(rawTypes[i]);
         }
-        return new MethodArgs(scheduleType, wrapTypes, defineNames);
+        return new MethodDefine(scheduleType, wrapTypes, defineNames);
     }
 
     private static class MethodSignFilter implements Filter<Method> {
