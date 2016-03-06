@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import static com.github.yoojia.events.InternalEventFilter.isTypesMatched;
+import static com.github.yoojia.events.InternalFilter.isTypesMatched;
 
 /**
  * @author 陈小锅 (yoojia.chen@gmail.com)

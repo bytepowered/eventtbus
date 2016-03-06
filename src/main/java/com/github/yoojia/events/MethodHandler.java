@@ -8,20 +8,20 @@ import java.lang.reflect.Method;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.2
+ * @since 2.0
  */
-class MethodEventHandler implements EventHandler {
+class MethodHandler implements EventHandler {
 
     private final int mScheduleType;
     private final Method mMethod;
     private final WeakReference<Object> mObjectRef;
-    private final MethodDefine mArgs;
+    private final MethodDefine mDefine;
 
-    private MethodEventHandler(int scheduleType, Object object, Method method, MethodDefine args) {
+    private MethodHandler(int scheduleType, Object object, Method method, MethodDefine args) {
         mScheduleType = scheduleType;
         mMethod = method;
         mObjectRef = new WeakReference<>(object);
-        mArgs = args;
+        mDefine = args;
     }
 
     @Override
@@ -32,10 +32,10 @@ class MethodEventHandler implements EventHandler {
         }
         final PayloadEvent payload = (PayloadEvent) event;
         mMethod.setAccessible(true);
-        if (mArgs.types.length == 0) {
+        if (mDefine.types.length == 0) {
             mMethod.invoke(mObjectRef.get());
         }else{
-            mMethod.invoke(mObjectRef.get(), reorder(mArgs.types, payload));
+            mMethod.invoke(mObjectRef.get(), reorder(mDefine.types, payload));
         }
     }
 
@@ -49,6 +49,10 @@ class MethodEventHandler implements EventHandler {
         return mScheduleType;
     }
 
+    /**
+     * 将负载事件的数值，按回调Method的类型顺序，重新排序。
+     * 相同的类型，按负载事件中的数值顺序填充
+     */
     static Object[] reorder(Class<?>[] defineTypes, PayloadEvent payload) {
         final Object[] values = new Object[defineTypes.length];
         final boolean[] used = new boolean[values.length];
@@ -64,8 +68,8 @@ class MethodEventHandler implements EventHandler {
         return values;
     }
 
-    public static MethodEventHandler create(int scheduleType, Object object, Method method, MethodDefine args) {
-        return new MethodEventHandler(scheduleType, object, method, args);
+    public static MethodHandler create(int scheduleType, Object object, Method method, MethodDefine args) {
+        return new MethodHandler(scheduleType, object, method, args);
     }
 
 }

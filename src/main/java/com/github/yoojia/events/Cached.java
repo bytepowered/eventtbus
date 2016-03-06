@@ -60,9 +60,8 @@ class Cached {
     @SuppressWarnings("unchecked")
     private static Acceptor create(Object object, Method method, MethodDefine args) {
         final ArrayList<EventFilter> filters = new ArrayList<>(1);
-        filters.add(new InternalEventFilter(args));
-        return new Acceptor(MethodEventHandler.create(args.scheduleType, object, method, args),
-                filters);
+        filters.add(new InternalFilter(args));
+        return new Acceptor(MethodHandler.create(args.schedule, object, method, args), filters);
     }
 
 }

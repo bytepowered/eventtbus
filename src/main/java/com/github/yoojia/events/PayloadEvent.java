@@ -1,7 +1,5 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.supports.ClassTypes;
-
 import java.util.Arrays;
 
 import static com.github.yoojia.events.supports.Preconditions.notEmpty;
@@ -23,15 +21,15 @@ public class PayloadEvent {
         notEmpty(name, "name is empty");
         notNull(payload, "payload == null");
         this.name = name;
-        final Class<?> payloadType = payload.getClass();
-        if (payloadType.isArray()) {
+        final Class<?> type = payload.getClass();
+        if (type.isArray()) {
             values = (Object[]) payload;
             types = new Class[values.length];
             for (int i = 0; i < values.length; i++) {
                 types[i] = values[i].getClass();
             }
         }else{
-            types = new Class[]{payloadType};
+            types = new Class[]{type};
             values = new Object[]{payload};
         }
     }

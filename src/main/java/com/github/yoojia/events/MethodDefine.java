@@ -6,12 +6,12 @@ package com.github.yoojia.events;
  */
 final class MethodDefine {
 
-    public final int scheduleType;
+    public final int schedule;
     public final Class<?>[] types;
     public final String name;
 
-    MethodDefine(int scheduleType, Class<?>[] types, String name) {
-        this.scheduleType = scheduleType;
+    MethodDefine(int schedule, Class<?>[] types, String name) {
+        this.schedule = schedule;
         this.types = types;
         this.name = name;
     }

@@ -26,10 +26,10 @@ class Methods {
 
     public static MethodDefine parse(Method method) {
         final Subscribe annotation = method.getAnnotation(Subscribe.class);
-        final int scheduleType = annotation.run().scheduleFlag;
-        final String defineNames = annotation.on();
-        final Class<?>[] defineTypes = method.getParameterTypes();
-        return new MethodDefine(scheduleType, defineTypes, defineNames);
+        final int schedule = annotation.run().scheduleFlag;
+        final String names = annotation.on();
+        final Class<?>[] types = method.getParameterTypes();
+        return new MethodDefine(schedule, types, names);
     }
 
     private static class MethodSignFilter implements Filter<Method> {

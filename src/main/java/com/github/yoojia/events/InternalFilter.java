@@ -3,17 +3,15 @@ package com.github.yoojia.events;
 import com.github.yoojia.events.internal.EventFilter;
 import com.github.yoojia.events.supports.ClassTypes;
 
-import java.util.BitSet;
-
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.2
+ * @since 2.0
  */
-class InternalEventFilter implements EventFilter {
+class InternalFilter implements EventFilter {
 
     private final MethodDefine mDefine;
 
-    public InternalEventFilter(MethodDefine define) {
+    public InternalFilter(MethodDefine define) {
         mDefine = define;
     }
 
@@ -33,12 +31,10 @@ class InternalEventFilter implements EventFilter {
     }
 
     static boolean isTypesMatched(Class<?>[] defines, Class<?>[] sources) {
-        // 在@Subscriber定义了参数的情况下：
+        // 在@Subscriber的方法定义了一个以上参数的情况下：
         // 如果Method中，参数数量与发送的事件负载数量不一致，则不匹配。
-        if (defines.length != sources.length) {
-            return false;
-        }else{
-            // 判断方法参数类型数组与负载参数类型数组是否相同，顺序可以不一致。
+        // 判断方法参数类型数组与负载参数类型数组是否相同，顺序可以不一致。
+        if (defines.length == sources.length) {
             int hits = 0;
             final boolean[] used = new boolean[sources.length];
             for (Class<?> def : defines) {
@@ -51,6 +47,8 @@ class InternalEventFilter implements EventFilter {
                 }
             }
             return hits == defines.length;
+        }else{
+            return false;
         }
     }
 

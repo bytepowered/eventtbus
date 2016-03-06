@@ -50,7 +50,7 @@ public class BenchmarkTest extends BaseTestCase {
         }
 
         @Subscribe(on = "long", run = Runs.ON_CALLER_THREAD)
-        protected void onEvents1(Long evt){
+        protected void onEvents1(long evt){
             hitEvt2();
         }
 

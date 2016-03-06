@@ -43,6 +43,19 @@ SharedThreads(Nop Payload)	 | 1337668		| 1410ms		| 1495ms		| 2000000
 CallerThread(Nop Payload)	 | 5011338		| 398ms		    | 399ms		    | 2000000
 GuavaEvents(Nop Payload)	 | 1714623		| 1166ms		| 1166ms		| 2000000
 
+`v2.0` 在 `Windows 10 64x / 3.2 GHz Intel i5-4460 / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_74-b02) ` 环境下的性能对比情况如下：
+
+测试类型/负载方式| TPS/QPS | 总投递时间 | 总运行时间 | 投递事件量
+----|----|----|----|----
+MultiThreads(1ms Payload)	 | 3447		| 10ms		| 580ms		| 2000
+SharedThreads(1ms Payload)	 | 3376		| 1ms		| 592ms		| 2000
+CallerThread(1ms Payload)	 | 902		| 2215ms		| 2215ms		| 2000
+GuavaEvents(1ms Payload)	 | 884		| 2260ms		| 2260ms		| 2000
+MultiThreads(Nop Payload)	 | 1935508		| 1033ms	| 1033ms		| 2000000
+SharedThreads(Nop Payload)	 | 2261975		| 882ms		| 884ms		| 2000000
+CallerThread(Nop Payload)	 | 4602303		| 434ms		| 434ms		| 2000000
+GuavaEvents(Nop Payload)	 | 3980131		| 502ms		| 502ms		| 2000000
+
 ## 事件处理目标触发条件
 
 在注解模式下，即@Subscribe注解的方法中，如：
