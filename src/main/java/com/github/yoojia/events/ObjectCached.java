@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
-class Cached {
+class ObjectCached {
 
     private final Map<Object, Acceptors> mAcceptorCache = new ConcurrentHashMap<>();
     private final Object mLock = new Object();

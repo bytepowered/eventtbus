@@ -4,7 +4,7 @@
 
 - 支持使用EventHandler接口回调；
 - 支持使用@Subscribe注解方法回调；
-- 支持多种回调方式: CallerThread / Threads / MainThread(Not impl yet)
+- 支持多种回调方式: CallerThread / Threads / MainThread(For Android extends)
 - 支持自定义回调目标的调度处理 Schedule
 - 支持提交事件元组
 
@@ -17,7 +17,7 @@
 
 ## Benchmark
 
-`v1.4` 在 `OSX 10.11.3' / 2.6 GHz Intel Core i5 / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_60-b27)`环境下的性能对比情况如下表：
+`v1.4` 在 `OS X 10.11.3' / 2.6 GHz Intel Core i5 / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_60-b27)`环境下的性能对比情况如下表：
 
 测试类型/负载方式| TPS/QPS | 总投递时间 | 总运行时间 | 投递事件量
 ----|----|----|----|----
