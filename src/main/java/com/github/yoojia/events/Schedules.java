@@ -22,7 +22,7 @@ public class Schedules {
     public static Schedule newCaller(){
         return new Schedule() {
             @Override
-            public void submit(InternalEvent event, List<EventHandler> handlers) {
+            public void submit(Object event, List<EventHandler> handlers) {
                 for (EventHandler handler : handlers) {
                     final int type = handler.scheduleType();
                     if (Schedule.ON_CALLER_THREAD != type) {

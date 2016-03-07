@@ -12,7 +12,6 @@ public class BaseTestCase {
         return System.nanoTime();
     }
 
-
     public void printStatistics(String tag, long timeBeforeEmits, long timeAfterEmits, long totalCalls){
         final long timeWhenAllFinished = NOW();
         final long emitMicros = (timeAfterEmits - timeBeforeEmits) / 1000;

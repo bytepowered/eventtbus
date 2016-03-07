@@ -15,7 +15,7 @@ import static com.github.yoojia.events.supports.Preconditions.notNull;
 public class NextEvents {
 
     private final Dispatcher mDispatcher;
-    private final Cached mCached = new Cached();
+    private final ObjectCached mObjectCached = new ObjectCached();
 
     public NextEvents() {
         this(SharedSchedule.getDefault());
@@ -32,7 +32,7 @@ public class NextEvents {
 
     public void register(Object object, Filter<Method> customMethodFilter) {
         notNull(object, "object == null");
-        final List<Acceptor> acceptors = mCached.find(object, customMethodFilter);
+        final List<Acceptor> acceptors = mObjectCached.find(object, customMethodFilter);
         for (Acceptor acceptor : acceptors) {
             mDispatcher.addHandler(acceptor.handler, acceptor.filters);
         }
@@ -40,20 +40,23 @@ public class NextEvents {
 
     public void unregister(Object object) {
         notNull(object, "object == null");
-        final List<Acceptor> acceptors = mCached.getSafety(object);
+        final List<Acceptor> acceptors = mObjectCached.getSafety(object);
         for (Acceptor acceptor : acceptors) {
             mDispatcher.removeHandler(acceptor.handler);
         }
-        mCached.remove(object);
+        mObjectCached.remove(object);
     }
 
-    public void emit(String name, Object payload) {
-        emit(new PayloadEvent(name, payload));
+    public void emit(String name, Object...payloads) {
+        if (payloads == null || payloads.length == 0){
+            throw new IllegalArgumentException("payloads is empty");
+        }
+        emit(new PayloadEvent(name, payloads));
     }
 
-    public void emit(PayloadEvent payloadEvent) {
-        notNull(payloadEvent, "event == null");
-        mDispatcher.emit(new InternalEvent(payloadEvent));
+    public void emit(PayloadEvent event) {
+        notNull(event, "event == null");
+        mDispatcher.emit(event);
     }
 
     public void addHandler(EventHandler handler, EventFilter filter) {

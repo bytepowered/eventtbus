@@ -18,4 +18,10 @@ public class ClassTypes {
         else if(String.class.equals(type)) return String.class;
         else return type;
     }
+
+    public static boolean equalsIgnoreWrapType(Class<?> src, Class<?> to) {
+        final Class<?> _src = src.isPrimitive() ? wrap(src): src;
+        final Class<?> _to = to.isPrimitive() ? wrap(to) : to;
+        return _src.equals(_to);
+    }
 }

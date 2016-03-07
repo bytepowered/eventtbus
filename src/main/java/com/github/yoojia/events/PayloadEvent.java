@@ -1,6 +1,6 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.supports.ClassTypes;
+import java.util.Arrays;
 
 import static com.github.yoojia.events.supports.Preconditions.notEmpty;
 import static com.github.yoojia.events.supports.Preconditions.notNull;
@@ -11,32 +11,34 @@ import static com.github.yoojia.events.supports.Preconditions.notNull;
  */
 public class PayloadEvent {
 
-    /**
-     * Event name
-     */
     public final String name;
 
-    /**
-     * Event payload value
-     */
-    public final Object payloadValue;
+    public final Object[] values;
 
-    /**
-     * Event payload value type (Wrapper type)
-     */
-    public final Class<?> payloadType;
+    public final Class<?>[] types;
 
     public PayloadEvent(String name, Object payload) {
         notEmpty(name, "name is empty");
-        notNull(payload, "payload value is null");
+        notNull(payload, "payload == null");
         this.name = name;
-        this.payloadValue = payload;
-        this.payloadType = ClassTypes.wrap(payload.getClass());
+        final Class<?> type = payload.getClass();
+        if (type.isArray()) {
+            values = (Object[]) payload;
+            types = new Class[values.length];
+            for (int i = 0; i < values.length; i++) {
+                types[i] = values[i].getClass();
+            }
+        }else{
+            types = new Class[]{type};
+            values = new Object[]{payload};
+        }
     }
 
     @Override
     public String toString() {
-        return "{name=" + name +  ", value=" + payloadValue + "}";
+        return "{" +
+                "name='" + name + '\'' +
+                ", values=" + Arrays.toString(values) +
+                '}';
     }
-
 }

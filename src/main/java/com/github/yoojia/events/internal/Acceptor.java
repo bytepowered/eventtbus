@@ -9,7 +9,7 @@ import java.util.List;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
-public class Acceptor implements Filter<InternalEvent>{
+public class Acceptor implements Filter<Object>{
 
     public final EventHandler handler;
     public final ImmutableList<EventFilter> filters;
@@ -23,7 +23,7 @@ public class Acceptor implements Filter<InternalEvent>{
     }
 
     @Override
-    public boolean accept(InternalEvent event) {
+    public boolean accept(Object event) {
         for (int i = 0; i < mCount; i++) {
             final EventFilter f = filters.get(i);
             if (! f.accept(event)) return false;
