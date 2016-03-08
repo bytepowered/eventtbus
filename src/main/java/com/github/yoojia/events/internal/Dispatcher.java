@@ -20,10 +20,10 @@ public class Dispatcher {
 
     private final Schedule mSchedule;
     private final CopyOnWriteArrayList<Acceptor> mAcceptors = new CopyOnWriteArrayList<>();
-    private final AtomicReference<OnMissedDeadEventListener> mMissDeadEventListener = new AtomicReference<OnMissedDeadEventListener>(new OnMissedDeadEventListener() {
+    private final AtomicReference<OnEventMissedListener> mEventMissedListener = new AtomicReference<OnEventMissedListener>(new OnEventMissedListener() {
         @Override
-        public void onMissedDeadEvent(DeadEvent event) {
-            System.err.println("- No handlers for <DEAD-EVENT>: " + event);
+        public void onEvent(Object event) {
+            Logger.debug("Dispatcher", "- Dead event: " + event);
         }
     });
 
@@ -52,18 +52,15 @@ public class Dispatcher {
         // 快速匹配触发事件的EventHandler, 然后由调度器来处理
         final List<EventHandler> eventHandlers = matchedHandlers(event);
         if (eventHandlers.isEmpty()) {
-            if (event instanceof DeadEvent) {
-                mMissDeadEventListener.get().onMissedDeadEvent((DeadEvent) event);
-            }else{
-                emit(new DeadEvent(event));
-            }
+            final OnEventMissedListener missed = mEventMissedListener.get();
+            missed.onEvent(event);
         }else{
             mSchedule.submit(event, eventHandlers);
         }
     }
 
-    public void setOnMissedDeadEventListener(OnMissedDeadEventListener listener) {
-        mMissDeadEventListener.set(listener);
+    public void setOnEventMissedListener(OnEventMissedListener listener) {
+        mEventMissedListener.set(listener);
     }
 
     private List<EventHandler> matchedHandlers(Object event) {

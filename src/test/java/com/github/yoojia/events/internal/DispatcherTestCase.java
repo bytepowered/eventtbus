@@ -1,12 +1,15 @@
 package com.github.yoojia.events.internal;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
@@ -14,19 +17,26 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class DispatcherTestCase {
 
-    public static final int COUNT = 10;
+    public static final int THREAD_COUNT = 10;
+
+    final static ExecutorService loop = Executors.newSingleThreadExecutor();
+    final static ExecutorService worker = Executors.newCachedThreadPool();
+    final static Schedule schedule = new Schedule(loop, worker);
+
+    final Dispatcher dispatcher = new Dispatcher(schedule);
 
     @Test
-    public void test() throws InterruptedException {
-        ExecutorService loop = Executors.newSingleThreadExecutor();
-        ExecutorService worker = Executors.newCachedThreadPool();
-        Dispatcher dispatcher = new Dispatcher(new Schedule(loop, worker));
-        final CountDownLatch countDownLatch = new CountDownLatch(COUNT);
-        dispatcher.addHandler(new EventHandler() {
+    public void testThreads() throws InterruptedException {
+        // missed
+        dispatcher.emit(1024.0f);
+
+        final CountDownLatch counting = new CountDownLatch(THREAD_COUNT);
+        final EventHandler threads = new EventHandler() {
             @Override
             public void onEvent(Object event) throws Exception {
-                countDownLatch.countDown();
-                System.err.println("- " + event + "\t@Thread: " + Thread.currentThread().getId());
+                counting.countDown();
+                final long tid = Thread.currentThread().getId();
+                System.err.println("- " + event + "\t@Thread: " + tid);
             }
 
             @Override
@@ -39,53 +49,173 @@ public class DispatcherTestCase {
                 return Schedule.ON_THREADS;
             }
 
-        }, new EventFilter() {
+        };
+
+        dispatcher.addHandler(threads, new EventFilter() {
             @Override
             public boolean accept(Object event) {
                 return String.class.equals(event.getClass());
             }
         });
 
-        for (int i = 0; i < COUNT; i++) {
+        // events
+        for (int i = 0; i < THREAD_COUNT; i++) {
             dispatcher.emit("msg-" + i);
         }
 
-        countDownLatch.await();
+        counting.await();
 
-        // On missed dead event listener
-        final AtomicBoolean missedDeadEvent = new AtomicBoolean(false);
-        dispatcher.setOnMissedDeadEventListener(new OnMissedDeadEventListener() {
-            @Override
-            public void onMissedDeadEvent(DeadEvent event) {
-                System.err.println("- missed event: " + event);
-                missedDeadEvent.set(true);
-            }
-        });
-        dispatcher.emit(10000L);
-        Assert.assertTrue(missedDeadEvent.get());
+        dispatcher.removeHandler(threads);
+    }
 
-        // On dead event
-        dispatcher.addHandler(new EventHandler() {
+    @Test
+    public void testCaller(){
+        final AtomicInteger callerThreadId = new AtomicInteger(-9);
+        final EventHandler caller = new EventHandler() {
             @Override
             public void onEvent(Object event) throws Exception {
-                System.err.println("- on dead event: " + event);
-                Assert.assertTrue( event instanceof DeadEvent);
+                callerThreadId.set((int) Thread.currentThread().getId());
             }
 
             @Override
-            public void onErrors(Exception errors) {}
+            public void onErrors(Exception errors) {
+                errors.printStackTrace();
+            }
 
             @Override
             public int scheduleType() {
                 return Schedule.ON_CALLER_THREAD;
             }
-        }, new EventFilter() {
+        };
+
+        dispatcher.addHandler(caller, new EventFilter() {
             @Override
             public boolean accept(Object event) {
-                return DeadEvent.class.equals(event.getClass());
+                return int.class.equals(event.getClass())
+                        || Integer.class.equals(event.getClass());
             }
         });
 
-        dispatcher.emit(20000L);
+        // caller
+        dispatcher.emit(123);
+
+        dispatcher.removeHandler(caller);
+
+        Assert.assertEquals(Thread.currentThread().getId(), callerThreadId.get());
+    }
+
+    @Test
+    public void testEventMissed(){
+        final AtomicBoolean missedFlag = new AtomicBoolean(false);
+        dispatcher.setOnEventMissedListener(new OnEventMissedListener() {
+            @Override
+            public void onEvent(Object event) {
+                missedFlag.set(true);
+                System.err.println("- missed event: " + event);
+            }
+        });
+        dispatcher.emit(10000L);
+        Assert.assertTrue(missedFlag.get());
+    }
+
+    @Test
+    public void testUnknownScheduleFlag() throws InterruptedException {
+        final CountDownLatch counting = new CountDownLatch(1);
+        final EventHandler unknown = new EventHandler() {
+            @Override
+            public void onEvent(Object event) throws Exception {}
+
+            @Override
+            public void onErrors(Exception errors) {
+                counting.countDown();
+            }
+
+            @Override
+            public int scheduleType() {
+                return 9999;
+            }
+        };
+        dispatcher.addHandler(unknown, new EventFilter() {
+            @Override
+            public boolean accept(Object item) {
+                return true;
+            }
+        });
+
+        try{
+            dispatcher.emit("unknown-flag");
+            counting.await();
+        }finally {
+            dispatcher.removeHandler(unknown);
+        }
+
+    }
+
+    @Test
+    public void testMainScheduleFlag() throws InterruptedException {
+        final CountDownLatch counting = new CountDownLatch(1);
+        final EventHandler main = new EventHandler() {
+            @Override
+            public void onEvent(Object event) throws Exception {}
+
+            @Override
+            public void onErrors(Exception errors) {
+                counting.countDown();
+            }
+
+            @Override
+            public int scheduleType() {
+                return Schedule.ON_MAIN_THREAD;
+            }
+        };
+        dispatcher.addHandler(main, new EventFilter() {
+            @Override
+            public boolean accept(Object item) {
+                return true;
+            }
+        });
+
+        try{
+            dispatcher.emit("main-flag");
+            counting.await();
+        }finally {
+            dispatcher.removeHandler(main);
+        }
+    }
+
+    @Test
+    public void testErrorOnErrors(){
+        final EventHandler caller = new EventHandler() {
+            @Override
+            public void onEvent(Object event) throws Exception {
+                throw new IllegalArgumentException("ERROR-EVENTS:");
+            }
+
+            @Override
+            public void onErrors(Exception errors) {
+                Assert.assertEquals(IllegalArgumentException.class, errors.getClass());
+                throw new IllegalStateException("ERROR-ON-ERRORS");
+            }
+
+            @Override
+            public int scheduleType() {
+                return Schedule.ON_CALLER_THREAD;
+            }
+        };
+        dispatcher.addHandler(caller, new EventFilter() {
+            @Override
+            public boolean accept(Object event) {
+                return int.class.equals(event.getClass())
+                        || Integer.class.equals(event.getClass());
+            }
+        });
+        dispatcher.emit(123);
+        dispatcher.removeHandler(caller);
+    }
+
+    @AfterClass
+    public static void after(){
+        schedule.getWorkerThreads().shutdownNow();
+        schedule.getLoopThread().shutdownNow();
     }
 }

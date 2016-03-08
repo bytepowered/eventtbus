@@ -4,7 +4,8 @@ package com.github.yoojia.events.internal;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 2.0
  */
-public interface OnMissedDeadEventListener {
+public interface OnEventMissedListener {
 
-    void onMissedDeadEvent(DeadEvent event);
+    void onEvent(Object event);
+
 }

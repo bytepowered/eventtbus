@@ -9,18 +9,18 @@ import static org.hamcrest.MatcherAssert.assertThat;
  * @author 陈小锅 (yoojia.chen@gmail.com)
  * @since 2.0
  */
-public class TupleEventSameTypeArgsTest {
+public class DiffTypesTest {
 
     public static final int COUNT = 10;
 
     @Test
     public void test() throws InterruptedException {
         NextEvents nextEvents = new NextEvents(Schedules.newCaller());
-        TupleEventPayload payload = new TupleEventPayload(COUNT);
+        EventsPayload payload = new EventsPayload(COUNT);
 
         nextEvents.register(payload);
         for (int i = 0; i < payload.perEvtCount; i++) {
-            nextEvents.emit("users", "yoojia", 18, 1024);
+            nextEvents.emit("users", "yoojia", 99, 2048.0f);
         }
 
         payload.await();
@@ -31,20 +31,20 @@ public class TupleEventSameTypeArgsTest {
 
     }
 
-    private static class TupleEventPayload extends TestPayload {
+    private static class EventsPayload extends TestPayload {
 
-        protected TupleEventPayload(int count) {
+        protected EventsPayload(int count) {
             super(count);
         }
 
         @Subscribe(on = "users")
-        public void onTupleEvent(String name, int age, int weight) {
+        public void onEvents(String name, int age, Float weight) {
             System.err.println("name=" + name + ", age=" + age + ", weight=" + weight);
+            assertThat(name, equalTo("yoojia"));
+            assertThat(age, equalTo(99));
+            assertThat(weight, equalTo(2048f));
             hitEvt1();
             hitEvt2();
-            assertThat(name, equalTo("yoojia"));
-            assertThat(age, equalTo(18));
-            assertThat(weight, equalTo(1024));
         }
 
     }

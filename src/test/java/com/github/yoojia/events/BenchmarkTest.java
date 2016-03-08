@@ -2,6 +2,7 @@ package com.github.yoojia.events;
 
 import com.github.yoojia.events.internal.Schedule;
 import com.google.common.eventbus.EventBus;
+import org.junit.AfterClass;
 import org.junit.Test;
 
 import java.util.concurrent.ExecutorService;
@@ -15,7 +16,7 @@ import static org.junit.Assert.fail;
  * @author 陈小锅 (yoojia.chen@gmail.com)
  * @since 1.0
  */
-public class BenchmarkTest extends BaseTestCase {
+public class BenchmarkTest extends $TestCase {
 
     private final static int COUNT_NOP = 10000 * 100;
     private final static int COUNT_PAYLOAD = 1000;
@@ -134,7 +135,12 @@ public class BenchmarkTest extends BaseTestCase {
 
     }
 
-    private final ExecutorService CPUs = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
+    private static final ExecutorService CPUs = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
+
+    @AfterClass
+    public static void after(){
+        CPUs.shutdownNow();
+    }
 
     @Test
     public void testNop1(){
@@ -177,18 +183,18 @@ public class BenchmarkTest extends BaseTestCase {
     }
 
     private void testNextEvent(TestPayload payload, Schedule schedule, String tag){
-        final NextEvents events = new NextEvents(schedule);
+        final NextEvents nextEvents = new NextEvents(schedule);
 
-        events.register(payload);
+        nextEvents.register(payload);
 
         final long timeBeforeEmits = NOW();
         for (int i = 0; i < payload.perEvtCount; i++) {
 
             final long longEvent = NOW();
-            events.emit("long", longEvent);
+            nextEvents.emit("long", longEvent);
 
             final String strEvent = String.valueOf(NOW());
-            events.emit("str", strEvent);
+            nextEvents.emit("str", strEvent);
         }
 
         final long timeAfterEmits = NOW();
@@ -199,7 +205,7 @@ public class BenchmarkTest extends BaseTestCase {
             fail(tag + ", Wait fail");
         }
 
-        events.unregister(payload);
+        nextEvents.unregister(payload);
 
         assertThat(payload.evt1Calls.get(), equalTo(payload.perEvtCount));
         assertThat(payload.evt2Calls.get(), equalTo(payload.perEvtCount));

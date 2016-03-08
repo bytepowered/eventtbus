@@ -11,6 +11,8 @@ import static com.github.yoojia.events.supports.Preconditions.notNull;
  */
 public class PayloadEvent {
 
+    public static final String DEAD_EVENT = "next.events.<DEAD-EVENT>";
+
     public final String name;
 
     public final Object[] values;
