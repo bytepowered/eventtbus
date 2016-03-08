@@ -74,8 +74,9 @@ public class InternalTPSTest extends $TestCase {
         assertThat(payload.evt1Calls.get(), equalTo(payload.perEvtCount));
         assertThat(payload.evt2Calls.get(), equalTo(payload.perEvtCount));
 
-        // MBP: 6707866, 6300427, 6865571
-        // Ubuntu: 3417108, 3248967
+        // MBP:    6707866,     6300427,    6865571
+        // Ubuntu: 3417108,     3248967
+        // Win10:  15066775,    16627232,   16574237
         printStatistics("Dispatch.TPS/QPS", timeBeforeEmits, timeAfterEmits, payload.totalCalls);
     }
 }

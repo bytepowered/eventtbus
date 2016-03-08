@@ -16,7 +16,7 @@ import static com.github.yoojia.events.supports.Preconditions.notNull;
 public class NextEvents extends Dispatcher{
 
     private final ObjectCached mObjectCached = new ObjectCached();
-    private final AtomicReference<OnEventMissedListener> mLocalEventMissedListener = new AtomicReference<>();
+    private final AtomicReference<OnEventMissedListener> mThisEventMissedListener = new AtomicReference<>();
 
     public NextEvents() {
         this(SharedSchedule.getDefault());
@@ -25,13 +25,14 @@ public class NextEvents extends Dispatcher{
     public NextEvents(Schedule schedule) {
         super(schedule);
         notNull(schedule, "schedule == null");
-        setOnEventMissedListener(new OnEventMissedListener() {
+        // this已被Override，必须调用super的方法
+        super.setOnEventMissedListener(new OnEventMissedListener() {
             @Override
             public void onEvent(Object event) {
                 final PayloadEvent payload = (PayloadEvent) event;
                 // 非DeadEvent事件，包装为DeadEvent继续处理
                 if (PayloadEvent.DEAD_EVENT.equals(payload.name)) {
-                    final OnEventMissedListener listener = mLocalEventMissedListener.get();
+                    final OnEventMissedListener listener = mThisEventMissedListener.get();
                     if (listener != null) {
                         listener.onEvent(event);
                     }else{
@@ -89,7 +90,7 @@ public class NextEvents extends Dispatcher{
     @Override
     public void setOnEventMissedListener(OnEventMissedListener listener) {
         notNull(listener, "listener == null");
-        mLocalEventMissedListener.set(listener);
+        mThisEventMissedListener.set(listener);
     }
 
     @Override
