@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static com.github.yoojia.events.supports.Filters.filter;
 
@@ -19,6 +20,12 @@ public class Dispatcher {
 
     private final Schedule mSchedule;
     private final CopyOnWriteArrayList<Acceptor> mAcceptors = new CopyOnWriteArrayList<>();
+    private final AtomicReference<OnMissedDeadEventListener> mMissDeadEventListener = new AtomicReference<OnMissedDeadEventListener>(new OnMissedDeadEventListener() {
+        @Override
+        public void onMissedDeadEvent(DeadEvent event) {
+            System.err.println("- No handlers for <DEAD-EVENT>: " + event);
+        }
+    });
 
     public Dispatcher(Schedule schedule) {
         mSchedule = schedule;
@@ -43,7 +50,20 @@ public class Dispatcher {
 
     public void emit(Object event) {
         // 快速匹配触发事件的EventHandler, 然后由调度器来处理
-        mSchedule.submit(event, matchedHandlers(event));
+        final List<EventHandler> eventHandlers = matchedHandlers(event);
+        if (eventHandlers.isEmpty()) {
+            if (event instanceof DeadEvent) {
+                mMissDeadEventListener.get().onMissedDeadEvent((DeadEvent) event);
+            }else{
+                emit(new DeadEvent(event));
+            }
+        }else{
+            mSchedule.submit(event, eventHandlers);
+        }
+    }
+
+    public void setOnMissedDeadEventListener(OnMissedDeadEventListener listener) {
+        mMissDeadEventListener.set(listener);
     }
 
     private List<EventHandler> matchedHandlers(Object event) {

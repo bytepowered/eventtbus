@@ -59,6 +59,11 @@ public class NextEvents {
         mDispatcher.emit(event);
     }
 
+    public void setOnMissDeadEventListener(OnMissedDeadEventListener listener) {
+        notNull(listener, "listener == null");
+        mDispatcher.setOnMissedDeadEventListener(listener);
+    }
+
     public void addHandler(EventHandler handler, EventFilter filter) {
         notNull(handler, "handler == null");
         notNull(filter, "filter == null");
