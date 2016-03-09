@@ -2,10 +2,10 @@ package com.github.yoojia.events;
 
 import com.github.yoojia.events.internal.*;
 import com.github.yoojia.events.supports.Filter;
+import com.github.yoojia.events.supports.ObjectReference;
 
 import java.lang.reflect.Method;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 import static com.github.yoojia.events.supports.Preconditions.notNull;
 
@@ -13,33 +13,33 @@ import static com.github.yoojia.events.supports.Preconditions.notNull;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
-public class NextEvents extends Dispatcher{
+public class NextEvents{
 
+    private final Dispatcher mDispatcher;
     private final ObjectCached mObjectCached = new ObjectCached();
-    private final AtomicReference<OnEventMissedListener> mThisEventMissedListener = new AtomicReference<>();
+    private final ObjectReference<OnEventMissedListener> mThisEventMissedListener = new ObjectReference<>();
 
     public NextEvents() {
         this(SharedSchedule.getDefault());
     }
 
     public NextEvents(Schedule schedule) {
-        super(schedule);
         notNull(schedule, "schedule == null");
-        // this已被Override，必须调用super的方法
-        super.setOnEventMissedListener(new OnEventMissedListener() {
+        mDispatcher = new Dispatcher(schedule);
+        mDispatcher.setOnEventMissedListener(new OnEventMissedListener() {
             @Override
-            public void onEvent(Object event) {
-                final PayloadEvent payload = (PayloadEvent) event;
+            public void onEvent(Object missedEvent) {
+                final PayloadEvent payload = (PayloadEvent) missedEvent;
                 // 非DeadEvent事件，包装为DeadEvent继续处理
                 if (PayloadEvent.DEAD_EVENT.equals(payload.name)) {
                     final OnEventMissedListener listener = mThisEventMissedListener.get();
                     if (listener != null) {
-                        listener.onEvent(event);
+                        listener.onEvent(missedEvent);
                     }else{
-                        Logger.debug("NextEvents", "- Dead event: " + event);
+                        Logger.debug("NextEvents", "- Dead event missed: " + missedEvent);
                     }
                 }else{
-                    emit(new PayloadEvent(PayloadEvent.DEAD_EVENT, event));
+                    emit(new PayloadEvent(PayloadEvent.DEAD_EVENT, payload.values));
                 }
             }
         });
@@ -53,7 +53,7 @@ public class NextEvents extends Dispatcher{
         notNull(object, "object == null");
         final List<Acceptor> acceptors = mObjectCached.find(object, customMethodFilter);
         for (Acceptor acceptor : acceptors) {
-            super.addHandler(acceptor.handler, acceptor.filters);
+            mDispatcher.addHandler(acceptor.handler, acceptor.filters);
         }
     }
 
@@ -61,7 +61,7 @@ public class NextEvents extends Dispatcher{
         notNull(object, "object == null");
         final List<Acceptor> acceptors = mObjectCached.getSafety(object);
         for (Acceptor acceptor : acceptors) {
-            super.removeHandler(acceptor.handler);
+            mDispatcher.removeHandler(acceptor.handler);
         }
         mObjectCached.remove(object);
     }
@@ -70,41 +70,41 @@ public class NextEvents extends Dispatcher{
         if (payloads == null || payloads.length == 0){
             throw new IllegalArgumentException("payloads is empty");
         }
-        super.emit(new PayloadEvent(name, payloads));
+        mDispatcher.emit(new PayloadEvent(name, payloads));
     }
 
     public void emit(PayloadEvent event) {
         notNull(event, "event == null");
-        super.emit(event);
+        mDispatcher.emit(event);
     }
 
-    @Override
     public void emit(Object event) {
         if (event instanceof PayloadEvent) {
-            super.emit(event);
+            mDispatcher.emit(event);
         }else {
             throw new IllegalArgumentException("Call emit(PayloadEvent) instead");
         }
     }
 
-    @Override
     public void setOnEventMissedListener(OnEventMissedListener listener) {
         notNull(listener, "listener == null");
         mThisEventMissedListener.set(listener);
     }
 
-    @Override
     public void addHandler(EventHandler handler, EventFilter filter) {
         notNull(handler, "handler == null");
         notNull(filter, "filter == null");
-        super.addHandler(handler, filter);
+        mDispatcher.addHandler(handler, filter);
     }
 
-    @Override
     public void addHandler(EventHandler handler, List<EventFilter> filters) {
         notNull(handler, "handler == null");
         notNull(filters, "filters == null");
-        super.addHandler(handler, filters);
+        mDispatcher.addHandler(handler, filters);
+    }
+
+    public void removeHandler(EventHandler handler) {
+        mDispatcher.removeHandler(handler);
     }
 
 }

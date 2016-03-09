@@ -29,6 +29,14 @@ class Methods {
         final int schedule = annotation.run().scheduleFlag;
         final String names = annotation.on();
         final Class<?>[] types = method.getParameterTypes();
+        // 参数列表中，如果参数数量大于1, 则列表中不允许存在Object类型
+        if (types.length > 1) {
+            for (Class<?> type : types) {
+                if (Object.class.equals(type)) {
+                    throw new IllegalArgumentException("Args array contains <Object> type");
+                }
+            }
+        }
         return new MethodDefine(schedule, types, names);
     }
 

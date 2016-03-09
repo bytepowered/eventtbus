@@ -1,7 +1,8 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.internal.EventFilter;
-import com.github.yoojia.events.supports.ClassTypes;
+
+import static com.github.yoojia.events.supports.ClassTypes.lenientlyEquals;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
@@ -37,9 +38,11 @@ class InternalFilter implements EventFilter {
         if (defines.length == sources.length) {
             int hits = 0;
             final boolean[] used = new boolean[sources.length];
-            for (Class<?> def : defines) {
+            for (Class<?> defType : defines) {
                 for (int i = 0; i < sources.length; i++) {
-                    if ( !used[i] && ClassTypes.equalsIgnoreWrapType(def, sources[i])) {
+                    final Class<?> srcType = sources[i];
+                    if ( !used[i] &&
+                            (Object.class.equals(defType) || lenientlyEquals(defType, srcType))) {
                         hits += 1;
                         used[i] = true;
                         break;

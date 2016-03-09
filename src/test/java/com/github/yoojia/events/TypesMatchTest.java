@@ -2,7 +2,6 @@ package com.github.yoojia.events;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.omg.CORBA.Object;
 
 import java.util.ArrayList;
 import java.util.Arrays;

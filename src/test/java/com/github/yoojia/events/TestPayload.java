@@ -19,7 +19,7 @@ public class TestPayload {
         mCountDownLatch = new CountDownLatch(totalCalls);
     }
 
-    public final void await() throws InterruptedException {
+    public void await() throws InterruptedException {
         mCountDownLatch.await();
     }
 

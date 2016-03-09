@@ -1,13 +1,12 @@
 package com.github.yoojia.events.internal;
 
 import com.github.yoojia.events.supports.Filter;
+import com.github.yoojia.events.supports.ObjectReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.atomic.AtomicReference;
-
 import static com.github.yoojia.events.supports.Filters.filter;
 
 /**
@@ -20,7 +19,7 @@ public class Dispatcher {
 
     private final Schedule mSchedule;
     private final CopyOnWriteArrayList<Acceptor> mAcceptors = new CopyOnWriteArrayList<>();
-    private final AtomicReference<OnEventMissedListener> mEventMissedListener = new AtomicReference<OnEventMissedListener>(new OnEventMissedListener() {
+    private final ObjectReference<OnEventMissedListener> mEventMissedListener = new ObjectReference<OnEventMissedListener>(new OnEventMissedListener() {
         @Override
         public void onEvent(Object event) {
             Logger.debug("Dispatcher", "- Dead event: " + event);

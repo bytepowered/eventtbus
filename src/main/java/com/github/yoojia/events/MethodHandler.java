@@ -6,6 +6,8 @@ import com.github.yoojia.events.supports.ClassTypes;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
+import static com.github.yoojia.events.supports.ClassTypes.lenientlyEquals;
+
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 2.0
@@ -58,7 +60,9 @@ class MethodHandler implements EventHandler {
         final boolean[] used = new boolean[values.length];
         for (int i = 0; i < defineTypes.length; i++) {
             for (int j = 0; j < values.length; j++) {
-                if (!used[j] && ClassTypes.equalsIgnoreWrapType(defineTypes[i], payload.types[j])) {
+                final Class<?> defType = defineTypes[i];
+                if ( !used[j] &&
+                        (Object.class.equals(defType) || lenientlyEquals(defType, payload.types[j]))) {
                     values[i] = payload.values[j];
                     used[j] = true;
                     break;

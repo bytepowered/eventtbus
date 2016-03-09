@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author 陈小锅 (yoojia.chen@gmail.com)
@@ -39,7 +40,7 @@ public class DiffTypesTest {
 
         @Subscribe(on = "users")
         public void onEvents(String name, int age, Float weight) {
-            System.err.println("name=" + name + ", age=" + age + ", weight=" + weight);
+            System.err.println("[Typed args] name=" + name + ", age=" + age + ", weight=" + weight);
             assertThat(name, equalTo("yoojia"));
             assertThat(age, equalTo(99));
             assertThat(weight, equalTo(2048f));
