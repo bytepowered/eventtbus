@@ -17,18 +17,18 @@
 
 ## Benchmark
 
-`v1.4` 在 `OS X 10.11.3' / 2.6 GHz Intel Core i5 / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_60-b27)`环境下的性能对比情况如下表：
+`v2.0` 在 `OS X 10.11.3' / 2.6 GHz Intel Core i5 / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_60-b27)`环境下的性能对比情况如下表：
 
 测试类型/负载方式| TPS/QPS | 总投递时间 | 总运行时间 | 投递事件量
 ----|----|----|----|----
-MultiThreads(1ms Payload)	 | 2950		| 65ms		| 677ms		| 2000
-SharedThreads(1ms Payload)	 | 2892		| 9ms		| 691ms		| 2000
-CallerThread(1ms Payload)	 | 728		| 2743ms		| 2743ms		| 2000
-GuavaEvents(1ms Payload)	 | 714		| 2797ms		| 2797ms		| 2000
-MultiThreads(Nop Payload)	 | 2203562		| 903ms		| 907ms		| 2000000
-SharedThreads(Nop Payload)	 | 2030149		| 985ms		| 985ms		| 2000000
-CallerThread(Nop Payload)	 | 4788136		| 417ms		| 417ms		| 2000000
-GuavaEvents(Nop Payload)	 | 2309855		| 865ms		| 865ms		| 2000000
+MultiThreads(1ms Payload)	 | 2749		| 47ms		| 727ms		| 2000
+SharedThreads(1ms Payload)	 | 3012		| 8ms		| 663ms		| 2000
+CallerThread(1ms Payload)	 | 739		| 2705ms		| 2705ms		| 2000
+GuavaEvents(1ms Payload)	 | 717		| 2785ms		| 2785ms		| 2000
+MultiThreads(Nop Payload)	 | 1947582		| 1026ms	| 1026ms		| 2000000
+SharedThreads(Nop Payload)	 | 891257		| 2243ms	| 2244ms		| 2000000
+CallerThread(Nop Payload)	 | 3933523		| 508ms		| 508ms		| 2000000
+GuavaEvents(Nop Payload)	 | 2083789		| 959ms		| 959ms		| 2000000
 
 `v2.0` 在 `Ubuntu 14.04 LTS / 3.6 GHz AMD A8-5600K / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_65-b17) ` 环境下的性能对比情况如下：
 
