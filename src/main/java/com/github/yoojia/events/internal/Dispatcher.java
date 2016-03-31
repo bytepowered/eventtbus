@@ -49,12 +49,12 @@ public class Dispatcher {
 
     public void emit(Object event) {
         // 快速匹配触发事件的EventHandler, 然后由调度器来处理
-        final List<EventHandler> eventHandlers = matchedHandlers(event);
-        if (eventHandlers.isEmpty()) {
+        final List<EventHandler> handlers = findMatchedHandlers(event);
+        if (handlers.isEmpty()) {
             final OnEventMissedListener missed = mEventMissedListener.get();
             missed.onEvent(event);
         }else{
-            mSchedule.submit(event, eventHandlers);
+            mSchedule.submit(event, handlers);
         }
     }
 
@@ -62,16 +62,16 @@ public class Dispatcher {
         mEventMissedListener.set(listener);
     }
 
-    private List<EventHandler> matchedHandlers(Object event) {
-        final ArrayList<EventHandler> handlers = new ArrayList<>(GUESS);
+    private List<EventHandler> findMatchedHandlers(Object event) {
+        final ArrayList<EventHandler> matched = new ArrayList<>(GUESS);
         final int size = mAcceptors.size();
         for (int i = 0; i < size; i++) {
             final Acceptor acceptor = mAcceptors.get(i);
             if (acceptor.accept(event)) {
-                handlers.add(acceptor.handler);
+                matched.add(acceptor.handler);
             }
         }
-        return handlers;
+        return matched;
     }
 
 }

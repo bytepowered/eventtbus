@@ -6,6 +6,11 @@ package com.github.yoojia.events.supports;
  */
 public class ClassTypes {
 
+    /**
+     * 获取指定类型的包装类型。包装类型只对Java基础类型生效，其它类型返回本身类型。
+     * @param type 指定类型
+     * @return 包装类型或者本身类型
+     */
     public static Class<?> wrap(Class<?> type){
         if(byte.class.equals(type) || Byte.class.equals(type)) return Byte.class;
         else if(short.class.equals(type) || Short.class.equals(type)) return Short.class;
@@ -19,9 +24,15 @@ public class ClassTypes {
         else return type;
     }
 
-    public static boolean lenientlyEquals(Class<?> src, Class<?> to) {
-        final Class<?> _src = src.isPrimitive() ? wrap(src): src;
-        final Class<?> _to = to.isPrimitive() ? wrap(to) : to;
-        return _src.equals(_to);
+    /**
+     * 宽泛的比较类型是否相等。如果是Java基础类型，则包装类型与原类型也相等。
+     * @param a 需要比较的类型
+     * @param b 需要比较的类型
+     * @return
+     */
+    public static boolean lenientlyEquals(Class<?> a, Class<?> b) {
+        final Class<?> _a = a.isPrimitive() ? wrap(a): a;
+        final Class<?> _b = b.isPrimitive() ? wrap(b) : b;
+        return _a.equals(_b);
     }
 }

@@ -4,6 +4,7 @@ import java.util.AbstractList;
 import java.util.RandomAccess;
 
 /**
+ * 最简不可变列表
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.3
  */
