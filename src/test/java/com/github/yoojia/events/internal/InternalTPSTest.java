@@ -1,6 +1,7 @@
 package com.github.yoojia.events.internal;
 
 import com.github.yoojia.events.$TestCase;
+import com.github.yoojia.events.SharedSchedule;
 import com.github.yoojia.events.TestPayload;
 import org.junit.Test;
 
@@ -36,7 +37,7 @@ public class InternalTPSTest extends $TestCase {
 
         @Override
         public int scheduleType() {
-            return Schedule.ON_CALLER_THREAD;
+            return Scheduler0.ON_CALLER_THREAD;
         }
     }
 

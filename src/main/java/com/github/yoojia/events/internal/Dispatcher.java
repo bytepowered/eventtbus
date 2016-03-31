@@ -17,7 +17,7 @@ public class Dispatcher {
 
     private static final int GUESS = 2;
 
-    private final Schedule mSchedule;
+    private final Scheduler mSchedule;
     private final CopyOnWriteArrayList<Acceptor> mAcceptors = new CopyOnWriteArrayList<>();
     private final ObjectReference<OnEventMissedListener> mEventMissedListener = new ObjectReference<OnEventMissedListener>(new OnEventMissedListener() {
         @Override
@@ -26,7 +26,11 @@ public class Dispatcher {
         }
     });
 
-    public Dispatcher(Schedule schedule) {
+    public Dispatcher(){
+        this(new Scheduler0());
+    }
+
+    public Dispatcher(Scheduler schedule) {
         mSchedule = schedule;
     }
 

@@ -23,7 +23,7 @@ public class NextEvents{
         this(SharedSchedule.getDefault());
     }
 
-    public NextEvents(Schedule schedule) {
+    public NextEvents(Scheduler schedule) {
         notNull(schedule, "schedule == null");
         mDispatcher = new Dispatcher(schedule);
         mDispatcher.setOnEventMissedListener(new OnEventMissedListener() {

@@ -2,7 +2,6 @@ package com.github.yoojia.events;
 
 import com.github.yoojia.events.internal.*;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -11,26 +10,15 @@ import java.util.concurrent.ExecutorService;
  */
 public class Schedules {
 
-    public static Schedule newService(ExecutorService workers) {
-        return new Schedule(workers, workers);
+    public static Scheduler newService(ExecutorService workers) {
+        return new ThreadsSchedule(workers, workers);
     }
 
-    public static Schedule sharedThreads(){
+    public static Scheduler sharedThreads(){
         return SharedSchedule.getDefault();
     }
 
-    public static Schedule newCaller(){
-        return new Schedule() {
-            @Override
-            public void submit(Object event, List<EventHandler> handlers) {
-                for (EventHandler handler : handlers) {
-                    final int type = handler.scheduleType();
-                    if (Schedule.ON_CALLER_THREAD != type) {
-                        System.err.println("Ignore <ScheduleType> on Caller Schedule");
-                    }
-                    new EventRunner(event, handler).run();
-                }
-            }
-        };
+    public static Scheduler newCaller(){
+        return new Scheduler0();
     }
 }

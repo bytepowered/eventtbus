@@ -1,13 +1,11 @@
 package com.github.yoojia.events.internal;
 
+import com.github.yoojia.events.SharedSchedule;
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -19,9 +17,7 @@ public class DispatcherTestCase {
 
     public static final int THREAD_COUNT = 10;
 
-    final static ExecutorService loop = Executors.newSingleThreadExecutor();
-    final static ExecutorService worker = Executors.newCachedThreadPool();
-    final static Schedule schedule = new Schedule(loop, worker);
+    final static SharedSchedule schedule = new SharedSchedule();
 
     final Dispatcher dispatcher = new Dispatcher(schedule);
 
@@ -46,7 +42,7 @@ public class DispatcherTestCase {
 
             @Override
             public int scheduleType() {
-                return Schedule.ON_THREADS;
+                return Scheduler0.ON_THREADS;
             }
 
         };
@@ -84,7 +80,7 @@ public class DispatcherTestCase {
 
             @Override
             public int scheduleType() {
-                return Schedule.ON_CALLER_THREAD;
+                return Scheduler0.ON_CALLER_THREAD;
             }
         };
 
@@ -165,7 +161,7 @@ public class DispatcherTestCase {
 
             @Override
             public int scheduleType() {
-                return Schedule.ON_MAIN_THREAD;
+                return Scheduler0.ON_MAIN_THREAD;
             }
         };
         dispatcher.addHandler(main, new EventFilter() {
@@ -199,7 +195,7 @@ public class DispatcherTestCase {
 
             @Override
             public int scheduleType() {
-                return Schedule.ON_CALLER_THREAD;
+                return Scheduler0.ON_CALLER_THREAD;
             }
         };
         dispatcher.addHandler(caller, new EventFilter() {

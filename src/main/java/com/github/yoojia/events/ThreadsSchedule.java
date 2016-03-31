@@ -1,19 +1,17 @@
-package com.github.yoojia.events.internal;
+package com.github.yoojia.events;
+
+import com.github.yoojia.events.internal.*;
 
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ExecutorService;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.2
+ * @since 2.0
  */
-public class Schedule {
-
-    public static final int ON_MAIN_THREAD = 1000;
-    public static final int ON_CALLER_THREAD = 2000;
-    public static final int ON_THREADS = 3000;
+public class ThreadsSchedule implements Scheduler {
 
     private final Queue<Element> mLoopTasks = new ConcurrentLinkedQueue<>();
 
@@ -23,35 +21,31 @@ public class Schedule {
     private final ScheduleLooper mLooper = new ScheduleLooper() {
         @Override
         protected void step() {
-            final Element e = mLoopTasks.poll();
-            if (e == null) {
+            final Element el = mLoopTasks.poll();
+            if (el == null) {
                 await();
             }else{
-                invoke(e.handler.scheduleType(), e.event, e.handler);
+                invoke(el.scheduleType, el.event, el.handler);
             }
         }
     };
 
-    public Schedule() {
-        mWorkerThreads = null;
-        mLoopThread = null;
-    }
-
-    public Schedule(ExecutorService loopThread, ExecutorService workerThreads) {
+    public ThreadsSchedule(ExecutorService workerThreads, ExecutorService loopThread) {
         mWorkerThreads = workerThreads;
         mLoopThread = loopThread;
         mLoopThread.submit(mLooper);
     }
 
+    @Override
     public void submit(Object event, List<EventHandler> handlers) {
         // 如果是 CALLER 方式, 直接在此处执行.
         // 其它方式在线程池处理再做处理
         for (EventHandler handler : handlers) {
             final int type = handler.scheduleType();
-            if (Schedule.ON_CALLER_THREAD == type) {
+            if (Scheduler0.ON_CALLER_THREAD == type) {
                 new EventRunner(event, handler).run();
             }else{
-                mLoopTasks.offer(new Element(event, handler));
+                mLoopTasks.offer(new Element(event, handler, type));
                 synchronized (mLooper) {
                     mLooper.notify();
                 }
@@ -69,28 +63,16 @@ public class Schedule {
 
     protected void invoke(int type, Object event, EventHandler handler) {
         switch (type) {
-            case Schedule.ON_THREADS:
+            case Scheduler0.ON_THREADS:
                 mWorkerThreads.submit(new EventRunner(event, handler));
                 break;
-            case Schedule.ON_MAIN_THREAD:
+            case Scheduler0.ON_MAIN_THREAD:
                 handler.onErrors(new IllegalArgumentException("Unsupported <ON_MAIN_THREAD> schedule type! " ));
                 break;
             default:
                 handler.onErrors(new IllegalArgumentException("Unsupported schedule type: " + type));
                 break;
         }
-    }
-
-    private final static class Element {
-
-        public final Object event;
-        public final EventHandler handler;
-
-        private Element(Object event, EventHandler handler) {
-            this.event = event;
-            this.handler = handler;
-        }
-
     }
 
 }

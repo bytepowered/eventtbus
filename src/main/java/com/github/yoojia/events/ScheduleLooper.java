@@ -1,4 +1,4 @@
-package com.github.yoojia.events.internal;
+package com.github.yoojia.events;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
@@ -11,6 +11,7 @@ abstract class ScheduleLooper implements Runnable{
         while ( ! Thread.interrupted()) {
             step();
         }
+        throw new RuntimeException("Schedule looper is STOP !");
     }
 
     protected final void await(){
