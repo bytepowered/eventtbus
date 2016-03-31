@@ -1,7 +1,6 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.internal.Scheduler;
-import com.github.yoojia.events.internal.Scheduler0;
 import com.google.common.eventbus.EventBus;
 import org.junit.AfterClass;
 import org.junit.Test;

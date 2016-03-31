@@ -7,9 +7,9 @@ package com.github.yoojia.events.internal;
 public final class EventRunner implements Runnable{
 
     private final Object mEvent;
-    private final EventHandler mHandler;
+    private final Handler mHandler;
 
-    public EventRunner(Object event, EventHandler handler) {
+    public EventRunner(Object event, Handler handler) {
         this.mEvent = event;
         this.mHandler = handler;
     }

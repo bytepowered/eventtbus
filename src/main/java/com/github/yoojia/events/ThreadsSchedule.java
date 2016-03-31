@@ -5,7 +5,6 @@ import com.github.yoojia.events.internal.*;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
@@ -37,12 +36,13 @@ public class ThreadsSchedule implements Scheduler {
     }
 
     @Override
-    public void submit(Object event, List<EventHandler> handlers) {
+    public void submit(Object event, List<? extends Handler> handlers) {
         // 如果是 CALLER 方式, 直接在此处执行.
         // 其它方式在线程池处理再做处理
-        for (EventHandler handler : handlers) {
+        for (Handler item : handlers) {
+            final EventHandler handler = (EventHandler) item;
             final int type = handler.scheduleType();
-            if (Scheduler0.ON_CALLER_THREAD == type) {
+            if (ScheduleType.ON_CALLER_THREAD == type) {
                 new EventRunner(event, handler).run();
             }else{
                 mLoopTasks.offer(new Element(event, handler, type));
@@ -61,12 +61,12 @@ public class ThreadsSchedule implements Scheduler {
         return mLoopThread;
     }
 
-    protected void invoke(int type, Object event, EventHandler handler) {
+    protected void invoke(int type, Object event, Handler handler) {
         switch (type) {
-            case Scheduler0.ON_THREADS:
+            case ScheduleType.ON_THREADS:
                 mWorkerThreads.submit(new EventRunner(event, handler));
                 break;
-            case Scheduler0.ON_MAIN_THREAD:
+            case ScheduleType.ON_MAIN_THREAD:
                 handler.onErrors(new IllegalArgumentException("Unsupported <ON_MAIN_THREAD> schedule type! " ));
                 break;
             default:

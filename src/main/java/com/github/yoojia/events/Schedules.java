@@ -1,7 +1,10 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.internal.*;
+import com.github.yoojia.events.internal.EventRunner;
+import com.github.yoojia.events.internal.Handler;
+import com.github.yoojia.events.internal.Scheduler;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 
 /**
@@ -18,7 +21,15 @@ public class Schedules {
         return SharedSchedule.getDefault();
     }
 
-    public static Scheduler newCaller(){
-        return new Scheduler0();
+    public static Scheduler newCaller() {
+        return new Scheduler() {
+
+            @Override
+            public void submit(Object event, List<? extends Handler> handlers) {
+                for (Handler handler : handlers) {
+                    new EventRunner(event, handler).run();
+                }
+            }
+        };
     }
 }

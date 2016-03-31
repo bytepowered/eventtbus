@@ -1,7 +1,5 @@
 package com.github.yoojia.events.internal;
 
-import com.github.yoojia.events.SharedSchedule;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -17,9 +15,7 @@ public class DispatcherTestCase {
 
     public static final int THREAD_COUNT = 10;
 
-    final static SharedSchedule schedule = new SharedSchedule();
-
-    final Dispatcher dispatcher = new Dispatcher(schedule);
+    final Dispatcher dispatcher = new Dispatcher();
 
     @Test
     public void testThreads() throws InterruptedException {
@@ -27,7 +23,7 @@ public class DispatcherTestCase {
         dispatcher.emit(1024.0f);
 
         final CountDownLatch counting = new CountDownLatch(THREAD_COUNT);
-        final EventHandler threads = new EventHandler() {
+        final Handler threads = new Handler() {
             @Override
             public void onEvent(Object event) throws Exception {
                 counting.countDown();
@@ -38,11 +34,6 @@ public class DispatcherTestCase {
             @Override
             public void onErrors(Exception errors) {
                 errors.printStackTrace();
-            }
-
-            @Override
-            public int scheduleType() {
-                return Scheduler0.ON_THREADS;
             }
 
         };
@@ -67,7 +58,7 @@ public class DispatcherTestCase {
     @Test
     public void testCaller(){
         final AtomicInteger callerThreadId = new AtomicInteger(-9);
-        final EventHandler caller = new EventHandler() {
+        final Handler caller = new Handler() {
             @Override
             public void onEvent(Object event) throws Exception {
                 callerThreadId.set((int) Thread.currentThread().getId());
@@ -78,10 +69,6 @@ public class DispatcherTestCase {
                 errors.printStackTrace();
             }
 
-            @Override
-            public int scheduleType() {
-                return Scheduler0.ON_CALLER_THREAD;
-            }
         };
 
         dispatcher.addHandler(caller, new EventFilter() {
@@ -115,73 +102,8 @@ public class DispatcherTestCase {
     }
 
     @Test
-    public void testUnknownScheduleFlag() throws InterruptedException {
-        final CountDownLatch counting = new CountDownLatch(1);
-        final EventHandler unknown = new EventHandler() {
-            @Override
-            public void onEvent(Object event) throws Exception {}
-
-            @Override
-            public void onErrors(Exception errors) {
-                counting.countDown();
-            }
-
-            @Override
-            public int scheduleType() {
-                return 9999;
-            }
-        };
-        dispatcher.addHandler(unknown, new EventFilter() {
-            @Override
-            public boolean accept(Object item) {
-                return true;
-            }
-        });
-
-        try{
-            dispatcher.emit("unknown-flag");
-            counting.await();
-        }finally {
-            dispatcher.removeHandler(unknown);
-        }
-
-    }
-
-    @Test
-    public void testMainScheduleFlag() throws InterruptedException {
-        final CountDownLatch counting = new CountDownLatch(1);
-        final EventHandler main = new EventHandler() {
-            @Override
-            public void onEvent(Object event) throws Exception {}
-
-            @Override
-            public void onErrors(Exception errors) {
-                counting.countDown();
-            }
-
-            @Override
-            public int scheduleType() {
-                return Scheduler0.ON_MAIN_THREAD;
-            }
-        };
-        dispatcher.addHandler(main, new EventFilter() {
-            @Override
-            public boolean accept(Object item) {
-                return true;
-            }
-        });
-
-        try{
-            dispatcher.emit("main-flag");
-            counting.await();
-        }finally {
-            dispatcher.removeHandler(main);
-        }
-    }
-
-    @Test
     public void testErrorOnErrors(){
-        final EventHandler caller = new EventHandler() {
+        final Handler caller = new Handler() {
             @Override
             public void onEvent(Object event) throws Exception {
                 throw new IllegalArgumentException("ERROR-EVENTS:");
@@ -193,10 +115,6 @@ public class DispatcherTestCase {
                 throw new IllegalStateException("ERROR-ON-ERRORS");
             }
 
-            @Override
-            public int scheduleType() {
-                return Scheduler0.ON_CALLER_THREAD;
-            }
         };
         dispatcher.addHandler(caller, new EventFilter() {
             @Override
@@ -209,9 +127,4 @@ public class DispatcherTestCase {
         dispatcher.removeHandler(caller);
     }
 
-    @AfterClass
-    public static void after(){
-        schedule.getWorkerThreads().shutdownNow();
-        schedule.getLoopThread().shutdownNow();
-    }
 }

@@ -11,10 +11,10 @@ import java.util.List;
  */
 public class Acceptor implements Filter<Object>{
 
-    public final EventHandler handler;
+    public final Handler handler;
     public final ImmutableList<EventFilter> filters;
 
-    public Acceptor(EventHandler handler, List<EventFilter> source) {
+    public Acceptor(Handler handler, List<EventFilter> source) {
         this.handler = handler;
         this.filters = new ImmutableList<>(source.toArray(new EventFilter[source.size()]));
     }
