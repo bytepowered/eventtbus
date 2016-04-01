@@ -1,5 +1,7 @@
 # NextEvents
 
+[![BuildStatus](https://travis-ci.org/yoojia/NextEvents.svg)](https://travis-ci.org/yoojia/NextEvents)
+
 ## 已支持特性
 
 - 支持使用EventHandler接口回调；
