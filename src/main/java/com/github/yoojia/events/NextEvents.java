@@ -23,7 +23,7 @@ public class NextEvents{
         this(SharedSchedule.getDefault());
     }
 
-    public NextEvents(Schedule schedule) {
+    public NextEvents(Scheduler schedule) {
         notNull(schedule, "schedule == null");
         mDispatcher = new Dispatcher(schedule);
         mDispatcher.setOnEventMissedListener(new OnEventMissedListener() {
@@ -91,19 +91,19 @@ public class NextEvents{
         mThisEventMissedListener.set(listener);
     }
 
-    public void addHandler(EventHandler handler, EventFilter filter) {
+    public void addHandler(Handler handler, EventFilter filter) {
         notNull(handler, "handler == null");
         notNull(filter, "filter == null");
         mDispatcher.addHandler(handler, filter);
     }
 
-    public void addHandler(EventHandler handler, List<EventFilter> filters) {
+    public void addHandler(Handler handler, List<EventFilter> filters) {
         notNull(handler, "handler == null");
         notNull(filters, "filters == null");
         mDispatcher.addHandler(handler, filters);
     }
 
-    public void removeHandler(EventHandler handler) {
+    public void removeHandler(Handler handler) {
         mDispatcher.removeHandler(handler);
     }
 

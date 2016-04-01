@@ -1,4 +1,4 @@
-package com.github.yoojia.events.internal;
+package com.github.yoojia.events;
 
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
-public class SharedSchedule extends Schedule {
+public class SharedSchedule extends ThreadsSchedule {
 
     protected static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     protected static final int CORE_POOL_SIZE = CPU_COUNT + 1;
@@ -21,6 +21,7 @@ public class SharedSchedule extends Schedule {
         public Thread newThread(Runnable r) {
             return new Thread(r, "SharedThread #" + mCount.getAndIncrement());
         }
+
     };
 
     protected static BlockingQueue<Runnable> QUEUE;
@@ -51,12 +52,12 @@ public class SharedSchedule extends Schedule {
         }
     }
 
-    public static void shutdown(){
-        EXECUTOR.shutdown();
-    }
-
     public SharedSchedule() {
         super(EXECUTOR, EXECUTOR);
+    }
+
+    public static void shutdown(){
+        EXECUTOR.shutdown();
     }
 
 }

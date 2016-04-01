@@ -11,22 +11,22 @@ import java.util.List;
  */
 public class Acceptor implements Filter<Object>{
 
-    public final EventHandler handler;
+    public final Handler handler;
     public final ImmutableList<EventFilter> filters;
 
-    private final int mCount;
-
-    public Acceptor(EventHandler handler, List<EventFilter> source) {
+    public Acceptor(Handler handler, List<EventFilter> source) {
         this.handler = handler;
-        mCount = source.size();
-        this.filters = new ImmutableList<>(source.toArray(new EventFilter[mCount]));
+        this.filters = new ImmutableList<>(source.toArray(new EventFilter[source.size()]));
     }
 
     @Override
     public boolean accept(Object event) {
-        for (int i = 0; i < mCount; i++) {
+        final int size = filters.size();
+        for (int i = 0; i < size; i++) {
             final EventFilter f = filters.get(i);
-            if (! f.accept(event)) return false;
+            if (! f.accept(event)) {
+                return false;
+            }
         }
         return true;
     }

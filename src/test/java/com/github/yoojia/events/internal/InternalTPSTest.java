@@ -1,7 +1,6 @@
 package com.github.yoojia.events.internal;
 
-import com.github.yoojia.events.$TestCase;
-import com.github.yoojia.events.TestPayload;
+import com.github.yoojia.events.*;
 import org.junit.Test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -36,7 +35,7 @@ public class InternalTPSTest extends $TestCase {
 
         @Override
         public int scheduleType() {
-            return Schedule.ON_CALLER_THREAD;
+            return ScheduleType.ON_CALLER_THREAD;
         }
     }
 

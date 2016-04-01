@@ -1,8 +1,5 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.internal.EventHandler;
-import com.github.yoojia.events.supports.ClassTypes;
-
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Method;
 
