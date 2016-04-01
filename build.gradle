@@ -8,13 +8,6 @@ plugins {
     id "com.jfrog.bintray" version "1.6"
 }
 
-ext{
-    publishVersion = '2.0'
-}
-
-group 'com.github.yoojia'
-version publishVersion
-
 apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
@@ -27,18 +20,69 @@ repositories {
     mavenCentral()
 }
 
+dependencies {
+    testCompile 'com.google.guava:guava:19.0'
+    testCompile 'junit:junit:4.11'
+}
+
+ext{
+    projVersion = '2.0'
+    projName = 'NextEvents'
+    projDesc = 'NextEvents: A Java Event Bus Library'
+    projURL = "https://github.com/yoojia/NextEvents"
+    projVCS = "https://github.com/yoojia/NextEvents.git"
+}
+
+group 'com.github.yoojia'
+version projVersion
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+def pomConfig = {
+
+    name projName
+    url projURL
+    inceptionYear '2016'
+
+    scm { url projVCS }
+
+    developers {
+        developer {
+            id 'yoojia'
+            name 'Yoojia Chen'
+            email 'yoojiachen@gmail.com'
+            url 'https://yoojia.github.io'
+        }
+    }
+
+}
+
 publishing {
     publications {
         MavenJava(MavenPublication) {
             from components.java
             groupId 'com.github.yoojia'
             artifactId 'next-events'
-            version publishVersion
+            version projVersion
+
+            artifact sourcesJar
+            artifact javadocJar
+
+            pom.withXml {
+                asNode().children().last() + pomConfig
+                asNode().appendNode("description", projDesc)
+                def licencesNode = asNode().appendNode('licenses')
+                def licenseNode = licencesNode.appendNode('license')
+                licenseNode.appendNode('name', 'The Apache Software License, Version 2.0')
+                licenseNode.appendNode('url', 'http://www.apache.org/licenses/LICENSE-2.0.txt')
+                licenseNode.appendNode('distribution', 'repo')
+            }
         }
     }
 }
 
-// custom tasks for creating source/javadoc jars
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
@@ -60,7 +104,6 @@ javadoc {
     }
 }
 
-// add javadoc/source jar tasks as artifacts
 artifacts {
     archives sourcesJar, javadocJar
 }
@@ -69,24 +112,33 @@ bintray {
     user = project.hasProperty('bintrayUser') ? project.property('bintrayUser') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
     publications = ['MavenJava']
+
+    dryRun = false
+    publish = true // 是否自动发布
+
     pkg {
         repo = 'maven'
-        name = 'NextEvents'
+        name = projName
         userOrg = 'yoojia'
         licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/yoojia/NextEvents.git'
+        vcsUrl = projVCS
         labels = ['Java', 'Event Bus']
-        publicDownloadNumbers = true
-        version {
-            name = publishVersion
-            desc = 'NextEvent library '.concat(publishVersion)
-            vcsTag = publishVersion
-            attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin']
-        }
-    }
-}
 
-dependencies {
-    testCompile 'com.google.guava:guava:19.0'
-    testCompile group: 'junit', name: 'junit', version: '4.11'
+        publicDownloadNumbers = true
+
+        version {
+            name = projVersion
+            desc = projDesc
+            vcsTag = projVersion
+            attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin']
+
+            mavenCentralSync {
+                sync = true
+                user = project.hasProperty('SONATYPE_USER') ? project.property('SONATYPE_USER') : ""
+                password = project.hasProperty('SONATYPE_PASS') ? project.property('SONATYPE_PASS') : ""
+                close = '1'
+            }
+        }
+
+    }
 }
