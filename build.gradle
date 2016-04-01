@@ -132,6 +132,10 @@ bintray {
             vcsTag = projVersion
             attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin']
 
+            gpg {
+                sign = true
+            }
+
             mavenCentralSync {
                 sync = true
                 user = project.hasProperty('SONATYPE_USER') ? project.property('SONATYPE_USER') : ""
