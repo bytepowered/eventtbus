@@ -2,7 +2,6 @@ package com.github.yoojia.events;
 
 import com.github.yoojia.events.internal.*;
 import com.github.yoojia.events.supports.Filter;
-import com.github.yoojia.events.supports.ObjectReference;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -19,7 +18,7 @@ public class NextEvents{
     private final ObjectCached mObjectCached = new ObjectCached();
 
     public NextEvents() {
-        this(SharedSchedule.getDefault());
+        this(SharedScheduler.getDefault());
     }
 
     public NextEvents(Scheduler schedule) {
