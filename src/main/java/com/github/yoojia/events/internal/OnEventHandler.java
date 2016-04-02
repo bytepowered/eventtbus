@@ -8,8 +8,8 @@ public interface OnEventHandler {
 
     /**
      * 处理事件。
-     * @param event
-     * @return
+     * @param event 事件对象
+     * @return 是否中断事件传递
      */
     boolean handleEvent(Object event);
 
