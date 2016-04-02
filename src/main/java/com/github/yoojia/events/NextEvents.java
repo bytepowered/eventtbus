@@ -21,9 +21,9 @@ public class NextEvents{
         this(SharedScheduler.getDefault());
     }
 
-    public NextEvents(Scheduler schedule) {
-        notNull(schedule, "schedule == null");
-        mDispatcher = new Dispatcher(schedule);
+    public NextEvents(Scheduler scheduler) {
+        notNull(scheduler, "scheduler == null");
+        mDispatcher = new Dispatcher(scheduler);
         mDispatcher.addOnEventHandler(new OnEventHandler() {
             @Override
             public boolean handleEvent(Object event) {

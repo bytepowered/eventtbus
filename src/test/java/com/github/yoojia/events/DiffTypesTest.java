@@ -38,7 +38,7 @@ public class DiffTypesTest {
             super(count);
         }
 
-        @Subscribe(on = "users")
+        @Subscribe(events = "users")
         public void onEvents(String name, int age, Float weight) {
             System.err.println("[Typed args] name=" + name + ", age=" + age + ", weight=" + weight);
             assertThat(name, equalTo("yoojia"));
