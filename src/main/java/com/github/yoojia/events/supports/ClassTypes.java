@@ -28,7 +28,7 @@ public class ClassTypes {
      * 宽泛的比较类型是否相等。如果是Java基础类型，则包装类型与原类型也相等。
      * @param a 需要比较的类型
      * @param b 需要比较的类型
-     * @return
+     * @return 宽泛的比较类型是否相等
      */
     public static boolean lenientlyEquals(Class<?> a, Class<?> b) {
         final Class<?> _a = a.isPrimitive() ? wrap(a): a;

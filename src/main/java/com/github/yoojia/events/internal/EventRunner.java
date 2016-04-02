@@ -22,7 +22,6 @@ public final class EventRunner implements Runnable{
             try{
                 mHandler.onErrors(errors);
             }catch (Throwable throwable) {
-                // 在处理错误时还抛出异常,那就只打印异常栈信息了
                 throwable.printStackTrace();
             }
         }

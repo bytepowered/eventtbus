@@ -40,10 +40,17 @@ public class InternalTPSTest extends $TestCase {
     }
 
     @Test
-    public void test(){
+    public void testWithSharedSchedule(){
+        testWithSchedule(SharedSchedule.getDefault(), "SharedSchedule");
+    }
 
-        Dispatcher dispatcher = new Dispatcher(SharedSchedule.getDefault());
+    @Test
+    public void testWithCallerSchedule(){
+        testWithSchedule(new SchedulerImpl(), "CallerSchedule");
+    }
 
+    public void testWithSchedule(Scheduler scheduler, String tag){
+        Dispatcher dispatcher = new Dispatcher(scheduler);
         TestEventHandler payload = new TestEventHandler(COUNT_NOP);
 
         dispatcher.addHandler(payload, new EventFilter() {
@@ -75,6 +82,6 @@ public class InternalTPSTest extends $TestCase {
 
         // MyUbuntu: 6282669,     7030129,    7452475,    7458617
         // MyWin10:  15066775,    16627232,   16574237
-        printStatistics("Dispatch.TPS/QPS", timeBeforeEmits, timeAfterEmits, payload.totalCalls);
+        printStatistics("[" + tag + ".TPS/QPS", timeBeforeEmits, timeAfterEmits, payload.totalCalls);
     }
 }

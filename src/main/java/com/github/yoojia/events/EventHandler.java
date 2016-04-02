@@ -8,5 +8,9 @@ import com.github.yoojia.events.internal.Handler;
  */
 public interface EventHandler extends Handler {
 
+    /**
+     * 自定义事件处理Handler的线程调度类型
+     * @return Int type
+     */
     int scheduleType();
 }

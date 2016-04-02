@@ -17,7 +17,6 @@ public class NextEvents{
 
     private final Dispatcher mDispatcher;
     private final ObjectCached mObjectCached = new ObjectCached();
-    private final ObjectReference<OnEventMissedListener> mThisEventMissedListener = new ObjectReference<>();
 
     public NextEvents() {
         this(SharedSchedule.getDefault());
@@ -26,21 +25,19 @@ public class NextEvents{
     public NextEvents(Scheduler schedule) {
         notNull(schedule, "schedule == null");
         mDispatcher = new Dispatcher(schedule);
-        mDispatcher.setOnEventMissedListener(new OnEventMissedListener() {
+        mDispatcher.addOnEventHandler(new OnEventHandler() {
             @Override
-            public void onEvent(Object missedEvent) {
-                final PayloadEvent payload = (PayloadEvent) missedEvent;
-                // 非DeadEvent事件，包装为DeadEvent继续处理
-                if (PayloadEvent.DEAD_EVENT.equals(payload.name)) {
-                    final OnEventMissedListener listener = mThisEventMissedListener.get();
-                    if (listener != null) {
-                        listener.onEvent(missedEvent);
+            public boolean handleEvent(Object event) {
+                final boolean isDeadEvent = event instanceof DeadEvent;
+                if (isDeadEvent) {
+                    final PayloadEvent payload = (PayloadEvent) ((DeadEvent) event).raw;
+                    if (PayloadEvent.DEAD_EVENT.equals(payload.name)) {
+                        Logger.debug("NextEvents", "- No handlers for DEAD-EVENT: " + payload);
                     }else{
-                        Logger.debug("NextEvents", "- Dead event missed: " + missedEvent);
+                        emit(new PayloadEvent(PayloadEvent.DEAD_EVENT, payload.values));
                     }
-                }else{
-                    emit(new PayloadEvent(PayloadEvent.DEAD_EVENT, payload.values));
                 }
+                return isDeadEvent;
             }
         });
     }
@@ -84,11 +81,6 @@ public class NextEvents{
         }else {
             throw new IllegalArgumentException("Call emit(PayloadEvent) instead");
         }
-    }
-
-    public void setOnEventMissedListener(OnEventMissedListener listener) {
-        notNull(listener, "listener == null");
-        mThisEventMissedListener.set(listener);
     }
 
     public void addHandler(Handler handler, EventFilter filter) {

@@ -1,5 +1,6 @@
 package com.github.yoojia.events;
 
+import com.github.yoojia.events.internal.DeadEvent;
 import com.github.yoojia.events.internal.EventFilter;
 
 import static com.github.yoojia.events.supports.ClassTypes.lenientlyEquals;
@@ -18,7 +19,8 @@ class InternalFilter implements EventFilter {
 
     @Override
     public boolean accept(Object event) {
-        final PayloadEvent payload = (PayloadEvent) event;
+        final PayloadEvent payload = (PayloadEvent)
+                (event instanceof DeadEvent ? ((DeadEvent) event).raw : event);
         if (mDefine.types.length == 0) {
             return isNamesMatched(payload.name);
         }else{

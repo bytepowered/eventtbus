@@ -90,11 +90,14 @@ public class DispatcherTestCase {
     @Test
     public void testEventMissed(){
         final AtomicBoolean missedFlag = new AtomicBoolean(false);
-        dispatcher.setOnEventMissedListener(new OnEventMissedListener() {
+        dispatcher.addOnEventHandler(new OnEventHandler() {
             @Override
-            public void onEvent(Object event) {
-                missedFlag.set(true);
-                System.err.println("- missed event: " + event);
+            public boolean handleEvent(Object event) {
+                if (event instanceof DeadEvent) {
+                    missedFlag.set(true);
+                    System.err.println("- missed event: " + event);
+                }
+                return true;
             }
         });
         dispatcher.emit(10000L);

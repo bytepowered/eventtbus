@@ -1,7 +1,6 @@
 package com.github.yoojia.events.internal;
 
 import com.github.yoojia.events.supports.Filter;
-import com.github.yoojia.events.supports.ObjectReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,12 +18,7 @@ public class Dispatcher {
 
     private final Scheduler mSchedule;
     private final CopyOnWriteArrayList<Acceptor> mAcceptors = new CopyOnWriteArrayList<>();
-    private final ObjectReference<OnEventMissedListener> mEventMissedListener = new ObjectReference<OnEventMissedListener>(new OnEventMissedListener() {
-        @Override
-        public void onEvent(Object event) {
-            Logger.debug("Dispatcher", "- Dead event: " + event);
-        }
-    });
+    private final CopyOnWriteArrayList<OnEventHandler> mHandlers = new CopyOnWriteArrayList<>();
 
     public Dispatcher(){
         this(new SchedulerImpl());
@@ -54,16 +48,26 @@ public class Dispatcher {
     public void emit(Object event) {
         // 快速匹配触发事件的EventHandler, 然后由调度器来处理
         final List<Handler> handlers = findMatchedHandlers(event);
-        if (handlers.isEmpty()) {
-            final OnEventMissedListener missed = mEventMissedListener.get();
-            missed.onEvent(event);
+        if (handlers.isEmpty() && !(event instanceof DeadEvent)) {
+            emit(new DeadEvent(event));
         }else{
+            final int size = mHandlers.size();
+            for (int i = 0; i < size; i++) {
+                final OnEventHandler handler = mHandlers.get(i);
+                if (handler.handleEvent(event)) {
+                    return;
+                }
+            }
             mSchedule.submit(event, handlers);
         }
     }
 
-    public void setOnEventMissedListener(OnEventMissedListener listener) {
-        mEventMissedListener.set(listener);
+    public void addOnEventHandler(OnEventHandler handler) {
+        mHandlers.add(handler);
+    }
+
+    public void removeOnEventHandler(OnEventHandler handler) {
+        mHandlers.remove(handler);
     }
 
     private List<Handler> findMatchedHandlers(Object event) {

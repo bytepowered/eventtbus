@@ -17,7 +17,6 @@ import java.util.concurrent.ConcurrentHashMap;
 class ObjectCached {
 
     private final Map<Object, Acceptors> mAcceptorCache = new ConcurrentHashMap<>();
-    private final Object mLock = new Object();
 
     @SuppressWarnings("unchecked")
     public Acceptors find(Object object, Filter<Method> methodFilter) {
@@ -25,7 +24,7 @@ class ObjectCached {
         if (methods.isEmpty()) {
             return Acceptors.empty();
         }else{
-            synchronized (mLock) {
+            synchronized (mAcceptorCache) {
                 final Acceptors present = mAcceptorCache.get(object);
                 if (present != null) {
                     return present;

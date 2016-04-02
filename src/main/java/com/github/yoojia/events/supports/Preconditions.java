@@ -6,14 +6,24 @@ package com.github.yoojia.events.supports;
  */
 public class Preconditions {
 
-    public static void notNull(Object target, String message) {
-        if (target == null) {
+    public static Object checkNull(Object obj, String message) {
+        notNull(obj, message);
+        return obj;
+    }
+
+    public static void notNull(Object obj, String message) {
+        if (obj == null) {
             throw new NullPointerException(message);
         }
     }
 
-    public static void notNull(Object target) {
-        if (target == null) {
+    public static Object checkNull(Object obj) {
+        notNull(obj);
+        return obj;
+    }
+
+    public static void notNull(Object obj) {
+        if (obj == null) {
             throw new NullPointerException();
         }
     }
