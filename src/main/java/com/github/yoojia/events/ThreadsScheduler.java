@@ -10,7 +10,7 @@ import java.util.concurrent.*;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 2.0
  */
-public class ThreadsSchedule implements Scheduler {
+public class ThreadsScheduler implements Scheduler {
 
     private final Queue<Element> mLoopTasks = new ConcurrentLinkedQueue<>();
 
@@ -29,7 +29,7 @@ public class ThreadsSchedule implements Scheduler {
         }
     };
 
-    public ThreadsSchedule(ExecutorService workerThreads, ExecutorService loopThread) {
+    public ThreadsScheduler(ExecutorService workerThreads, ExecutorService loopThread) {
         mWorkerThreads = workerThreads;
         mLoopThread = loopThread;
         mLoopThread.submit(mLooper);

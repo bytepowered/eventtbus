@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
-public class SharedSchedule extends ThreadsSchedule {
+public class SharedScheduler extends ThreadsScheduler {
 
     protected static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     protected static final int CORE_POOL_SIZE = CPU_COUNT + 1;
@@ -26,20 +26,20 @@ public class SharedSchedule extends ThreadsSchedule {
 
     protected static BlockingQueue<Runnable> QUEUE;
     protected static ThreadPoolExecutor EXECUTOR;
-    protected static SharedSchedule DEF_SCHEDULE;
+    protected static SharedScheduler DEF_SCHEDULE;
 
-    public static SharedSchedule getDefault() {
-        return getDefault(SharedSchedule.class);
+    public static SharedScheduler getDefault() {
+        return getDefault(SharedScheduler.class);
     }
 
-    public static SharedSchedule getDefault(Class<? extends SharedSchedule> type){
-        synchronized (SharedSchedule.class) {
+    public static SharedScheduler getDefault(Class<? extends SharedScheduler> type){
+        synchronized (SharedScheduler.class) {
             if (DEF_SCHEDULE == null) {
                 QUEUE = new LinkedBlockingQueue<>();
                 EXECUTOR = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
                         TimeUnit.SECONDS, QUEUE, THREAD_FACTORY);
-                if (SharedSchedule.class.equals(type)) {
-                    DEF_SCHEDULE = new SharedSchedule();
+                if (SharedScheduler.class.equals(type)) {
+                    DEF_SCHEDULE = new SharedScheduler();
                 }else{
                     try {
                         DEF_SCHEDULE = type.newInstance();
@@ -52,7 +52,7 @@ public class SharedSchedule extends ThreadsSchedule {
         }
     }
 
-    public SharedSchedule() {
+    public SharedScheduler() {
         super(EXECUTOR, EXECUTOR);
     }
 

@@ -41,7 +41,7 @@ public class InternalTPSTest extends $TestCase {
 
     @Test
     public void testWithSharedSchedule(){
-        testWithSchedule(SharedSchedule.getDefault(), "SharedSchedule");
+        testWithSchedule(SharedScheduler.getDefault(), "SharedScheduler");
     }
 
     @Test

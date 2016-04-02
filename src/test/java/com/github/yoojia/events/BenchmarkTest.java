@@ -144,17 +144,17 @@ public class BenchmarkTest extends $TestCase {
 
     @Test
     public void testNop1(){
-        testNextEvent(new ThreadsNopPayload(COUNT_NOP), Schedules.newService(CPUs), "MultiThreads(Nop Payload)");
+        testNextEvent(new ThreadsNopPayload(COUNT_NOP), Schedulers.newService(CPUs), "MultiThreads(Nop Payload)");
     }
 
     @Test
     public void testNop2(){
-        testNextEvent(new ThreadsNopPayload(COUNT_NOP), Schedules.sharedThreads(), "SharedThreads(Nop Payload)");
+        testNextEvent(new ThreadsNopPayload(COUNT_NOP), Schedulers.sharedThreads(), "SharedThreads(Nop Payload)");
     }
 
     @Test
     public void testNop3(){
-        testNextEvent(new CallerNopPayload(COUNT_NOP), Schedules.newCaller(), "CallerThread(Nop Payload)");
+        testNextEvent(new CallerNopPayload(COUNT_NOP), Schedulers.newCaller(), "CallerThread(Nop Payload)");
     }
 
     @Test
@@ -164,17 +164,17 @@ public class BenchmarkTest extends $TestCase {
 
     @Test
     public void test1ms1(){
-        testNextEvent(new Threads1msPayload(COUNT_PAYLOAD), Schedules.newService(CPUs), "MultiThreads(1ms Payload)");
+        testNextEvent(new Threads1msPayload(COUNT_PAYLOAD), Schedulers.newService(CPUs), "MultiThreads(1ms Payload)");
     }
 
     @Test
     public void test1ms2(){
-        testNextEvent(new Threads1msPayload(COUNT_PAYLOAD), Schedules.sharedThreads(), "SharedThreads(1ms Payload)");
+        testNextEvent(new Threads1msPayload(COUNT_PAYLOAD), Schedulers.sharedThreads(), "SharedThreads(1ms Payload)");
     }
 
     @Test
     public void test1ms3(){
-        testNextEvent(new Caller1msPayload(COUNT_PAYLOAD), Schedules.newCaller(), "CallerThread(1ms Payload)");
+        testNextEvent(new Caller1msPayload(COUNT_PAYLOAD), Schedulers.newCaller(), "CallerThread(1ms Payload)");
     }
 
     @Test

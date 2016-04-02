@@ -16,7 +16,7 @@ public class DiffTypesTest {
 
     @Test
     public void test() throws InterruptedException {
-        NextEvents nextEvents = new NextEvents(Schedules.newCaller());
+        NextEvents nextEvents = new NextEvents(Schedulers.newCaller());
         EventsPayload payload = new EventsPayload(COUNT);
 
         nextEvents.register(payload);
