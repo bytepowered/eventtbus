@@ -30,7 +30,7 @@ public class EventPayload {
         notEmpty(name, "name not allow empty");
         this.name = name;
         this.origin = null;
-        final Object[] parsed = parsePayload(payload);
+        final Object[] parsed = checkParse(payload);
         this.values = (Object[]) parsed[0];
         this.types = (Class[]) parsed[1];
     }
@@ -43,20 +43,23 @@ public class EventPayload {
                 '}';
     }
 
-    public static Object[] parsePayload(Object payload) {
+    public static Object[] checkParse(Object payloads) {
         final Object[] values;
         final Class[] types;
-        if (payload != null) {
-            final Class<?> type = payload.getClass();
+        if (payloads != null) {
+            final Class<?> type = payloads.getClass();
             if (type.isArray()) {
-                values = (Object[]) payload;
+                values = (Object[]) payloads;
                 types = new Class[values.length];
                 for (int i = 0; i < values.length; i++) {
+                    if (null == values[i]) {
+                        throw new IllegalArgumentException("Payloads values CANNOT contains <null> value !");
+                    }
                     types[i] = values[i].getClass();
                 }
             }else{ // single
                 types = new Class[]{type};
-                values = new Object[]{payload};
+                values = new Object[]{payloads};
             }
         }else{
             values = new Object[0];
