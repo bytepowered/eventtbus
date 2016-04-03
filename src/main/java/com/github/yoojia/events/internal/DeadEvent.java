@@ -11,4 +11,9 @@ public final class DeadEvent {
     public DeadEvent(Object raw) {
         this.raw = raw;
     }
+
+    @Override
+    public String toString() {
+        return raw == null ? "null" : raw.toString();
+    }
 }

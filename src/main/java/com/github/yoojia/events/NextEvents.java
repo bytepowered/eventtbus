@@ -29,11 +29,11 @@ public class NextEvents{
             public boolean handleEvent(Object event) {
                 final boolean isDeadEvent = event instanceof DeadEvent;
                 if (isDeadEvent) {
-                    final PayloadEvent payload = (PayloadEvent) ((DeadEvent) event).raw;
-                    if (PayloadEvent.DEAD_EVENT.equals(payload.name)) {
-                        Logger.debug("NextEvents", "- No handlers for DEAD-EVENT: " + payload);
+                    final EventPayload payload = (EventPayload) ((DeadEvent) event).raw;
+                    if (EventPayload.DEAD_EVENT.equals(payload.name)) {
+                        Logger.debug("NextEvents", "- Empty handlers for dead-event: " + payload);
                     }else{
-                        emit(new PayloadEvent(PayloadEvent.DEAD_EVENT, payload.values));
+                        emit(new EventPayload(EventPayload.DEAD_EVENT, payload));
                     }
                 }
                 return isDeadEvent;
@@ -63,20 +63,12 @@ public class NextEvents{
     }
 
     public void emit(String name, Object...payloads) {
-        mDispatcher.emit(new PayloadEvent(name, payloads));
+        mDispatcher.emit(new EventPayload(name, payloads));
     }
 
-    public void emit(PayloadEvent event) {
+    public void emit(EventPayload event) {
         notNull(event, "event == null");
         mDispatcher.emit(event);
-    }
-
-    public void emit(Object event) {
-        if (event instanceof PayloadEvent) {
-            mDispatcher.emit(event);
-        }else {
-            throw new IllegalArgumentException("Call emit(PayloadEvent) instead");
-        }
     }
 
     public void addHandler(Handler handler, EventFilter filter) {

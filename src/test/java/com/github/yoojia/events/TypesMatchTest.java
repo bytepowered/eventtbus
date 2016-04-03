@@ -34,7 +34,7 @@ public class TypesMatchTest {
     public void testPassRandomOrder(){
         // test 100 times
         Random rnd = new Random();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 20; i++) {
             final List<Class<?>> rndOrderTypes = new ArrayList<>(Arrays.asList(DEFINE));
             for (int j = 0; j < DEFINE.length; j++) {
                 final int rndIdx = rnd.nextInt(DEFINE.length);

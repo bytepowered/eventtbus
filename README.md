@@ -64,7 +64,7 @@ GuavaEvents(Nop Payload)	 | 3980131		| 502ms		| 502ms		| 2000000
 1. 回调方法定义的事件名必须与发送事件名相同；
 2. 回调方法无参数时，符合条件1即触发回调；
 3. 回调方法有参数时，参数数量与发送的事件（组）数量必须相同，顺序可以随意；
-4. 回调方法的参数中，在有且仅有一个参数是，可使用Object来接收任意类型事件；
+4. 回调方法的参数中，在有且仅有一个参数是，可使用 Any 来接收任意类型事件；
 
 ```java
 // 回调方法带参数, 接收指定类型的事件：String
@@ -79,9 +79,9 @@ void handleNoArgEvent( ) {
     ...
 }
 
-// 回调方法参数类型为Object， 接收任意类型事件，并且获取事件对象。
+// 回调方法参数类型为 Any， 接收任意类型事件，并且获取事件对象。
 @Subscribe(on = "text-event")
-void handleAnyTypeEvent(Object evt) {
+void handleAnyTypeEvent(Any evt) {
     ...
 }
 
@@ -94,7 +94,7 @@ nextEvents.emit("test-event", new String("this is an event payload"))
 
 **注意1：使用事件组的回调方法的参数列表，它们的类型强制建议互不相同！相同类型的参数将按发送顺序填充！**
 
-**注意2：在回调方法参数列表中，如果参数超过1个，则列表中的参数不允许存在Object类型**
+**注意2：在 @Subscribe 方法参数列表中，不允许存在Object类型**
 
 在发送事件时，将多个事件以对象组的方式提交，回调方法中定义对应类型的参数即可。参数顺序可以随意，但类型最好是互不相同。
 如果相同类型的参数，回调方法中数值填充的顺序将与emit(...)的参数顺序一致。
@@ -112,12 +112,12 @@ nextEvents.emit("users", "yoojia", 18, 1024.0f)
 
 ## Dead event
 
-如果发送事件没有回调目标方法或者Handler时，原事件将被包装成DeadEvent重新发送。可以通过订阅`PayloadEvent.DEAD_EVENT`事件名来处理DeadEvent。
+如果发送事件没有回调目标方法或者Handler时，原事件将被包装成DeadEvent重新发送。可以通过订阅`EventPayload.DEAD_EVENT`事件名来处理DeadEvent。
 
-**DeadEvent事件与普通事件一样，唯一区别是它的事件名固定为`PayloadEvent.DEAD_EVENT`的值。**
+**DeadEvent事件与普通事件一样，唯一区别是它的事件名固定为`EventPayload.DEAD_EVENT`的值。**
 
 ```java
-@Subscribe(on = PayloadEvent.DEAD_EVENT)
+@Subscribe(on = EventPayload.DEAD_EVENT)
 void onMissedTyped(String evt) {
     ...
 }

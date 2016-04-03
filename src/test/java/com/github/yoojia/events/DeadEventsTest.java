@@ -9,7 +9,7 @@ import java.util.concurrent.CountDownLatch;
  * @author 陈小锅 (yoojia.chen@gmail.com)
  * @since 2.0
  */
-public class EventsMissedTest {
+public class DeadEventsTest {
 
     private class TargetPayload extends TestPayload {
 
@@ -29,16 +29,16 @@ public class EventsMissedTest {
             hitEvt2();
         }
 
-        @Subscribe(events = PayloadEvent.DEAD_EVENT)
-        void onMissedTyped(String evt) {
+        @Subscribe(events = EventPayload.DEAD_EVENT)
+        void onMissedTyped(String strDeadEvent) {
             missedCounting.countDown();
-            System.err.println("- [String]:Handle dead event: " + evt);
+            System.err.println("- [String]:Handle dead event: " + strDeadEvent);
         }
 
-        @Subscribe(events = PayloadEvent.DEAD_EVENT)
-        void onMissedObject(Object evt) {
+        @Subscribe(events = EventPayload.DEAD_EVENT)
+        void onMissedObject(Any anyDeadEvent) {
             missedCounting.countDown();
-            System.err.println("- [Object]:Handle dead event: " + evt);
+            System.err.println("- [Object]:Handle dead event: " + anyDeadEvent);
         }
 
         @Override
@@ -52,9 +52,9 @@ public class EventsMissedTest {
     public void test() throws InterruptedException {
         NextEvents events = new NextEvents();
 
-        events.emit("str", "WILL-MISS");
-        events.emit("int", "WILL-MISS");
-        events.emit("int", 999);
+        events.emit("str", "should-missed");
+        events.emit("int", "should-missed");
+        events.emit("int", 155);
 
         TargetPayload target = new TargetPayload(1);
 
@@ -62,7 +62,10 @@ public class EventsMissedTest {
 
         events.emit("str", "HAHA");
         events.emit("int", 2016);
-        events.emit("HAHA", "will-miss");
+
+        events.emit("miss-str", "DeadWithHandler");
+        events.emit("miss-int", 155);
+        events.emit("miss-array", 123, 456);
 
         target.await();
 

@@ -11,14 +11,14 @@ public class PayloadEventTest {
 
     @Test
     public void testObject(){
-        PayloadEvent evt = new PayloadEvent("event", 123);
+        EventPayload evt = new EventPayload("event", 123);
         Assert.assertEquals(Integer.class, evt.types[0]);
         Assert.assertEquals(123, evt.values[0]);
     }
 
     @Test
     public void testArray(){
-        PayloadEvent evt = new PayloadEvent("event", new Object[]{123, "ABC"});
+        EventPayload evt = new EventPayload("event", new Object[]{123, "ABC"});
         Assert.assertEquals(Integer.class, evt.types[0]);
         Assert.assertEquals(123, evt.values[0]);
         Assert.assertEquals(String.class, evt.types[1]);

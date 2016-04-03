@@ -24,10 +24,12 @@ class MethodHandler implements EventHandler {
 
     @Override
     public void onEvent(Object event) throws Exception {
-        final PayloadEvent payload = (PayloadEvent) event;
+        final EventPayload payload = (EventPayload) event;
         mMethod.setAccessible(true);
-        if (mDefine.types.length == 0) {
+        if (mDefine.isNoArgs) {
             mMethod.invoke(mObjectRef);
+        }else if (mDefine.isAny) {
+            mMethod.invoke(mObjectRef, new Any(payload.values, payload.types));
         }else{
             mMethod.invoke(mObjectRef, reorderArgs(mDefine.types, payload));
         }
@@ -47,14 +49,13 @@ class MethodHandler implements EventHandler {
      * 将负载事件的数值，按回调Method的类型顺序，重新排序。
      * 相同的类型，按负载事件中的数值顺序填充
      */
-    static Object[] reorderArgs(Class<?>[] defineTypes, PayloadEvent payload) {
+    static Object[] reorderArgs(Class<?>[] defineTypes, EventPayload payload) {
         final Object[] values = new Object[defineTypes.length];
         final boolean[] used = new boolean[values.length];
         for (int i = 0; i < defineTypes.length; i++) {
             for (int j = 0; j < values.length; j++) {
                 final Class<?> defType = defineTypes[i];
-                if ( !used[j] &&
-                        (Object.class.equals(defType) || lenientlyEquals(defType, payload.types[j]))) {
+                if ( !used[j] && lenientlyEquals(defType, payload.types[j])) {
                     values[i] = payload.values[j];
                     used[j] = true;
                     break;
