@@ -1,7 +1,6 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.supports.AnnotatedMethod;
-import com.github.yoojia.events.supports.ClassTypes;
 import com.github.yoojia.events.supports.Filter;
 
 import java.lang.reflect.Method;
@@ -26,8 +25,8 @@ class Methods {
 
     public static MethodDefine parse(Method method) {
         final Subscribe annotation = method.getAnnotation(Subscribe.class);
-        final int schedule = annotation.run().scheduleFlag;
-        final String names = annotation.on();
+        final int schedule = annotation.schedule().scheduleFlag;
+        final String names = annotation.events();
         final Class<?>[] types = method.getParameterTypes();
         // 参数列表中，如果参数数量大于1, 则列表中不允许存在Object类型
         if (types.length > 1) {

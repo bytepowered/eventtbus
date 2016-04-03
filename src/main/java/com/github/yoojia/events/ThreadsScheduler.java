@@ -63,7 +63,7 @@ public class ThreadsScheduler implements Scheduler {
 
     protected void invoke(int type, Object event, Handler handler) {
         switch (type) {
-            case ScheduleType.ON_THREADS:
+            case ScheduleType.ON_IO_THREAD:
                 mWorkerThreads.submit(new EventRunner(event, handler));
                 break;
             case ScheduleType.ON_MAIN_THREAD:

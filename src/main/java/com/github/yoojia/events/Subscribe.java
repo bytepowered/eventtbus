@@ -15,13 +15,13 @@ public @interface Subscribe {
      * 事件名
      * @return String
      */
-    String on();
+    String events();
 
     /**
      * 回调方式。
-     * - 默认方式为 Runs.ON_CALLER_THREAD；
-     * @return Runs flag
+     * - 默认方式为 On.CALLER_THREAD；
+     * @return On flag
      */
-    Runs run() default Runs.ON_CALLER_THREAD;
+    On schedule() default On.CALLER_THREAD;
 
 }

@@ -3,28 +3,28 @@ package com.github.yoojia.events;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.0
+ * @since 2.1
  */
-public enum Runs {
+public enum On {
 
     /**
      * 由主线程执行回调
      */
-    ON_MAIN_THREAD(ScheduleType.ON_MAIN_THREAD),
+    MAIN_THREAD(ScheduleType.ON_MAIN_THREAD),
 
     /**
      * 由调用者线程执行回调
      */
-    ON_CALLER_THREAD(ScheduleType.ON_CALLER_THREAD),
+    CALLER_THREAD(ScheduleType.ON_CALLER_THREAD),
 
     /**
      * 由线程池的线程执行回调
      */
-    ON_THREADS(ScheduleType.ON_THREADS);
+    IO_THREAD(ScheduleType.ON_IO_THREAD);
 
     final int scheduleFlag;
 
-    Runs(int flag) {
+    On(int flag) {
         this.scheduleFlag = flag;
     }
 

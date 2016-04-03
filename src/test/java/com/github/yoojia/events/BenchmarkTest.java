@@ -27,12 +27,12 @@ public class BenchmarkTest extends $TestCase {
             super(count);
         }
 
-        @Subscribe(on = "str", run = Runs.ON_THREADS)
+        @Subscribe(events = "str", schedule = On.IO_THREAD)
         void onEvents(String evt){
             hitEvt1();
         }
 
-        @Subscribe(on = "long", run = Runs.ON_THREADS)
+        @Subscribe(events = "long", schedule = On.IO_THREAD)
         void onEvents1(){
             hitEvt2();
         }
@@ -45,12 +45,12 @@ public class BenchmarkTest extends $TestCase {
             super(count);
         }
 
-        @Subscribe(on = "str", run = Runs.ON_CALLER_THREAD)
+        @Subscribe(events = "str", schedule = On.CALLER_THREAD)
         protected void onEvents(){
             hitEvt1();
         }
 
-        @Subscribe(on = "long", run = Runs.ON_CALLER_THREAD)
+        @Subscribe(events = "long", schedule = On.CALLER_THREAD)
         protected void onEvents1(long evt){
             hitEvt2();
         }
@@ -63,13 +63,13 @@ public class BenchmarkTest extends $TestCase {
             super(count);
         }
 
-        @Subscribe(on = "str", run = Runs.ON_THREADS)
+        @Subscribe(events = "str", schedule = On.IO_THREAD)
         public void onEvents(String evt) throws InterruptedException {
             Thread.sleep(1);
             hitEvt1();
         }
 
-        @Subscribe(on = "long", run = Runs.ON_THREADS)
+        @Subscribe(events = "long", schedule = On.IO_THREAD)
         public void onEvents1() throws InterruptedException {
             Thread.sleep(1);
             hitEvt2();
@@ -83,13 +83,13 @@ public class BenchmarkTest extends $TestCase {
             super(count);
         }
 
-        @Subscribe(on = "str", run = Runs.ON_CALLER_THREAD)
+        @Subscribe(events = "str", schedule = On.CALLER_THREAD)
         public void onEvents() throws InterruptedException {
             Thread.sleep(1);
             hitEvt1();
         }
 
-        @Subscribe(on = "long", run = Runs.ON_CALLER_THREAD)
+        @Subscribe(events = "long", schedule = On.CALLER_THREAD)
         public void onEvents1(Long evt) throws InterruptedException {
             Thread.sleep(1);
             hitEvt2();

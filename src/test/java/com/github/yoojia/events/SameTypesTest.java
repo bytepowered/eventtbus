@@ -37,7 +37,7 @@ public class SameTypesTest {
             super(count);
         }
 
-        @Subscribe(on = "users")
+        @Subscribe(events = "users")
         public void onEvents(String name, int age, int weight) {
             System.err.println("name=" + name + ", age=" + age + ", weight=" + weight);
             hitEvt1();

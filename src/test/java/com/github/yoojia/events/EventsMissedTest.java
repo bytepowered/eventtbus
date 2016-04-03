@@ -19,23 +19,23 @@ public class EventsMissedTest {
             super(count);
         }
 
-        @Subscribe(on = "str")
+        @Subscribe(events = "str")
         void onString(String evt) {
             hitEvt1();
         }
 
-        @Subscribe(on = "int")
+        @Subscribe(events = "int")
         void onInt(int evt) {
             hitEvt2();
         }
 
-        @Subscribe(on = PayloadEvent.DEAD_EVENT)
+        @Subscribe(events = PayloadEvent.DEAD_EVENT)
         void onMissedTyped(String evt) {
             missedCounting.countDown();
             System.err.println("- [String]:Handle dead event: " + evt);
         }
 
-        @Subscribe(on = PayloadEvent.DEAD_EVENT)
+        @Subscribe(events = PayloadEvent.DEAD_EVENT)
         void onMissedObject(Object evt) {
             missedCounting.countDown();
             System.err.println("- [Object]:Handle dead event: " + evt);
