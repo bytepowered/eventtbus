@@ -7,27 +7,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author 陈小锅 (yoojia.chen@gmail.com)
- * @since 2.0
+ * @since 2.2.1
  */
-public class SameTypesTest {
+public class NullPayloadTest {
 
-    public static final int COUNT = 10;
-
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void test() throws InterruptedException {
-        NextEvents nextEvents = new NextEvents(Schedulers.newCaller());
-        EventsPayload payload = new EventsPayload(COUNT);
-
+        NextEvents nextEvents = new NextEvents();
+        EventsPayload payload = new EventsPayload(1);
         nextEvents.register(payload);
-        for (int i = 0; i < payload.perEvtCount; i++) {
-            nextEvents.emit("users", "yoojia", 18, 1024);
-        }
-
+        nextEvents.emit("users", "yoojia");
+        nextEvents.emit("null", "throws", null);
         payload.await();
-
         nextEvents.unregister(payload);
 
         assertThat(payload.evt1Calls.get(), equalTo(payload.perEvtCount));
+        assertThat(payload.evt2Calls.get(), equalTo(payload.perEvtCount));
 
     }
 
@@ -38,13 +33,13 @@ public class SameTypesTest {
         }
 
         @Subscribe(events = "users")
-        public void onEvents(String name, int age, int weight) {
-            System.err.println("name=" + name + ", age=" + age + ", weight=" + weight);
+        public void onEvents() {
             hitEvt1();
+        }
+
+        @Subscribe(events = "users")
+        public void onEvents(String username) {
             hitEvt2();
-            assertThat(name, equalTo("yoojia"));
-            assertThat(age, equalTo(18));
-            assertThat(weight, equalTo(1024));
         }
 
     }

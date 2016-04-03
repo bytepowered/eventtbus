@@ -28,12 +28,6 @@ class Methods {
         final int schedule = annotation.schedule().scheduleFlag;
         final String names = annotation.events();
         final Class<?>[] types = method.getParameterTypes();
-        // 参数列表中，不允许存在Object类型
-        for (Class<?> type : types) {
-            if (Object.class.equals(type)) {
-                throw new IllegalArgumentException("@Subscribe method params NOT-ALLOW contains <Object> type, use <Any> instead !");
-            }
-        }
         return new MethodDefine(schedule, types, names);
     }
 

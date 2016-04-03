@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
  * @author 陈小锅 (yoojia.chen@gmail.com)
  * @since 2.0
  */
-public class DiffTypesTest {
+public class TypedArgsTest {
 
     public static final int COUNT = 10;
 
@@ -21,7 +21,8 @@ public class DiffTypesTest {
 
         nextEvents.register(payload);
         for (int i = 0; i < payload.perEvtCount; i++) {
-            nextEvents.emit("users", "yoojia", 99, 2048.0f);
+            nextEvents.emit("same-type", "yoojia", 18, 1024);
+            nextEvents.emit("diff-type", "chen", 99, 2048.0f);
         }
 
         payload.await();
@@ -29,6 +30,7 @@ public class DiffTypesTest {
         nextEvents.unregister(payload);
 
         assertThat(payload.evt1Calls.get(), equalTo(payload.perEvtCount));
+        assertThat(payload.evt2Calls.get(), equalTo(payload.perEvtCount));
 
     }
 
@@ -38,13 +40,21 @@ public class DiffTypesTest {
             super(count);
         }
 
-        @Subscribe(events = "users")
-        public void onEvents(String name, int age, Float weight) {
+        @Subscribe(events = "diff-type")
+        public void onDiffTypesEvents(String name, int age, Float weight) {
             System.err.println("[Typed args] name=" + name + ", age=" + age + ", weight=" + weight);
-            assertThat(name, equalTo("yoojia"));
+            assertThat(name, equalTo("chen"));
             assertThat(age, equalTo(99));
             assertThat(weight, equalTo(2048f));
             hitEvt1();
+        }
+
+        @Subscribe(events = "same-type")
+        public void onSameTypesEvents(String name, int age, int weight) {
+            System.err.println("name=" + name + ", age=" + age + ", weight=" + weight);
+            assertThat(name, equalTo("yoojia"));
+            assertThat(age, equalTo(18));
+            assertThat(weight, equalTo(1024));
             hitEvt2();
         }
 
