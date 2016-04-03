@@ -16,30 +16,32 @@ public class PayloadEvent {
     public final String name;
 
     public final Object[] values;
-
     public final Class<?>[] types;
 
     public PayloadEvent(String name, Object payload) {
-        notEmpty(name, "name is empty");
-        notNull(payload, "payload == null");
+        notEmpty(name, "name not allow empty");
         this.name = name;
-        final Class<?> type = payload.getClass();
-        if (type.isArray()) {
-            values = (Object[]) payload;
-            types = new Class[values.length];
-            for (int i = 0; i < values.length; i++) {
-                types[i] = values[i].getClass();
+        if (payload != null) {
+            final Class<?> type = payload.getClass();
+            if (type.isArray()) {
+                values = (Object[]) payload;
+                types = new Class[values.length];
+                for (int i = 0; i < values.length; i++) {
+                    types[i] = values[i].getClass();
+                }
+            }else{ // just single payload
+                types = new Class[]{type};
+                values = new Object[]{payload};
             }
         }else{
-            types = new Class[]{type};
-            values = new Object[]{payload};
+            values = new Object[0];
+            types = new Class[0];
         }
     }
 
     @Override
     public String toString() {
-        return "{" +
-                "name='" + name + '\'' +
+        return "{ name='" + name + '\'' +
                 ", values=" + Arrays.toString(values) +
                 '}';
     }

@@ -63,9 +63,6 @@ public class NextEvents{
     }
 
     public void emit(String name, Object...payloads) {
-        if (payloads == null || payloads.length == 0){
-            throw new IllegalArgumentException("payloads is empty");
-        }
         mDispatcher.emit(new PayloadEvent(name, payloads));
     }
 
