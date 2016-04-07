@@ -4,10 +4,10 @@
 
 ## 已支持特性
 
-- 支持使用EventHandler接口回调；
-- 支持使用@Subscribe注解方法回调；
-- 支持多种回调方式: CallerThread / Threads / MainThread(For Android extends)
-- 支持自定义回调目标的调度处理 Schedule
+- 支持使用 <EventHandler> 接口回调；
+- 支持使用 @Subscribe 注解方法回调；
+- 支持多种回调方式: On.CALLER_THREAD / On.IO_THREAD / On.MAIN_THREAD (For Android only)
+- 支持自定义回调目标的调度处理 <Scheduler>
 - 支持提交事件组
 
 ## 未来支持特性
@@ -59,7 +59,7 @@ GuavaEvents(Nop Payload)	 | 3980131		| 502ms		| 502ms		| 2000000
 
 ## 触发条件
 
-在注解模式下，即@Subscribe注解的回调方法的匹配规则如下：
+在注解模式下，即 @Subscribe 注解的回调方法的匹配规则如下：
 
 1. 定义的事件名与发送事件名相同；
 2. 无参数时，符合条件1即触发回调；
@@ -69,19 +69,19 @@ GuavaEvents(Nop Payload)	 | 3980131		| 502ms		| 502ms		| 2000000
 
 ```java
 // 回调方法带参数, 接收指定类型的事件：String
-@Subscribe(on="test-event")
+@Subscribe(events = "test-event")
 void handleWithArgEvents(String evt) {
     ...
 }
 
 // 回调方法不带参数，接收任意类型事件，并且不需要获取事件对象。
-@Subscribe(on="text-event")
+@Subscribe(events = "text-event")
 void handleNoArgEvent( ) {
     ...
 }
 
 // 回调方法参数类型为 Any， 接收任意类型事件，并且获取事件对象。
-@Subscribe(on = "text-event")
+@Subscribe(events = "text-event")
 void handleAnyTypeEvent(Any evt) {
     ...
 }
@@ -100,7 +100,7 @@ nextEvents.emit("test-event", new String("this is an event payload"))
 
 ```java
 
-@Subscribe(on="users")
+@Subscribe(events = "users")
 void handleEvent(String name, int age, float weight) {
     ...
 }
@@ -116,7 +116,7 @@ nextEvents.emit("users", "yoojia", 18, 1024.0f)
 **DeadEvent事件与普通事件一样，唯一区别是它的事件名固定为`EventPayload.DEAD_EVENT`的值。**
 
 ```java
-@Subscribe(on = EventPayload.DEAD_EVENT)
+@Subscribe(events = EventPayload.DEAD_EVENT)
 void onMissedTyped(String evt) {
     ...
 }
