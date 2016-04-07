@@ -1,20 +1,88 @@
 # NextEvents
 
+事件总线库
+
 [![BuildStatus](https://travis-ci.org/yoojia/NextEvents.svg)](https://travis-ci.org/yoojia/NextEvents)
 
 ## 已支持特性
 
 - 支持使用 <EventHandler> 接口回调；
 - 支持使用 @Subscribe 注解方法回调；
-- 支持多种回调方式: On.CALLER_THREAD / On.IO_THREAD / On.MAIN_THREAD (For Android only)
+- 支持多种回调方式: CALLER_THREAD / IO_THREAD / MAIN_THREAD (For Android only)
 - 支持自定义回调目标的调度处理 <Scheduler>
-- 支持提交事件组
+- 支持事件组
 
 ## 未来支持特性
 
-- 多事件触发
+- 多事件
 - 自定义事件匹配处理
 - 事件转换
+
+## 触发条件
+
+在 <EventHandler> 接口回调模式下，所有 <EventFilter> 返回 True 即触发回调。
+
+在 @Subscribe 注解模式下，触发回调方法需要满足两个条件：
+
+1. 定义的事件名与发送事件名相同；
+2. 定义的参数与发送事件负载，数量相同且类型相同；
+
+对于`条件2`，以下两个特殊情况也满足：
+
+- 定义的参数数量为0；
+- 定义唯一参数且类型为 Any；
+
+```java
+// 发生"str-event"事件，并且事件类型为String时，将被回调；
+@Subscribe(events = "str-event")
+void handleWithArgEvents(String event) {
+    ...
+}
+
+// 定义参数数量为0： 发生"str-event"事件，无论事件负载是什么类型，都被回调。
+@Subscribe(events = "str-event")
+void handleNoArgEvent( ) {
+    ...
+}
+
+// 定义唯一参数且类型为Any： 发生"str-event"事件，任意负载数量、任意负载类型，都被回调。
+@Subscribe(events = "str-event")
+void handleAnyTypeEvent(Any events) {
+    Object[] payloadValues = events.values;
+    Class[] payloadTypes = events.types;
+    ...
+}
+
+// 发射 str-event 事件，上面定义的全部方法都触发回调
+nextEvents.emit("str-event", new String("this is an event payload"))
+
+```
+
+## 事件组
+
+```java
+
+@Subscribe(events = "users")
+void handleEvent(String name, int age, float weight) {
+    ...
+}
+
+nextEvents.emit("users", "yoojia", 18, 1024.0f)
+
+```
+
+## Dead event
+
+如果发送事件没有回调目标方法或者Handler时，原事件将被包装成DeadEvent重新发送。可以通过订阅`EventPayload.DEAD_EVENT`事件来处理DeadEvent。
+
+**DeadEvent事件与普通事件一样，唯一区别是它的事件名固定为`EventPayload.DEAD_EVENT`的值。**
+
+```java
+@Subscribe(events = EventPayload.DEAD_EVENT)
+void onMissedTyped(String evt) {
+    ...
+}
+```
 
 ## Benchmark
 
@@ -56,71 +124,6 @@ MultiThreads(Nop Payload)	 | 1935508		| 1033ms	| 1033ms		| 2000000
 SharedThreads(Nop Payload)	 | 2261975		| 882ms		| 884ms		| 2000000
 CallerThread(Nop Payload)	 | 4602303		| 434ms		| 434ms		| 2000000
 GuavaEvents(Nop Payload)	 | 3980131		| 502ms		| 502ms		| 2000000
-
-## 触发条件
-
-在注解模式下，即 @Subscribe 注解的回调方法的匹配规则如下：
-
-1. 定义的事件名与发送事件名相同；
-2. 无参数时，符合条件1即触发回调；
-3. 原始数据类型与包装类型是相同的；
-4. 有参数时，发送的事件负载数量与定义参数数量和类型相同 (定义顺序可随意, 但类型存在相同时按发送顺序依次填充)；
-5. 参数中有且仅有一个参数时，可使用 Any 来接收任意负载数, 任意类型的事件 (Object.class只匹配Object类型)；
-
-```java
-// 回调方法带参数, 接收指定类型的事件：String
-@Subscribe(events = "test-event")
-void handleWithArgEvents(String evt) {
-    ...
-}
-
-// 回调方法不带参数，接收任意类型事件，并且不需要获取事件对象。
-@Subscribe(events = "text-event")
-void handleNoArgEvent( ) {
-    ...
-}
-
-// 回调方法参数类型为 Any， 接收任意类型事件，并且获取事件对象。
-@Subscribe(events = "text-event")
-void handleAnyTypeEvent(Any evt) {
-    ...
-}
-
-// 发送事件，以上方法都被触发回调
-nextEvents.emit("test-event", new String("this is an event payload"))
-
-```
-
-## 事件组
-
-在发送事件时，将多个事件以对象组的方式提交，回调方法中定义对应类型的参数即可。参数顺序可以随意，但类型最好是互不相同。
-如果相同类型的参数，回调方法中数值填充的顺序将与emit(...)的参数顺序一致。
-
-**注意:事件组数量大于1时,不能包含null值**
-
-```java
-
-@Subscribe(events = "users")
-void handleEvent(String name, int age, float weight) {
-    ...
-}
-
-nextEvents.emit("users", "yoojia", 18, 1024.0f)
-
-```
-
-## Dead event
-
-如果发送事件没有回调目标方法或者Handler时，原事件将被包装成DeadEvent重新发送。可以通过订阅`EventPayload.DEAD_EVENT`事件来处理DeadEvent。
-
-**DeadEvent事件与普通事件一样，唯一区别是它的事件名固定为`EventPayload.DEAD_EVENT`的值。**
-
-```java
-@Subscribe(events = EventPayload.DEAD_EVENT)
-void onMissedTyped(String evt) {
-    ...
-}
-```
 
 # License
 
