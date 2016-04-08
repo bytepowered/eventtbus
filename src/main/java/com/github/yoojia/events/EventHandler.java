@@ -10,7 +10,7 @@ public interface EventHandler extends Handler {
 
     /**
      * 自定义事件处理Handler的线程调度类型
-     * @return Int type
+     * @return On type
      */
-    int scheduleType();
+    On scheduleOn();
 }

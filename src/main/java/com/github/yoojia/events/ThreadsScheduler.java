@@ -1,10 +1,13 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.internal.*;
+import com.github.yoojia.events.internal.EventRunner;
+import com.github.yoojia.events.internal.Handler;
+import com.github.yoojia.events.internal.Scheduler;
 
 import java.util.List;
 import java.util.Queue;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
@@ -24,7 +27,7 @@ public class ThreadsScheduler implements Scheduler {
             if (el == null) {
                 await();
             }else{
-                invoke(el.scheduleType, el.event, el.handler);
+                invoke(el.scheduleOn, el.event, el.handler);
             }
         }
     };
@@ -41,11 +44,11 @@ public class ThreadsScheduler implements Scheduler {
         // 其它方式在线程池处理再做处理
         for (Handler item : handlers) {
             final EventHandler handler = (EventHandler) item;
-            final int type = handler.scheduleType();
-            if (ScheduleType.ON_CALLER_THREAD == type) {
+            final On scheduleOn = handler.scheduleOn();
+            if (On.CALLER_THREAD.equals(scheduleOn)) {
                 new EventRunner(event, handler).run();
             }else{
-                mLoopTasks.offer(new Element(event, handler, type));
+                mLoopTasks.offer(new Element(event, handler, scheduleOn));
                 synchronized (mLooper) {
                     mLooper.notify();
                 }
@@ -61,12 +64,12 @@ public class ThreadsScheduler implements Scheduler {
         return mLoopThread;
     }
 
-    protected void invoke(int type, Object event, Handler handler) {
+    protected void invoke(On type, Object event, Handler handler) {
         switch (type) {
-            case ScheduleType.ON_IO_THREAD:
+            case IO_THREAD:
                 mWorkerThreads.submit(new EventRunner(event, handler));
                 break;
-            case ScheduleType.ON_MAIN_THREAD:
+            case MAIN_THREAD:
                 handler.onErrors(new IllegalArgumentException("Unsupported <ON_MAIN_THREAD> schedule type! " ));
                 break;
             default:

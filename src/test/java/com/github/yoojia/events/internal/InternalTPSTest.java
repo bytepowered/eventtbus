@@ -34,8 +34,8 @@ public class InternalTPSTest extends $TestCase {
         }
 
         @Override
-        public int scheduleType() {
-            return ScheduleType.ON_CALLER_THREAD;
+        public On scheduleOn() {
+            return On.CALLER_THREAD;
         }
     }
 

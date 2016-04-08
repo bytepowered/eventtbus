@@ -8,12 +8,12 @@ class Element {
 
     public final Object event;
     public final EventHandler handler;
-    public final int scheduleType;
+    public final On scheduleOn;
 
-    public Element(Object event, EventHandler handler, int scheduleType) {
+    public Element(Object event, EventHandler handler, On scheduleOn) {
         this.event = event;
         this.handler = handler;
-        this.scheduleType = scheduleType;
+        this.scheduleOn = scheduleOn;
     }
 
 }
