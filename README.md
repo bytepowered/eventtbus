@@ -170,6 +170,16 @@ SharedThreads(Nop Payload)	 | 2261975		| 882ms		| 884ms		| 2000000
 CallerThread(Nop Payload)	 | 4602303		| 434ms		| 434ms		| 2000000
 GuavaEvents(Nop Payload)	 | 3980131		| 502ms		| 502ms		| 2000000
 
+# 分享交流
+
+如果你有想法和建议与我交流,欢迎通过下面方式联系:
+
+- 邮件: yoojia.chen@gmail.com
+- QQ: 228441083
+- 微信: chenyoca
+
+![WeChat](https://avatars2.githubusercontent.com/u/1492222)
+
 # License
 
     Copyright 2015 Yoojia Chen
