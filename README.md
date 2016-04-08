@@ -122,6 +122,16 @@ void onMissedTyped(String evt) {
 }
 ```
 
+# 分享交流
+
+如果你有想法和建议与我交流,欢迎通过下面方式联系:
+
+- 邮件: yoojia.chen@gmail.com
+- QQ: 228441083
+- 微信: chenyoca
+
+![WeChat](https://avatars2.githubusercontent.com/u/1492222)
+
 # License
 
     Copyright 2015 Yoojia Chen
