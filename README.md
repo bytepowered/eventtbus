@@ -33,19 +33,19 @@
 - 定义唯一参数且类型为 Any；
 
 ```java
-// 发生"str-event"事件，并且事件类型为String时，将被回调；
+// 当发生"str-event"事件，并且事件类型为String时，将被回调；
 @Subscribe(events = "str-event")
 void handleWithArgEvents(String event) {
     ...
 }
 
-// 定义参数数量为0： 发生"str-event"事件，无论事件负载是什么类型，都被回调。
+// 定义参数数量为0： 当发生"str-event"事件时，无论事件负载是什么类型，都被回调。
 @Subscribe(events = "str-event")
 void handleNoArgEvent( ) {
     ...
 }
 
-// 定义唯一参数且类型为Any： 发生"str-event"事件，任意负载数量、任意负载类型，都被回调。
+// 定义唯一参数且类型为Any： 当发生"str-event"事件时，事件负载为任意数量、任意类型，都被回调。
 @Subscribe(events = "str-event")
 void handleAnyTypeEvent(Any events) {
     Object[] payloadValues = events.values;
@@ -58,16 +58,61 @@ nextEvents.emit("str-event", new String("this is an event payload"))
 
 ```
 
-## 事件组
+## 多负载事件
+
+有些事件可能有多个负载，NextEvents可以直接提交多个负载，无须为这些负载创建包装类。
 
 ```java
 
-@Subscribe(events = "users")
+// 当发生事件时，会将参数按参数类型顺序依次填充
+@Subscribe(events = "profile-event")
 void handleEvent(String name, int age, float weight) {
     ...
 }
 
-nextEvents.emit("users", "yoojia", 18, 1024.0f)
+// 发射事件，回调方法的参数将会按参数类型顺序依次填充这些数值
+nextEvents.emit("profile-event", "yoojia", 18, 1024.0f)
+
+```
+
+#### 多负载参数顺序
+
+NextEvents对多负载事件支持乱序参数。在**符合触发条件的前提下**，上面代码为例，以下的方法都会触发回调：
+
+```java
+
+@Subscribe(events = "profile-event")
+void handleEvent1(int age, float weight, String name) {
+    ...
+}
+
+@Subscribe(events = "profile-event")
+void handleEvent2(float weight, int age, String name) {
+    ...
+}
+```
+
+乱序符合以下规则：
+
+- 各个参数类型**互不相同**时，可以是任意顺序。
+- 存在相同参数类型的，填充顺序按 emit() 中的参数顺序。如：
+
+```java
+@Subscribe(events = "same-type-event")
+void handleEvent(int height, int age, String name) {
+    // height == 1024 --> TRUE
+    // age == 18 --> TRUE
+    ...
+}
+
+@Subscribe(events = "same-type-event")
+void handleEvent(int age, int height, String name) {
+    // age == 1024 --> TRUE
+    // height == 18 --> TRUE
+    ...
+}
+
+nextEvents.emit("same-type-event", 1024, 18, "yoojia")
 
 ```
 
