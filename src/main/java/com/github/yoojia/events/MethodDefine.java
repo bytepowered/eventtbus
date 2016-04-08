@@ -6,14 +6,14 @@ package com.github.yoojia.events;
  */
 final class MethodDefine {
 
-    public final int schedule;
+    public final On scheduleOn;
     public final Class<?>[] types;
     public final String name;
     public final boolean isAny;
     public final boolean isNoArgs;
 
-    MethodDefine(int schedule, Class<?>[] types, String name) {
-        this.schedule = schedule;
+    MethodDefine(On scheduleOn, Class<?>[] types, String name) {
+        this.scheduleOn = scheduleOn;
         this.types = types;
         this.name = name;
         this.isNoArgs = types.length == 0;

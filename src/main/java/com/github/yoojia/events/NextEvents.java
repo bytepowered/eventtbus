@@ -62,6 +62,10 @@ public class NextEvents{
         mObjectCached.remove(object);
     }
 
+    public void just(String name) {
+        mDispatcher.emit(new EventPayload(name, null));
+    }
+
     public void emit(String name, Object...payloads) {
         mDispatcher.emit(new EventPayload(name, payloads));
     }

@@ -60,7 +60,7 @@ class ObjectCached {
     private static Acceptor create(Object object, Method method, MethodDefine args) {
         final ArrayList<EventFilter> filters = new ArrayList<>(1);
         filters.add(new InternalFilter(args));
-        return new Acceptor(MethodHandler.create(args.schedule, object, method, args), filters);
+        return new Acceptor(MethodHandler.create(args.scheduleOn, object, method, args), filters);
     }
 
 }

@@ -10,13 +10,13 @@ import static com.github.yoojia.events.supports.ClassTypes.lenientlyEquals;
  */
 class MethodHandler implements EventHandler {
 
-    private final int mScheduleType;
+    private final On mScheduleOn;
     private final Method mMethod;
     private final Object mObjectRef;
     private final MethodDefine mDefine;
 
-    private MethodHandler(int scheduleType, Object object, Method method, MethodDefine define) {
-        mScheduleType = scheduleType;
+    private MethodHandler(On scheduleOn, Object object, Method method, MethodDefine define) {
+        mScheduleOn = scheduleOn;
         mMethod = method;
         mObjectRef = object;
         mDefine = define;
@@ -41,8 +41,8 @@ class MethodHandler implements EventHandler {
     }
 
     @Override
-    public int scheduleType() {
-        return mScheduleType;
+    public On scheduleOn() {
+        return mScheduleOn;
     }
 
     /**
@@ -65,8 +65,8 @@ class MethodHandler implements EventHandler {
         return values;
     }
 
-    public static MethodHandler create(int scheduleType, Object object, Method method, MethodDefine args) {
-        return new MethodHandler(scheduleType, object, method, args);
+    public static MethodHandler create(On scheduleOn, Object object, Method method, MethodDefine args) {
+        return new MethodHandler(scheduleOn, object, method, args);
     }
 
 }
