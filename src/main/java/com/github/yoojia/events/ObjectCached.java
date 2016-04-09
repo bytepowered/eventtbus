@@ -16,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 class ObjectCached {
 
-    private final Map<Object, Acceptors> mAcceptorCache = new ConcurrentHashMap<>();
+    private final Map<Object, Acceptors> mCache = new ConcurrentHashMap<>();
 
     @SuppressWarnings("unchecked")
     public Acceptors find(Object object, Filter<Method> methodFilter) {
@@ -24,8 +24,8 @@ class ObjectCached {
         if (methods.isEmpty()) {
             return Acceptors.empty();
         }else{
-            synchronized (mAcceptorCache) {
-                final Acceptors present = mAcceptorCache.get(object);
+            synchronized (mCache) {
+                final Acceptors present = mCache.get(object);
                 if (present != null) {
                     return present;
                 }else{
@@ -36,7 +36,7 @@ class ObjectCached {
                         array.add(create(object, method, Methods.parse(method)));
                     }
                     final Acceptors acceptors = new Acceptors(array);
-                    mAcceptorCache.put(object, acceptors);
+                    mCache.put(object, acceptors);
                     return acceptors;
                 }
             }
@@ -44,7 +44,7 @@ class ObjectCached {
     }
 
     public Acceptors getSafety(Object object) {
-        final Acceptors present = mAcceptorCache.get(object);
+        final Acceptors present = mCache.get(object);
         if (present == null) {
             return Acceptors.empty();
         }else{
@@ -53,7 +53,7 @@ class ObjectCached {
     }
 
     public void remove(Object object) {
-        mAcceptorCache.remove(object);
+        mCache.remove(object);
     }
 
     @SuppressWarnings("unchecked")

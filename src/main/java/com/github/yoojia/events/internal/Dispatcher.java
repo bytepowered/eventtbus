@@ -5,7 +5,7 @@ import com.github.yoojia.events.supports.Filter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
-import static com.github.yoojia.events.supports.Filters.filter;
+import static com.github.yoojia.events.supports.Functions.filter;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
@@ -25,11 +25,11 @@ public class Dispatcher {
 
     public Dispatcher(Scheduler schedule) {
         handlerScheduler = schedule;
-        mEmitter = new Emitter();
+        mEmitter = new Emitter(this);
     }
 
     public void emit(Object event) {
-        mEmitter.submit(event, this);
+        mEmitter.submit(event, null);
     }
 
     public void addHandler(Handler handler, EventFilter filter) {

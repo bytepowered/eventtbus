@@ -8,7 +8,7 @@
 
 - 支持使用 <EventHandler> 接口回调；
 - 支持使用 @Subscribe 注解方法回调；
-- 支持多种回调方式: CALLER_THREAD / IO_THREAD / MAIN_THREAD (For Android only)
+- 支持多种回调方式: `CALLER_THREAD` / `IO_THREAD` / `MAIN_THREAD` (For Android only)
 - 支持自定义回调目标的调度处理 <Scheduler>
 - 支持事件组
 
@@ -20,7 +20,7 @@
 
 ## 触发条件
 
-在 <EventHandler> 接口回调模式下，所有 <EventFilter> 返回 True 即触发回调。
+在 `<EventHandler>` 接口回调模式下，所有 `<EventFilter>` 返回 True 即触发回调。
 
 在 @Subscribe 注解模式下，触发回调方法需要满足两个条件：
 
@@ -99,14 +99,14 @@ void handleEvent2(float weight, int age, String name) {
 
 ```java
 @Subscribe(events = "same-type-event")
-void handleEvent(int height, int age, String name) {
+void handleEvent1(int height, int age, String name) {
     // height == 1024 --> TRUE
     // age == 18 --> TRUE
     ...
 }
 
 @Subscribe(events = "same-type-event")
-void handleEvent(int age, int height, String name) {
+void handleEvent2(int age, int height, String name) {
     // age == 1024 --> TRUE
     // height == 18 --> TRUE
     ...
@@ -118,13 +118,13 @@ nextEvents.emit("same-type-event", 1024, 18, "yoojia")
 
 ## Dead event
 
-如果发送事件没有回调目标方法或者Handler时，原事件将被包装成DeadEvent重新发送。可以通过订阅`EventPayload.DEAD_EVENT`事件来处理DeadEvent。
+如果发送事件没有回调目标方法或者Handler时，原事件将被包装成 DeadEvent 重新发送。可以通过订阅 `EventPayload.DEAD_EVENT` 事件来处理 DeadEvent。
 
-**DeadEvent事件与普通事件一样，唯一区别是它的事件名固定为`EventPayload.DEAD_EVENT`的值。**
+**DeadEvent事件与普通事件一样，唯一区别是它的事件名固定为 `EventPayload.DEAD_EVENT` 的值。**
 
 ```java
 @Subscribe(events = EventPayload.DEAD_EVENT)
-void onMissedTyped(String evt) {
+void onDeadEvent(String evt) {
     ...
 }
 ```

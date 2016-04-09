@@ -7,29 +7,34 @@ import java.util.List;
  * @author Yoojia Chen (yoojia.chen@gmail.com)
  * @since 2.0
  */
-class Emitter implements Schedule0<Object, Dispatcher> {
+class Emitter implements Submit<Object, Void> {
 
     private static final int GUESS = 2;
 
+    private final Dispatcher mDispatcher;
+
+    public Emitter(Dispatcher mDispatcher) {
+        this.mDispatcher = mDispatcher;
+    }
+
     @Override
-    public void submit(Object event, Dispatcher dispatcher) {
-        // 快速匹配触发事件的EventHandler, 然后由调度器来处理
-        final List<Handler> handlers = findMatchedHandlers(event, dispatcher);
+    public void submit(Object event, Void _null) {
+        final List<Handler> handlers = findMatched(event, mDispatcher);
         if (handlers.isEmpty() && !(event instanceof DeadEvent)) {
-            dispatcher.emit(new DeadEvent(event));
+            mDispatcher.emit(new DeadEvent(event));
         }else{
-            final int size = dispatcher.handlers.size();
+            final int size = mDispatcher.handlers.size();
             for (int i = 0; i < size; i++) {
-                final OnEventHandler handler = dispatcher.handlers.get(i);
+                final OnEventHandler handler = mDispatcher.handlers.get(i);
                 if (handler.handleEvent(event)) {
                     return;
                 }
             }
-            dispatcher.handlerScheduler.submit(event, handlers);
+            mDispatcher.handlerScheduler.submit(event, handlers);
         }
     }
 
-    private List<Handler> findMatchedHandlers(Object event, Dispatcher dispatcher) {
+    private List<Handler> findMatched(Object event, Dispatcher dispatcher) {
         final ArrayList<Handler> matched = new ArrayList<>(GUESS);
         final int size = dispatcher.acceptors.size();
         for (int i = 0; i < size; i++) {
