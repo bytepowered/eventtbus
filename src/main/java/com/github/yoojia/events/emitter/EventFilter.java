@@ -1,4 +1,4 @@
-package com.github.yoojia.events.internal;
+package com.github.yoojia.events.emitter;
 
 import com.github.yoojia.events.supports.Filter;
 

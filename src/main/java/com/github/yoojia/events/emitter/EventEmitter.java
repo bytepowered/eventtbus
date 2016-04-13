@@ -1,4 +1,4 @@
-package com.github.yoojia.events.internal;
+package com.github.yoojia.events.emitter;
 
 import com.github.yoojia.events.supports.Filter;
 
@@ -9,41 +9,49 @@ import static com.github.yoojia.events.supports.Functions.filter;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.2
+ * @since 2.3
  */
-public class Dispatcher {
+public class EventEmitter {
 
-    private final Emitter mEmitter;
+    private final Submit mSubmit;
 
-    final Scheduler handlerScheduler;
-    final CopyOnWriteArrayList<Acceptor> acceptors = new CopyOnWriteArrayList<>();
+    final Scheduler scheduler;
+    final CopyOnWriteArrayList<Target> targets = new CopyOnWriteArrayList<>();
     final CopyOnWriteArrayList<OnEventHandler> handlers = new CopyOnWriteArrayList<>();
 
-    public Dispatcher(){
-        this(new SchedulerImpl());
+    public EventEmitter(){
+        this(new CallerScheduler());
     }
 
-    public Dispatcher(Scheduler schedule) {
-        handlerScheduler = schedule;
-        mEmitter = new Emitter(this);
+    public EventEmitter(Scheduler schedule) {
+        scheduler = schedule;
+        mSubmit = new Submit(this);
     }
 
     public void emit(Object event) {
-        mEmitter.submit(event, null);
+        mSubmit.submit(event);
     }
 
     public void addHandler(Handler handler, EventFilter filter) {
-        addHandler(handler, Arrays.asList(new EventFilter[]{filter}));
+        this.addHandler(handler, Arrays.asList(new EventFilter[]{filter}));
     }
 
     public void addHandler(Handler handler, List<EventFilter> filters) {
-        acceptors.add(new Acceptor(handler, filters));
+        this.addTarget(new Target(handler, filters));
+    }
+
+    public void addTarget(Target target) {
+        targets.add(target);
+    }
+
+    public void removeTarget(Target target) {
+        this.removeHandler(target.handler);
     }
 
     public void removeHandler(final Handler handler) {
-        acceptors.removeAll(filter(acceptors, new Filter<Acceptor>(){
+        targets.removeAll(filter(targets, new Filter<Target>(){
             @Override
-            public boolean accept(Acceptor item) {
+            public boolean accept(Target item) {
                 return item.handler.equals(handler);
             }
         }));

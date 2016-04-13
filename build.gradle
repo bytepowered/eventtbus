@@ -26,7 +26,7 @@ dependencies {
 }
 
 ext{
-    projVersion = '2.2.2'
+    projVersion = '2.3'
     projName = 'NextEvents'
     projDesc = 'NextEvents: A Java Event Bus Library'
     projURL = "https://github.com/yoojia/NextEvents"

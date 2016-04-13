@@ -2,9 +2,9 @@ package com.github.yoojia.events;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.2
+ * @since 2.3
  */
-final class MethodDefine {
+final class MethodArgs {
 
     public final On scheduleOn;
     public final Class<?>[] types;
@@ -12,7 +12,7 @@ final class MethodDefine {
     public final boolean isAny;
     public final boolean isNoArgs;
 
-    MethodDefine(On scheduleOn, Class<?>[] types, String name) {
+    MethodArgs(On scheduleOn, Class<?>[] types, String name) {
         this.scheduleOn = scheduleOn;
         this.types = types;
         this.name = name;

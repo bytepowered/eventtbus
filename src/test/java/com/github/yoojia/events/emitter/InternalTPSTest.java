@@ -1,4 +1,4 @@
-package com.github.yoojia.events.internal;
+package com.github.yoojia.events.emitter;
 
 import com.github.yoojia.events.*;
 import org.junit.Test;
@@ -46,14 +46,14 @@ public class InternalTPSTest extends $TestCase {
 
     @Test
     public void testWithCallerSchedule(){
-        testWithSchedule(new SchedulerImpl(), "CallerSchedule");
+        testWithSchedule(new CallerScheduler(), "CallerScheduler");
     }
 
     public void testWithSchedule(Scheduler scheduler, String tag){
-        Dispatcher dispatcher = new Dispatcher(scheduler);
+        EventEmitter emitter = new EventEmitter(scheduler);
         TestEventHandler payload = new TestEventHandler(COUNT_NOP);
 
-        dispatcher.addHandler(payload, new EventFilter() {
+        emitter.addHandler(payload, new EventFilter() {
             @Override
             public boolean accept(Object event) {
                 return true;
@@ -64,7 +64,7 @@ public class InternalTPSTest extends $TestCase {
 
         for (int i = 0; i < payload.perEvtCount; i++) {
             final String strEvent = String.valueOf(NOW());
-            dispatcher.emit(strEvent);
+            emitter.emit(strEvent);
         }
 
         final long timeAfterEmits = NOW();
@@ -75,7 +75,7 @@ public class InternalTPSTest extends $TestCase {
             fail("EventDispatcher Test, Wait fail");
         }
 
-        dispatcher.removeHandler(payload);
+        emitter.removeHandler(payload);
 
         assertThat(payload.evt1Calls.get(), equalTo(payload.perEvtCount));
         assertThat(payload.evt2Calls.get(), equalTo(payload.perEvtCount));

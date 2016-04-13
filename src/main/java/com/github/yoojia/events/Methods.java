@@ -23,12 +23,12 @@ class Methods {
         return methods.find(clazz);
     }
 
-    public static MethodDefine parse(Method method) {
+    public static MethodArgs parse(Method method) {
         final Subscribe annotation = method.getAnnotation(Subscribe.class);
         final On scheduleOn = annotation.schedule();
         final String names = annotation.events();
         final Class<?>[] types = method.getParameterTypes();
-        return new MethodDefine(scheduleOn, types, names);
+        return new MethodArgs(scheduleOn, types, names);
     }
 
     private static class MethodSignFilter implements Filter<Method> {

@@ -6,16 +6,16 @@ import static com.github.yoojia.events.supports.ClassTypes.lenientlyEquals;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 2.0
+ * @since 2.3
  */
 class MethodHandler implements EventHandler {
 
     private final On mScheduleOn;
     private final Method mMethod;
     private final Object mObjectRef;
-    private final MethodDefine mDefine;
+    private final MethodArgs mDefine;
 
-    private MethodHandler(On scheduleOn, Object object, Method method, MethodDefine define) {
+    private MethodHandler(On scheduleOn, Object object, Method method, MethodArgs define) {
         mScheduleOn = scheduleOn;
         mMethod = method;
         mObjectRef = object;
@@ -65,7 +65,7 @@ class MethodHandler implements EventHandler {
         return values;
     }
 
-    public static MethodHandler create(On scheduleOn, Object object, Method method, MethodDefine args) {
+    public static MethodHandler create(On scheduleOn, Object object, Method method, MethodArgs args) {
         return new MethodHandler(scheduleOn, object, method, args);
     }
 

@@ -1,29 +1,29 @@
-package com.github.yoojia.events.internal;
+package com.github.yoojia.events.emitter;
 
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
-public class DispatcherTestCase {
+public class EmitterTestCase {
 
     public static final int THREAD_COUNT = 10;
 
-    final Dispatcher dispatcher = new Dispatcher();
+    final EventEmitter mEmitter = new EventEmitter();
 
     @Test
-    public void testThreads() throws InterruptedException {
+    public void test() throws InterruptedException {
         // missed
-        dispatcher.emit(1024.0f);
+        mEmitter.emit(1024.0f);
 
         final CountDownLatch counting = new CountDownLatch(THREAD_COUNT);
-        final Handler threads = new Handler() {
+        final Handler handler = new Handler() {
+
             @Override
             public void onEvent(Object event) throws Exception {
                 counting.countDown();
@@ -38,59 +38,28 @@ public class DispatcherTestCase {
 
         };
 
-        dispatcher.addHandler(threads, new EventFilter() {
+        // 只处理String类型的事件
+        mEmitter.addHandler(handler, new EventFilter() {
             @Override
             public boolean accept(Object event) {
                 return String.class.equals(event.getClass());
             }
         });
 
-        // events
+        // 发射事件
         for (int i = 0; i < THREAD_COUNT; i++) {
-            dispatcher.emit("msg-" + i);
+            mEmitter.emit("msg-" + i);
         }
 
         counting.await();
 
-        dispatcher.removeHandler(threads);
-    }
-
-    @Test
-    public void testCaller(){
-        final AtomicInteger callerThreadId = new AtomicInteger(-9);
-        final Handler caller = new Handler() {
-            @Override
-            public void onEvent(Object event) throws Exception {
-                callerThreadId.set((int) Thread.currentThread().getId());
-            }
-
-            @Override
-            public void onErrors(Exception errors) {
-                errors.printStackTrace();
-            }
-
-        };
-
-        dispatcher.addHandler(caller, new EventFilter() {
-            @Override
-            public boolean accept(Object event) {
-                return int.class.equals(event.getClass())
-                        || Integer.class.equals(event.getClass());
-            }
-        });
-
-        // caller
-        dispatcher.emit(123);
-
-        dispatcher.removeHandler(caller);
-
-        Assert.assertEquals(Thread.currentThread().getId(), callerThreadId.get());
+        mEmitter.removeHandler(handler);
     }
 
     @Test
     public void testEventMissed(){
         final AtomicBoolean missedFlag = new AtomicBoolean(false);
-        dispatcher.addOnEventHandler(new OnEventHandler() {
+        mEmitter.addOnEventHandler(new OnEventHandler() {
             @Override
             public boolean handleEvent(Object event) {
                 if (event instanceof DeadEvent) {
@@ -100,7 +69,7 @@ public class DispatcherTestCase {
                 return true;
             }
         });
-        dispatcher.emit(10000L);
+        mEmitter.emit(10000L);
         Assert.assertTrue(missedFlag.get());
     }
 
@@ -119,15 +88,15 @@ public class DispatcherTestCase {
             }
 
         };
-        dispatcher.addHandler(caller, new EventFilter() {
+        mEmitter.addHandler(caller, new EventFilter() {
             @Override
             public boolean accept(Object event) {
                 return int.class.equals(event.getClass())
                         || Integer.class.equals(event.getClass());
             }
         });
-        dispatcher.emit(123);
-        dispatcher.removeHandler(caller);
+        mEmitter.emit(123);
+        mEmitter.removeHandler(caller);
     }
 
 }

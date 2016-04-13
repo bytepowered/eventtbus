@@ -1,4 +1,4 @@
-package com.github.yoojia.events.internal;
+package com.github.yoojia.events.emitter;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)

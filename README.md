@@ -1,13 +1,16 @@
 # NextEvents
 
-事件总线库
+> Java 事件总线库，类似Guava.EventBus，但更快，更小巧及更多特性支持。
+
+> An EventBus library, like Guava.EventBus, but faster, thinner, and more features.
+
 
 [![BuildStatus](https://travis-ci.org/yoojia/NextEvents.svg)](https://travis-ci.org/yoojia/NextEvents)
 
 ## 已支持特性
 
-- 支持使用 <EventHandler> 接口回调；
-- 支持使用 @Subscribe 注解方法回调；
+- 支持使用 EventHandler 接口回调；
+- 支持使用 @Subscribe 方法注解回调；
 - 支持多种回调方式: `CALLER_THREAD` / `IO_THREAD` / `MAIN_THREAD` (For Android only)
 - 支持自定义回调目标的调度处理 <Scheduler>
 - 支持事件组
@@ -144,18 +147,18 @@ SharedThreads(Nop Payload)	 | 891257		| 2243ms	| 2244ms		| 2000000
 CallerThread(Nop Payload)	 | 3933523		| 508ms		| 508ms		| 2000000
 GuavaEvents(Nop Payload)	 | 2083789		| 959ms		| 959ms		| 2000000
 
-`v2.0` 在 `Ubuntu 14.04 LTS / 3.6 GHz AMD A8-5600K / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_65-b17) ` 环境下的性能对比情况如下：
+`v2.3` 在 `Ubuntu 14.04 LTS / 3.6 GHz AMD A8-5600K / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_65-b17) ` 环境下的性能对比情况如下：
 
 测试类型/负载方式| TPS/QPS | 总投递时间 | 总运行时间 | 投递事件量
 ----|----|----|----|----
-MultiThreads(1ms Payload)	 | 3242		| 22ms		| 616ms		| 2000
-SharedThreads(1ms Payload)	 | 3351		| 3ms		| 596ms		| 2000
+MultiThreads(1ms Payload)	 | 3284		| 29ms		| 608ms		| 2000
+SharedThreads(1ms Payload)	 | 3462		| 5ms		| 577ms		| 2000
 CallerThread(1ms Payload)	 | 914		| 2187ms		| 2187ms		| 2000
-GuavaEvents(1ms Payload)	 | 890		| 2245ms		| 2245ms		| 2000
-MultiThreads(Nop Payload)	 | 1078525		| 1846ms	| 1854ms		| 2000000
-SharedThreads(Nop Payload)	 | 1373540		| 1427ms	| 1456ms		| 2000000
-CallerThread(Nop Payload)	 | 3834583		| 521ms		| 521ms	    	| 2000000
-GuavaEvents(Nop Payload)	 | 1578518		| 1266ms	| 1267ms		| 2000000
+GuavaEvents(1ms Payload)	 | 896		| 2231ms		| 2232ms		| 2000
+MultiThreads(Nop Payload)	 | 1295145		| 1544ms	| 1544ms		| 2000000
+SharedThreads(Nop Payload)	 | 1370195		| 1459ms	| 1459ms		| 2000000
+CallerThread(Nop Payload)	 | 3732952		| 535ms		| 535ms	    	| 2000000
+GuavaEvents(Nop Payload)	 | 1989531		| 1005ms	| 1005ms		| 2000000
 
 `v2.0` 在 `Windows 10 64x / 3.2 GHz Intel i5-4460 / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_74-b02) ` 环境下的性能对比情况如下：
 

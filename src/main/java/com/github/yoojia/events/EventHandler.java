@@ -1,6 +1,6 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.internal.Handler;
+import com.github.yoojia.events.emitter.Handler;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)

@@ -1,15 +1,15 @@
-package com.github.yoojia.events.internal;
+package com.github.yoojia.events.emitter;
 
 import java.util.List;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 2.0
+ * @since 2.3
  */
-public final class SchedulerImpl implements Scheduler {
+public final class CallerScheduler implements Scheduler {
 
     @Override
-    public void submit(Object event, List<? extends Handler> handlers) {
+    public void schedule(Object event, List<? extends Handler> handlers) {
         for (Handler handler : handlers) {
             new Invoker(event, handler).run();
         }

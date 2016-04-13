@@ -1,4 +1,4 @@
-package com.github.yoojia.events.internal;
+package com.github.yoojia.events.emitter;
 
 import java.util.List;
 
@@ -8,6 +8,6 @@ import java.util.List;
  */
 public interface Scheduler {
 
-    void submit(Object event, List<? extends Handler> handlers);
+    void schedule(Object event, List<? extends Handler> handlers);
 
 }

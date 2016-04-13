@@ -1,4 +1,4 @@
-package com.github.yoojia.events.internal;
+package com.github.yoojia.events.emitter;
 
 import com.github.yoojia.events.supports.Filter;
 import com.github.yoojia.events.supports.ImmutableList;
@@ -7,14 +7,14 @@ import java.util.List;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.2
+ * @since 2.3
  */
-public class Acceptor implements Filter<Object>{
+public class Target implements Filter<Object>{
 
-    public final Handler handler;
-    public final ImmutableList<EventFilter> filters;
+    final Handler handler;
+    final ImmutableList<EventFilter> filters;
 
-    public Acceptor(Handler handler, List<EventFilter> source) {
+    public Target(Handler handler, List<EventFilter> source) {
         this.handler = handler;
         this.filters = new ImmutableList<>(source.toArray(new EventFilter[source.size()]));
     }

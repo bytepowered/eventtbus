@@ -1,7 +1,7 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.internal.DeadEvent;
-import com.github.yoojia.events.internal.EventFilter;
+import com.github.yoojia.events.emitter.DeadEvent;
+import com.github.yoojia.events.emitter.EventFilter;
 
 import static com.github.yoojia.events.supports.ClassTypes.lenientlyEquals;
 
@@ -9,18 +9,18 @@ import static com.github.yoojia.events.supports.ClassTypes.lenientlyEquals;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 2.0
  */
-class InternalFilter implements EventFilter {
+class MethodFilter implements EventFilter {
 
-    private final MethodDefine mDefine;
+    private final MethodArgs mDefine;
 
-    public InternalFilter(MethodDefine define) {
+    public MethodFilter(MethodArgs define) {
         mDefine = define;
     }
 
     @Override
     public boolean accept(Object event) {
         final EventPayload payload = (EventPayload)
-                ((event instanceof DeadEvent) ? (((DeadEvent) event).raw) : event);
+                ((event instanceof DeadEvent) ? (((DeadEvent) event).origin) : event);
         if (mDefine.isNoArgs || mDefine.isAny) {
             return isNamesMatched(payload.name);
         }else{

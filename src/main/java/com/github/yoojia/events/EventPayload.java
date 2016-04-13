@@ -48,12 +48,13 @@ public class EventPayload {
         final Class[] types;
         if (payloads != null) {
             final Class<?> type = payloads.getClass();
+            // 多个事件负载时，负载列表中不能包含null
             if (type.isArray()) {
                 values = (Object[]) payloads;
                 types = new Class[values.length];
                 for (int i = 0; i < values.length; i++) {
                     if (null == values[i]) {
-                        throw new IllegalArgumentException("Payloads values CANNOT contains <null> value !");
+                        throw new IllegalArgumentException("When emit MULTI-PAYLOADS, values CANNOT contains <NULL> value !");
                     }
                     types[i] = values[i].getClass();
                 }
@@ -61,7 +62,7 @@ public class EventPayload {
                 types = new Class[]{type};
                 values = new Object[]{payloads};
             }
-        }else{
+        }else{ // no args
             values = new Object[0];
             types = new Class[0];
         }

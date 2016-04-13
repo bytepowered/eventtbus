@@ -1,7 +1,7 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.internal.Acceptor;
-import com.github.yoojia.events.internal.EventFilter;
+import com.github.yoojia.events.emitter.Target;
+import com.github.yoojia.events.emitter.EventFilter;
 import com.github.yoojia.events.supports.Filter;
 
 import java.lang.reflect.Method;
@@ -16,26 +16,35 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 class ObjectCached {
 
-    private final Map<Object, Acceptors> mCache = new ConcurrentHashMap<>();
+    private final Map<Object, TargetList> mCache = new ConcurrentHashMap<>();
 
+    /**
+     * 从指定对象中查找添加了 @Subscribe 注解的方法。
+     * - 如果对象中没有@Subscriber注解的方法，返回一个空列表。
+     * - 否则，将Target列表缓存以重用。
+     *
+     * @param object 指定对象
+     * @param methodFilter 处自义方法过滤
+     * @return 非null对象的Target列表
+     */
     @SuppressWarnings("unchecked")
-    public Acceptors find(Object object, Filter<Method> methodFilter) {
+    public TargetList findTargets(Object object, Filter<Method> methodFilter) {
         final List<Method> methods = Methods.getAnnotated(object.getClass(), methodFilter);
         if (methods.isEmpty()) {
-            return Acceptors.empty();
+            return TargetList.empty();
         }else{
             synchronized (mCache) {
-                final Acceptors present = mCache.get(object);
+                final TargetList present = mCache.get(object);
                 if (present != null) {
                     return present;
                 }else{
                     final int size = methods.size();
-                    final ArrayList<Acceptor> array = new ArrayList<>(size);
+                    final ArrayList<Target> array = new ArrayList<>(size);
                     for (int i = 0; i < size; i++) {
                         final Method method = methods.get(i);
                         array.add(create(object, method, Methods.parse(method)));
                     }
-                    final Acceptors acceptors = new Acceptors(array);
+                    final TargetList acceptors = new TargetList(array);
                     mCache.put(object, acceptors);
                     return acceptors;
                 }
@@ -43,10 +52,10 @@ class ObjectCached {
         }
     }
 
-    public Acceptors getSafety(Object object) {
-        final Acceptors present = mCache.get(object);
+    public TargetList getPresent(Object object) {
+        final TargetList present = mCache.get(object);
         if (present == null) {
-            return Acceptors.empty();
+            return TargetList.empty();
         }else{
             return present;
         }
@@ -57,10 +66,10 @@ class ObjectCached {
     }
 
     @SuppressWarnings("unchecked")
-    private static Acceptor create(Object object, Method method, MethodDefine args) {
+    private static Target create(Object object, Method method, MethodArgs args) {
         final ArrayList<EventFilter> filters = new ArrayList<>(1);
-        filters.add(new InternalFilter(args));
-        return new Acceptor(MethodHandler.create(args.scheduleOn, object, method, args), filters);
+        filters.add(new MethodFilter(args));
+        return new Target(MethodHandler.create(args.scheduleOn, object, method, args), filters);
     }
 
 }
