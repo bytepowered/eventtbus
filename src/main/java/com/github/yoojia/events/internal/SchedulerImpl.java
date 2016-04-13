@@ -11,7 +11,7 @@ public final class SchedulerImpl implements Scheduler {
     @Override
     public void submit(Object event, List<? extends Handler> handlers) {
         for (Handler handler : handlers) {
-            new EventRunner(event, handler).run();
+            new Invoker(event, handler).run();
         }
     }
 

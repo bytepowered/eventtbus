@@ -1,6 +1,6 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.internal.EventRunner;
+import com.github.yoojia.events.internal.Invoker;
 import com.github.yoojia.events.internal.Handler;
 import com.github.yoojia.events.internal.Scheduler;
 
@@ -27,7 +27,7 @@ public class Schedulers {
             @Override
             public void submit(Object event, List<? extends Handler> handlers) {
                 for (Handler handler : handlers) {
-                    new EventRunner(event, handler).run();
+                    new Invoker(event, handler).run();
                 }
             }
         };

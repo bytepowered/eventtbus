@@ -7,7 +7,7 @@ import java.util.List;
  * @author Yoojia Chen (yoojia.chen@gmail.com)
  * @since 2.0
  */
-class Emitter implements Submit<Object, Void> {
+class Emitter {
 
     private static final int GUESS = 2;
 
@@ -17,8 +17,7 @@ class Emitter implements Submit<Object, Void> {
         this.mDispatcher = mDispatcher;
     }
 
-    @Override
-    public void submit(Object event, Void _null) {
+    public void submit(Object event) {
         final List<Handler> handlers = findMatched(event, mDispatcher);
         if (handlers.isEmpty() && !(event instanceof DeadEvent)) {
             mDispatcher.emit(new DeadEvent(event));

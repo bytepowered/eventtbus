@@ -1,6 +1,6 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.internal.EventRunner;
+import com.github.yoojia.events.internal.Invoker;
 import com.github.yoojia.events.internal.Handler;
 import com.github.yoojia.events.internal.Scheduler;
 
@@ -46,7 +46,7 @@ public class ThreadsScheduler implements Scheduler {
             final EventHandler handler = (EventHandler) item;
             final On scheduleOn = handler.scheduleOn();
             if (On.CALLER_THREAD.equals(scheduleOn)) {
-                new EventRunner(event, handler).run();
+                new Invoker(event, handler).run();
             }else{
                 mLoopTasks.offer(new Element(event, handler, scheduleOn));
                 synchronized (mLooper) {
@@ -67,7 +67,7 @@ public class ThreadsScheduler implements Scheduler {
     protected void invoke(On type, Object event, Handler handler) {
         switch (type) {
             case IO_THREAD:
-                mWorkerThreads.submit(new EventRunner(event, handler));
+                mWorkerThreads.submit(new Invoker(event, handler));
                 break;
             case MAIN_THREAD:
                 handler.onErrors(new IllegalArgumentException("Unsupported <ON_MAIN_THREAD> schedule type! " ));
