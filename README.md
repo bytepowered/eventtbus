@@ -160,18 +160,18 @@ SharedThreads(Nop Payload)	 | 1370195		| 1459ms	| 1459ms		| 2000000
 CallerThread(Nop Payload)	 | 3732952		| 535ms		| 535ms	    	| 2000000
 GuavaEvents(Nop Payload)	 | 1989531		| 1005ms	| 1005ms		| 2000000
 
-`v2.0` 在 `Windows 10 64x / 3.2 GHz Intel i5-4460 / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_74-b02) ` 环境下的性能对比情况如下：
+`v2.3` 在 `Windows 10 64x / 3.2 GHz Intel i5-4460 / 8 GB / Java(TM) SE Runtime Environment (build 1.8.0_74-b02) ` 环境下的性能对比情况如下：
 
 测试类型/负载方式| TPS/QPS | 总投递时间 | 总运行时间 | 投递事件量
 ----|----|----|----|----
-MultiThreads(1ms Payload)	 | 3447		| 10ms		| 580ms		| 2000
-SharedThreads(1ms Payload)	 | 3376		| 1ms		| 592ms		| 2000
-CallerThread(1ms Payload)	 | 902		| 2215ms		| 2215ms		| 2000
-GuavaEvents(1ms Payload)	 | 884		| 2260ms		| 2260ms		| 2000
-MultiThreads(Nop Payload)	 | 1935508		| 1033ms	| 1033ms		| 2000000
-SharedThreads(Nop Payload)	 | 2261975		| 882ms		| 884ms		| 2000000
-CallerThread(Nop Payload)	 | 4602303		| 434ms		| 434ms		| 2000000
-GuavaEvents(Nop Payload)	 | 3980131		| 502ms		| 502ms		| 2000000
+MultiThreads(1ms Payload)	 | 3357		| 12ms		| 595ms		| 2000
+SharedThreads(1ms Payload)	 | 3447		| 8ms		| 580ms		| 2000
+CallerThread(1ms Payload)	 | 859		| 2215ms		| 2215ms		| 2000
+GuavaEvents(1ms Payload)	 | 865		| 2260ms		| 2260ms		| 2000
+MultiThreads(Nop Payload)	 | 2002793		| 998ms	    | 998ms		| 2000000
+SharedThreads(Nop Payload)	 | 2157387		| 926ms		| 927ms		| 2000000
+CallerThread(Nop Payload)	 | 4581292		| 436ms		| 436ms		| 2000000
+GuavaEvents(Nop Payload)	 | 3671024		| 544ms		| 544ms		| 2000000
 
 # 分享交流
 
@@ -179,9 +179,6 @@ GuavaEvents(Nop Payload)	 | 3980131		| 502ms		| 502ms		| 2000000
 
 - 邮件: yoojia.chen@gmail.com
 - QQ: 228441083
-- 微信: chenyoca
-
-![WeChat](https://avatars2.githubusercontent.com/u/1492222)
 
 # License
 

@@ -10,14 +10,14 @@ import java.util.List;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 2.3
  */
-final class TargetList extends ImmutableList<Target> {
+final class TargetArray extends ImmutableList<Target> {
 
-    public TargetList(List<Target> source) {
+    public TargetArray(List<Target> source) {
         super(source.toArray(new Target[source.size()]));
     }
 
-    public static TargetList empty(){
+    public static TargetArray empty(){
         final List<Target> empty = Collections.emptyList();
-        return new TargetList(empty);
+        return new TargetArray(empty);
     }
 }
