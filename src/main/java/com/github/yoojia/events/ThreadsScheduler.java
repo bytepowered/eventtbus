@@ -70,7 +70,7 @@ public class ThreadsScheduler implements Scheduler {
                 mWorkerThreads.submit(new Invoker(event, handler));
                 break;
             case MAIN_THREAD:
-                handler.onErrors(new IllegalArgumentException("Unsupported <ON_MAIN_THREAD> schedule type! " ));
+                handler.onErrors(new IllegalArgumentException("Unsupported <MAIN_THREAD> schedule type! " ));
                 break;
             default:
                 handler.onErrors(new IllegalArgumentException("Unsupported schedule type: " + type));

@@ -15,7 +15,7 @@ import static com.github.yoojia.events.supports.Preconditions.notNull;
 public class NextEvents{
 
     private final EventEmitter mEmitter;
-    private final ObjectCached mObjectCached = new ObjectCached();
+    private final Cached mObjectCached = new Cached();
 
     public NextEvents() {
         this(SharedScheduler.getDefault());
@@ -24,21 +24,7 @@ public class NextEvents{
     public NextEvents(Scheduler scheduler) {
         notNull(scheduler, "scheduler == null");
         mEmitter = new EventEmitter(scheduler);
-        mEmitter.addOnEventHandler(new OnEventHandler() {
-            @Override
-            public boolean handleEvent(Object event) {
-                final boolean isDeadEvent = event instanceof DeadEvent;
-                if (isDeadEvent) {
-                    final EventPayload payload = (EventPayload) ((DeadEvent) event).origin;
-                    if (EventPayload.DEAD_EVENT.equals(payload.name)) {
-                        Logger.debug("NextEvents", "- Empty handlers for dead-event: " + payload);
-                    }else{
-                        emit(new EventPayload(EventPayload.DEAD_EVENT, payload));
-                    }
-                }
-                return isDeadEvent;
-            }
-        });
+        addOnEventHandler(new OnDeadEventHandler(this));
     }
 
     public void register(Object object) {
@@ -91,6 +77,37 @@ public class NextEvents{
 
     public void removeHandler(Handler handler) {
         mEmitter.removeHandler(handler);
+    }
+
+    public void addOnEventHandler(OnEventHandler handler){
+        mEmitter.addOnEventHandler(handler);
+    }
+
+    public void removeOnEventHandler(OnEventHandler handler) {
+        mEmitter.removeOnEventHandler(handler);
+    }
+
+    private static class OnDeadEventHandler implements OnEventHandler {
+
+        private final NextEvents mEvents;
+
+        private OnDeadEventHandler(NextEvents mEvents) {
+            this.mEvents = mEvents;
+        }
+
+        @Override
+        public boolean handleEvent(Object event) {
+            final boolean isDeadEvent = event instanceof DeadEvent;
+            if (isDeadEvent) {
+                final EventPayload payload = (EventPayload) ((DeadEvent) event).origin;
+                if (EventPayload.DEAD_EVENT.equals(payload.name)) {
+                    Logger.debug("NextEvents", "- Empty handlers for dead-event: " + payload);
+                }else{
+                    mEvents.emit(new EventPayload(EventPayload.DEAD_EVENT, payload));
+                }
+            }
+            return isDeadEvent;
+        }
     }
 
 }

@@ -14,9 +14,9 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Yoojia Chen (yoojiachen@gmail.com)
  * @since 1.2
  */
-class ObjectCached {
+class Cached {
 
-    private final Map<Object, TargetList> mCache = new ConcurrentHashMap<>();
+    private final Map<Object, TargetArray> mCache = new ConcurrentHashMap<>();
 
     /**
      * 从指定对象中查找添加了 @Subscribe 注解的方法。
@@ -28,13 +28,13 @@ class ObjectCached {
      * @return 非null对象的Target列表
      */
     @SuppressWarnings("unchecked")
-    public TargetList findTargets(Object object, Filter<Method> methodFilter) {
+    public TargetArray findTargets(Object object, Filter<Method> methodFilter) {
         final List<Method> methods = Methods.getAnnotated(object.getClass(), methodFilter);
         if (methods.isEmpty()) {
-            return TargetList.empty();
+            return TargetArray.empty();
         }else{
             synchronized (mCache) {
-                final TargetList present = mCache.get(object);
+                final TargetArray present = mCache.get(object);
                 if (present != null) {
                     return present;
                 }else{
@@ -44,7 +44,7 @@ class ObjectCached {
                         final Method method = methods.get(i);
                         array.add(create(object, method, Methods.parse(method)));
                     }
-                    final TargetList acceptors = new TargetList(array);
+                    final TargetArray acceptors = new TargetArray(array);
                     mCache.put(object, acceptors);
                     return acceptors;
                 }
@@ -52,10 +52,10 @@ class ObjectCached {
         }
     }
 
-    public TargetList getPresent(Object object) {
-        final TargetList present = mCache.get(object);
+    public TargetArray getPresent(Object object) {
+        final TargetArray present = mCache.get(object);
         if (present == null) {
-            return TargetList.empty();
+            return TargetArray.empty();
         }else{
             return present;
         }
