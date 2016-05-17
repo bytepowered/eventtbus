@@ -16,8 +16,8 @@ public class EventEmitter {
     private final Submit mSubmit;
 
     final Scheduler scheduler;
-    final CopyOnWriteArrayList<Target> targets = new CopyOnWriteArrayList<>();
-    final CopyOnWriteArrayList<OnEventHandler> handlers = new CopyOnWriteArrayList<>();
+    final CopyOnWriteArrayList<RealSubscriber> subscribers = new CopyOnWriteArrayList<>();
+    final CopyOnWriteArrayList<EventInterceptor> eventInterceptors = new CopyOnWriteArrayList<>();
 
     public EventEmitter(){
         this(new CallerScheduler());
@@ -32,37 +32,36 @@ public class EventEmitter {
         mSubmit.submit(event);
     }
 
-    public void addHandler(Handler handler, EventFilter filter) {
-        this.addHandler(handler, Arrays.asList(new EventFilter[]{filter}));
+    public void addSubscriber(Subscriber subscriber, EventFilter filter) {
+        addSubscriber(subscriber, Arrays.asList(new EventFilter[]{filter}));
     }
 
-    public void addHandler(Handler handler, List<EventFilter> filters) {
-        this.addTarget(new Target(handler, filters));
+    public void addSubscriber(Subscriber subscriber, List<EventFilter> filters) {
+        addSubscriber(new RealSubscriber(subscriber, filters));
     }
 
-    public void addTarget(Target target) {
-        targets.add(target);
+    public void addSubscriber(RealSubscriber subscriber) {
+        subscribers.add(subscriber);
     }
 
-    public void removeTarget(Target target) {
-        this.removeHandler(target.handler);
+    public void removeSubscriber(RealSubscriber subscriber) {
+        this.removeSubscriber(subscriber.subscriber);
     }
 
-    public void removeHandler(final Handler handler) {
-        targets.removeAll(filter(targets, new Filter<Target>(){
-            @Override
-            public boolean accept(Target item) {
-                return item.handler.equals(handler);
+    public void removeSubscriber(final Subscriber subscriber) {
+        subscribers.removeAll(filter(subscribers, new Filter<RealSubscriber>(){
+            @Override public boolean accept(RealSubscriber item) {
+                return item.subscriber == (subscriber);
             }
         }));
     }
 
-    public void addOnEventHandler(OnEventHandler handler) {
-        handlers.add(handler);
+    public void addEventInterceptor(EventInterceptor interceptor) {
+        eventInterceptors.add(interceptor);
     }
 
-    public void removeOnEventHandler(OnEventHandler handler) {
-        handlers.remove(handler);
+    public void removeEventInterceptor(EventInterceptor interceptor) {
+        eventInterceptors.remove(interceptor);
     }
 
 }

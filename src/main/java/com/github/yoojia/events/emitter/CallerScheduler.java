@@ -9,9 +9,9 @@ import java.util.List;
 public final class CallerScheduler implements Scheduler {
 
     @Override
-    public void schedule(Object event, List<? extends Handler> handlers) {
-        for (Handler handler : handlers) {
-            new Invoker(event, handler).run();
+    public void schedule(Object event, List<? extends Subscriber> subscribers) {
+        for (Subscriber subscriber : subscribers) {
+            new Invoker(event, subscriber).run();
         }
     }
 

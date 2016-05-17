@@ -1,7 +1,7 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.emitter.Invoker;
-import com.github.yoojia.events.emitter.Handler;
+import com.github.yoojia.events.emitter.Subscriber;
 import com.github.yoojia.events.emitter.Scheduler;
 
 import java.util.List;
@@ -39,11 +39,11 @@ public class ThreadsScheduler implements Scheduler {
     }
 
     @Override
-    public void schedule(Object event, List<? extends Handler> handlers) {
+    public void schedule(Object event, List<? extends Subscriber> handlers) {
         // 如果是 CALLER 方式, 直接在此处执行.
         // 其它方式在线程池处理再做处理
-        for (Handler item : handlers) {
-            final EventHandler handler = (EventHandler) item;
+        for (Subscriber item : handlers) {
+            final EventSubscriber handler = (EventSubscriber) item;
             final On scheduleOn = handler.scheduleOn();
             if (On.CALLER_THREAD.equals(scheduleOn)) {
                 new Invoker(event, handler).run();
@@ -64,16 +64,16 @@ public class ThreadsScheduler implements Scheduler {
         return mLoopThread;
     }
 
-    protected void invoke(On type, Object event, Handler handler) {
+    protected void invoke(On type, Object event, Subscriber subscriber) {
         switch (type) {
             case IO_THREAD:
-                mWorkerThreads.submit(new Invoker(event, handler));
+                mWorkerThreads.submit(new Invoker(event, subscriber));
                 break;
             case MAIN_THREAD:
-                handler.onErrors(new IllegalArgumentException("Unsupported <MAIN_THREAD> schedule type! " ));
+                subscriber.onError(new IllegalArgumentException("Unsupported <MAIN_THREAD> schedule type! " ));
                 break;
             default:
-                handler.onErrors(new IllegalArgumentException("Unsupported schedule type: " + type));
+                subscriber.onError(new IllegalArgumentException("Unsupported schedule type: " + type));
                 break;
         }
     }

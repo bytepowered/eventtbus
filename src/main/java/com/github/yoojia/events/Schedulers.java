@@ -1,7 +1,7 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.emitter.Invoker;
-import com.github.yoojia.events.emitter.Handler;
+import com.github.yoojia.events.emitter.Subscriber;
 import com.github.yoojia.events.emitter.Scheduler;
 
 import java.util.List;
@@ -25,9 +25,9 @@ public class Schedulers {
         return new Scheduler() {
 
             @Override
-            public void schedule(Object event, List<? extends Handler> handlers) {
-                for (Handler handler : handlers) {
-                    new Invoker(event, handler).run();
+            public void schedule(Object event, List<? extends Subscriber> handlers) {
+                for (Subscriber subscriber : handlers) {
+                    new Invoker(event, subscriber).run();
                 }
             }
         };

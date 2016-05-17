@@ -22,7 +22,7 @@ public class EmitterTestCase {
         mEmitter.emit(1024.0f);
 
         final CountDownLatch counting = new CountDownLatch(THREAD_COUNT);
-        final Handler handler = new Handler() {
+        final Subscriber subscriber = new Subscriber() {
 
             @Override
             public void onEvent(Object event) throws Exception {
@@ -32,14 +32,14 @@ public class EmitterTestCase {
             }
 
             @Override
-            public void onErrors(Exception errors) {
+            public void onError(Exception errors) {
                 errors.printStackTrace();
             }
 
         };
 
         // 只处理String类型的事件
-        mEmitter.addHandler(handler, new EventFilter() {
+        mEmitter.addSubscriber(subscriber, new EventFilter() {
             @Override
             public boolean accept(Object event) {
                 return String.class.equals(event.getClass());
@@ -53,15 +53,15 @@ public class EmitterTestCase {
 
         counting.await();
 
-        mEmitter.removeHandler(handler);
+        mEmitter.removeSubscriber(subscriber);
     }
 
     @Test
     public void testEventMissed(){
         final AtomicBoolean missedFlag = new AtomicBoolean(false);
-        mEmitter.addOnEventHandler(new OnEventHandler() {
+        mEmitter.addEventInterceptor(new EventInterceptor() {
             @Override
-            public boolean handleEvent(Object event) {
+            public boolean handle(Object event) {
                 if (event instanceof DeadEvent) {
                     missedFlag.set(true);
                     System.err.println("- missed event: " + event);
@@ -75,20 +75,20 @@ public class EmitterTestCase {
 
     @Test
     public void testErrorOnErrors(){
-        final Handler caller = new Handler() {
+        final Subscriber caller = new Subscriber() {
             @Override
             public void onEvent(Object event) throws Exception {
                 throw new IllegalArgumentException("ERROR-EVENTS:");
             }
 
             @Override
-            public void onErrors(Exception errors) {
+            public void onError(Exception errors) {
                 Assert.assertEquals(IllegalArgumentException.class, errors.getClass());
                 throw new IllegalStateException("ERROR-ON-ERRORS");
             }
 
         };
-        mEmitter.addHandler(caller, new EventFilter() {
+        mEmitter.addSubscriber(caller, new EventFilter() {
             @Override
             public boolean accept(Object event) {
                 return int.class.equals(event.getClass())
@@ -96,7 +96,7 @@ public class EmitterTestCase {
             }
         });
         mEmitter.emit(123);
-        mEmitter.removeHandler(caller);
+        mEmitter.removeSubscriber(caller);
     }
 
 }

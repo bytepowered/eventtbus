@@ -24,7 +24,7 @@ public class NextEvents{
     public NextEvents(Scheduler scheduler) {
         notNull(scheduler, "scheduler == null");
         mEmitter = new EventEmitter(scheduler);
-        addOnEventHandler(new OnDeadEventHandler(this));
+        addEventInterceptor(new DeadEventInterceptor(this));
     }
 
     public void register(Object object) {
@@ -33,18 +33,18 @@ public class NextEvents{
 
     public void register(Object object, Filter<Method> methodFilter) {
         notNull(object, "object == null");
-        final List<Target> targets = mObjectCached.findTargets(object, methodFilter);
-        for (Target target : targets) {
-            mEmitter.addTarget(target);
+        final List<RealSubscriber> subscribers = mObjectCached.findTargets(object, methodFilter);
+        for (RealSubscriber subscriber : subscribers) {
+            mEmitter.addSubscriber(subscriber);
         }
     }
 
     public void unregister(Object object) {
         notNull(object, "object == null");
-        final List<Target> targets = mObjectCached.getPresent(object);
-        if (!targets.isEmpty()) {
-            for (Target target : targets) {
-                mEmitter.removeTarget(target);
+        final List<RealSubscriber> subscribers = mObjectCached.getPresent(object);
+        if (!subscribers.isEmpty()) {
+            for (RealSubscriber subscriber : subscribers) {
+                mEmitter.removeSubscriber(subscriber);
             }
             mObjectCached.remove(object);
         }
@@ -63,40 +63,40 @@ public class NextEvents{
         mEmitter.emit(event);
     }
 
-    public void addHandler(Handler handler, EventFilter filter) {
-        notNull(handler, "handler == null");
+    public void addSubscriber(Subscriber subscriber, EventFilter filter) {
+        notNull(subscriber, "subscriber == null");
         notNull(filter, "filter == null");
-        mEmitter.addHandler(handler, filter);
+        mEmitter.addSubscriber(subscriber, filter);
     }
 
-    public void addHandler(Handler handler, List<EventFilter> filters) {
-        notNull(handler, "handler == null");
+    public void addSubscriber(Subscriber subscriber, List<EventFilter> filters) {
+        notNull(subscriber, "subscriber == null");
         notNull(filters, "filters == null");
-        mEmitter.addHandler(handler, filters);
+        mEmitter.addSubscriber(subscriber, filters);
     }
 
-    public void removeHandler(Handler handler) {
-        mEmitter.removeHandler(handler);
+    public void removeSubscriber(Subscriber subscriber) {
+        mEmitter.removeSubscriber(subscriber);
     }
 
-    public void addOnEventHandler(OnEventHandler handler){
-        mEmitter.addOnEventHandler(handler);
+    public void addEventInterceptor(EventInterceptor handler){
+        mEmitter.addEventInterceptor(handler);
     }
 
-    public void removeOnEventHandler(OnEventHandler handler) {
-        mEmitter.removeOnEventHandler(handler);
+    public void removeEventInterceptor(EventInterceptor handler) {
+        mEmitter.removeEventInterceptor(handler);
     }
 
-    private static class OnDeadEventHandler implements OnEventHandler {
+    private static class DeadEventInterceptor implements EventInterceptor {
 
         private final NextEvents mEvents;
 
-        private OnDeadEventHandler(NextEvents mEvents) {
+        private DeadEventInterceptor(NextEvents mEvents) {
             this.mEvents = mEvents;
         }
 
         @Override
-        public boolean handleEvent(Object event) {
+        public boolean handle(Object event) {
             final boolean isDeadEvent = event instanceof DeadEvent;
             if (isDeadEvent) {
                 final EventPayload payload = (EventPayload) ((DeadEvent) event).origin;

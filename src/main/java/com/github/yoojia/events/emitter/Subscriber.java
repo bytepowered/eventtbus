@@ -2,9 +2,9 @@ package com.github.yoojia.events.emitter;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 1.2
+ * @since 2.4
  */
-public interface Handler {
+public interface Subscriber {
 
     /**
      * Process event message
@@ -17,6 +17,6 @@ public interface Handler {
      * catch onEvent(Event) exceptions
      * @param errors Exception
      */
-    void onErrors(Exception errors);
+    void onError(Exception errors);
 
 }

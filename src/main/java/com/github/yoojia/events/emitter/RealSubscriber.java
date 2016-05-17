@@ -7,15 +7,15 @@ import java.util.List;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
- * @since 2.3
+ * @since 2.4
  */
-public class Target implements Filter<Object>{
+public class RealSubscriber implements Filter<Object>{
 
-    final Handler handler;
+    final Subscriber subscriber;
     final ImmutableList<EventFilter> filters;
 
-    public Target(Handler handler, List<EventFilter> source) {
-        this.handler = handler;
+    public RealSubscriber(Subscriber subscriber, List<EventFilter> source) {
+        this.subscriber = subscriber;
         this.filters = new ImmutableList<>(source.toArray(new EventFilter[source.size()]));
     }
 
