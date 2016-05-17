@@ -73,7 +73,7 @@ public class EmitterTestCase {
         Assert.assertTrue(missedFlag.get());
     }
 
-    @Test
+    @Test(expected = InvokeException.class)
     public void testErrorOnErrors(){
         final Subscriber caller = new Subscriber() {
             @Override
