@@ -5,7 +5,7 @@ jdk:
 
 sudo: false
 
-script: ./gradlew clean test
+script: ./gradlew clean test bintrayUpload
 
 notifications:
     email: false
