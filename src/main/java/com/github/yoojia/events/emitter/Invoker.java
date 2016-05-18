@@ -7,22 +7,22 @@ package com.github.yoojia.events.emitter;
 public final class Invoker implements Runnable{
 
     private final Object mEvent;
-    private final Handler mHandler;
+    private final Subscriber mSubscriber;
 
-    public Invoker(Object event, Handler handler) {
-        this.mEvent = event;
-        this.mHandler = handler;
+    public Invoker(Object event, Subscriber subscriber) {
+        mEvent = event;
+        mSubscriber = subscriber;
     }
 
     @Override
     public void run() {
         try{
-            mHandler.onEvent(mEvent);
+            mSubscriber.onEvent(mEvent);
         }catch (Exception errors) {
             try{
-                mHandler.onErrors(errors);
+                mSubscriber.onError(errors);
             }catch (Throwable throwable) {
-                throwable.printStackTrace();
+                throw new InvokeException(throwable);
             }
         }
     }

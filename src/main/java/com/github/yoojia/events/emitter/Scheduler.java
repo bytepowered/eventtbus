@@ -8,6 +8,6 @@ import java.util.List;
  */
 public interface Scheduler {
 
-    void schedule(Object event, List<? extends Handler> handlers);
+    void schedule(Object event, List<? extends Subscriber> handlers);
 
 }

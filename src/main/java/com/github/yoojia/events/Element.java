@@ -7,10 +7,10 @@ package com.github.yoojia.events;
 class Element {
 
     public final Object event;
-    public final EventHandler handler;
+    public final EventSubscriber handler;
     public final On scheduleOn;
 
-    public Element(Object event, EventHandler handler, On scheduleOn) {
+    public Element(Object event, EventSubscriber handler, On scheduleOn) {
         this.event = event;
         this.handler = handler;
         this.scheduleOn = scheduleOn;

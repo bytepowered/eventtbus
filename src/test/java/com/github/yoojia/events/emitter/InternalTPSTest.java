@@ -16,9 +16,9 @@ public class InternalTPSTest extends $TestCase {
     private final static int COUNT_PAYLOAD = 1000;
     private final static int COUNT_NOP = COUNT_PAYLOAD * 1000 * 5;
 
-    private static class TestEventHandler extends TestPayload implements EventHandler {
+    private static class TestEventSubscriber extends TestPayload implements EventSubscriber {
 
-        protected TestEventHandler(int count) {
+        protected TestEventSubscriber(int count) {
             super(count);
         }
 
@@ -29,7 +29,7 @@ public class InternalTPSTest extends $TestCase {
         }
 
         @Override
-        public void onErrors(Exception errors) {
+        public void onError(Exception errors) {
 
         }
 
@@ -51,9 +51,9 @@ public class InternalTPSTest extends $TestCase {
 
     public void testWithSchedule(Scheduler scheduler, String tag){
         EventEmitter emitter = new EventEmitter(scheduler);
-        TestEventHandler payload = new TestEventHandler(COUNT_NOP);
+        TestEventSubscriber payload = new TestEventSubscriber(COUNT_NOP);
 
-        emitter.addHandler(payload, new EventFilter() {
+        emitter.addSubscriber(payload, new EventFilter() {
             @Override
             public boolean accept(Object event) {
                 return true;
@@ -75,7 +75,7 @@ public class InternalTPSTest extends $TestCase {
             fail("EventDispatcher Test, Wait fail");
         }
 
-        emitter.removeHandler(payload);
+        emitter.removeSubscriber(payload);
 
         assertThat(payload.evt1Calls.get(), equalTo(payload.perEvtCount));
         assertThat(payload.evt2Calls.get(), equalTo(payload.perEvtCount));
