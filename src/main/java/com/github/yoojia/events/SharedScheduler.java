@@ -60,4 +60,13 @@ public class SharedScheduler extends ThreadsScheduler {
         EXECUTOR.shutdown();
     }
 
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+            @Override public void run() {
+                if (EXECUTOR != null && !EXECUTOR.isShutdown()) {
+                    EXECUTOR.shutdown();
+                }
+            }
+        }));
+    }
 }
