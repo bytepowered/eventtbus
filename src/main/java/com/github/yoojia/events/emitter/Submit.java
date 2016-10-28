@@ -44,12 +44,8 @@ class Submit {
      */
     private List<Subscriber> findSubscribers(Object event, EventEmitter emitter) {
         final ArrayList<Subscriber> out = new ArrayList<>(GUESS);
-        final int size = emitter.subscribers.size();
-        for (int i = 0; i < size; i++) {
-            final RealSubscriber subscriber = emitter.subscribers.get(i);
-            if (subscriber.accept(event)) {
-                out.add(subscriber.subscriber);
-            }
+        for (RealSubscriber real : emitter.subscribers) if (real.accept(event)) {
+            out.add(real.subscriber);
         }
         return out;
     }
