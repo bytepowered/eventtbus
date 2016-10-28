@@ -1,8 +1,8 @@
 package com.github.yoojia.events;
 
 import com.github.yoojia.events.emitter.Invoker;
-import com.github.yoojia.events.emitter.Subscriber;
 import com.github.yoojia.events.emitter.Scheduler;
+import com.github.yoojia.events.emitter.Subscriber;
 
 import java.util.List;
 import java.util.Queue;

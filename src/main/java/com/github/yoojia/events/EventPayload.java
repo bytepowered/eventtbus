@@ -3,7 +3,6 @@ package com.github.yoojia.events;
 import java.util.Arrays;
 
 import static com.github.yoojia.events.supports.Preconditions.notEmpty;
-import static com.github.yoojia.events.supports.Preconditions.notNull;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)

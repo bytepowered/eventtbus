@@ -12,7 +12,7 @@ import java.util.List;
 public class RealSubscriber implements Filter<Object>{
 
     final Subscriber subscriber;
-    final ImmutableList<EventFilter> filters;
+    private final ImmutableList<EventFilter> filters;
 
     public RealSubscriber(Subscriber subscriber, List<EventFilter> source) {
         this.subscriber = subscriber;
