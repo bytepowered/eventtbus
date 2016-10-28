@@ -5,6 +5,7 @@ import com.github.yoojia.events.supports.Filter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
 import static com.github.yoojia.events.supports.Functions.filter;
 
 /**
@@ -17,7 +18,7 @@ public class EventEmitter {
 
     final Scheduler scheduler;
     final CopyOnWriteArrayList<RealSubscriber> subscribers = new CopyOnWriteArrayList<>();
-    final CopyOnWriteArrayList<EventInterceptor> eventInterceptors = new CopyOnWriteArrayList<>();
+    final CopyOnWriteArrayList<EventInterceptor> interceptors = new CopyOnWriteArrayList<>();
 
     public EventEmitter(){
         this(new CallerScheduler());
@@ -49,19 +50,20 @@ public class EventEmitter {
     }
 
     public void removeSubscriber(final Subscriber subscriber) {
-        subscribers.removeAll(filter(subscribers, new Filter<RealSubscriber>(){
+        final List<RealSubscriber> removes = filter(subscribers, new Filter<RealSubscriber>(){
             @Override public boolean accept(RealSubscriber item) {
                 return item.subscriber == (subscriber);
             }
-        }));
+        });
+        subscribers.removeAll(removes);
     }
 
     public void addEventInterceptor(EventInterceptor interceptor) {
-        eventInterceptors.add(interceptor);
+        interceptors.add(interceptor);
     }
 
     public void removeEventInterceptor(EventInterceptor interceptor) {
-        eventInterceptors.remove(interceptor);
+        interceptors.remove(interceptor);
     }
 
 }

@@ -1,7 +1,7 @@
 package com.github.yoojia.events;
 
-import com.github.yoojia.events.emitter.RealSubscriber;
 import com.github.yoojia.events.emitter.EventFilter;
+import com.github.yoojia.events.emitter.RealSubscriber;
 import com.github.yoojia.events.supports.Filter;
 
 import java.lang.reflect.Method;
@@ -38,10 +38,8 @@ class Cached {
                 if (present != null) {
                     return present;
                 }else{
-                    final int size = methods.size();
-                    final ArrayList<RealSubscriber> array = new ArrayList<>(size);
-                    for (int i = 0; i < size; i++) {
-                        final Method method = methods.get(i);
+                    final ArrayList<RealSubscriber> array = new ArrayList<>(methods.size());
+                    for (Method method: methods) {
                         array.add(create(object, method, Methods.parse(method)));
                     }
                     final SubscriberArray acceptors = new SubscriberArray(array);

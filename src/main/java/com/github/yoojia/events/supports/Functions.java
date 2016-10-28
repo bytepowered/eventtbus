@@ -15,28 +15,12 @@ public class Functions {
         if (src == null || src.isEmpty()) {
             return Collections.emptyList();
         }else{
-            final int size = src.size();
-            final List<T> output = new ArrayList<>(size);
-            for (int i = 0; i < size; i++) {
-                final T item = src.get(i);
-                if (func.accept(item)) {
-                    output.add(item);
-                }
+            final List<T> output = new ArrayList<>(src.size());
+            for (T item : src) if (func.accept(item)) {
+                output.add(item);
             }
             return output;
         }
     }
 
-    public static <S, M> List<M> map(List<S> src, Transformer<S, M> func){
-        if (src == null || src.isEmpty()) {
-            return Collections.emptyList();
-        }else{
-            final int size = src.size();
-            final List<M> output = new ArrayList<>(size);
-            for (int i = 0; i < size; i++) {
-                output.add(func.transform(src.get(i)));
-            }
-            return output;
-        }
-    }
 }
