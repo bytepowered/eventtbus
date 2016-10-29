@@ -16,7 +16,7 @@ import static org.junit.Assert.fail;
  * @author 陈小锅 (yoojia.chen@gmail.com)
  * @since 1.0
  */
-public class BenchmarkTest extends $TestCase {
+public class BenchmarkTest extends TestCase {
 
     private final static int COUNT_NOP = 10000 * 100;
     private final static int COUNT_PAYLOAD = 1000;

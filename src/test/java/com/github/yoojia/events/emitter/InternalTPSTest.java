@@ -11,7 +11,7 @@ import static org.junit.Assert.fail;
  * @author 陈小锅 (yoojia.chen@gmail.com)
  * @since 1.0
  */
-public class InternalTPSTest extends $TestCase {
+public class InternalTPSTest extends TestCase {
 
     private final static int COUNT_PAYLOAD = 1000;
     private final static int COUNT_NOP = COUNT_PAYLOAD * 1000 * 5;

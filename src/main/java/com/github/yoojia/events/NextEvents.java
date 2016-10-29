@@ -22,8 +22,7 @@ public class NextEvents{
     }
 
     public NextEvents(Scheduler scheduler) {
-        notNull(scheduler, "scheduler == null");
-        mEmitter = new EventEmitter(scheduler);
+        mEmitter = new EventEmitter(notNull(scheduler, "scheduler == null"));
         addEventInterceptor(new DeadEventInterceptor(this));
     }
 
@@ -59,20 +58,18 @@ public class NextEvents{
     }
 
     public void emit(EventPayload event) {
-        notNull(event, "event == null");
-        mEmitter.emit(event);
+        mEmitter.emit(notNull(event, "event == null"));
     }
 
     public void addSubscriber(Subscriber subscriber, EventFilter filter) {
-        notNull(subscriber, "subscriber == null");
-        notNull(filter, "filter == null");
-        mEmitter.addSubscriber(subscriber, filter);
+        mEmitter.addSubscriber(
+                notNull(subscriber, "subscriber == null"),
+                notNull(filter, "filter == null"));
     }
 
     public void addSubscriber(Subscriber subscriber, List<EventFilter> filters) {
-        notNull(subscriber, "subscriber == null");
-        notNull(filters, "filters == null");
-        mEmitter.addSubscriber(subscriber, filters);
+        mEmitter.addSubscriber(notNull(subscriber, "subscriber == null"),
+                notNull(filters, "filters == null"));
     }
 
     public void removeSubscriber(Subscriber subscriber) {

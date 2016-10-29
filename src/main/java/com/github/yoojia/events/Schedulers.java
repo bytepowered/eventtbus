@@ -23,7 +23,6 @@ public class Schedulers {
 
     public static Scheduler newCaller() {
         return new Scheduler() {
-
             @Override
             public void schedule(Object event, List<? extends Subscriber> handlers) {
                 for (Subscriber subscriber : handlers) {
