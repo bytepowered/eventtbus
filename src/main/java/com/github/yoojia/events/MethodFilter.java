@@ -21,7 +21,7 @@ class MethodFilter implements EventFilter {
     public boolean accept(Object event) {
         final EventPayload payload = (EventPayload)
                 ((event instanceof DeadEvent) ? (((DeadEvent) event).origin) : event);
-        if (mDefine.isNoArgs || mDefine.isAny) {
+        if (mDefine.isEmptyArgs || mDefine.isAnyType) {
             return isNamesMatched(payload.name);
         }else{
             return isNamesMatched(payload.name) && isTypesMatched(mDefine.types, payload.types);

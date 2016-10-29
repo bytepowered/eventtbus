@@ -39,8 +39,7 @@ public abstract class Annotated<T extends AnnotatedElement> {
      * @return Annotated
      */
     public Annotated<T> addResourceFilter(Filter<T> filter) {
-        notNull(filter, "filter == null");
-        mResourceFilters.add(filter);
+        mResourceFilters.add(notNull(filter, "filter == null"));
         return this;
     }
 
@@ -50,8 +49,7 @@ public abstract class Annotated<T extends AnnotatedElement> {
      * @return Annotated
      */
     public Annotated<T> setTypesFilter(Filter<Class<?>> filter) {
-        notNull(filter, "filter == null");
-        mTypeFilter = filter;
+        mTypeFilter = notNull(filter, "filter == null");
         return this;
     }
 
@@ -61,9 +59,8 @@ public abstract class Annotated<T extends AnnotatedElement> {
      * @return 注解内容列表
      */
     public List<T> find(Class<?> targetType) {
-        notNull(targetType, "Class target type == null");
+        Class<?> type = notNull(targetType, "Class target type == null");;
         final List<T> output = new ArrayList<>();
-        Class<?> type = targetType;
         while (! Object.class.equals(type) && mTypeFilter.accept(type)){
             final T[] resources = getResource(type);
             resources:

@@ -3,7 +3,6 @@ package com.github.yoojia.events;
 import java.util.Arrays;
 
 import static com.github.yoojia.events.supports.Preconditions.notEmpty;
-import static com.github.yoojia.events.supports.Preconditions.notNull;
 
 /**
  * @author Yoojia Chen (yoojiachen@gmail.com)
@@ -11,7 +10,7 @@ import static com.github.yoojia.events.supports.Preconditions.notNull;
  */
 public class EventPayload {
 
-    public static final String DEAD_EVENT = "next.events.<dead-event>";
+    public static final String DEAD_EVENT = "next.events.dead-event";
 
     public final String name;
     public final String origin;
@@ -20,17 +19,16 @@ public class EventPayload {
     public final Class<?>[] types;
 
     EventPayload(String name, EventPayload src) {
-        this.name = name;
+        this.name = notEmpty(name, "name not allow empty");
         this.origin = src.name;
         this.values = src.values;
         this.types = src.types;
     }
 
     public EventPayload(String name, Object payload) {
-        notEmpty(name, "name not allow empty");
-        this.name = name;
+        this.name = notEmpty(name, "name not allow empty");
         this.origin = null;
-        final Object[] parsed = checkParse(payload);
+        final Object[] parsed = parse(payload);
         this.values = (Object[]) parsed[0];
         this.types = (Class[]) parsed[1];
     }
@@ -43,7 +41,7 @@ public class EventPayload {
                 '}';
     }
 
-    public static Object[] checkParse(Object payloads) {
+    private static Object[] parse(Object payloads) {
         final Object[] values;
         final Class[] types;
         if (payloads != null) {

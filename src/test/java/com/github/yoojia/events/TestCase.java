@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
  * @author 陈小锅 (yoojia.chen@gmail.com)
  * @since 1.0
  */
-public class $TestCase {
+public class TestCase {
 
     public static long NOW() {
         return System.nanoTime();

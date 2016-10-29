@@ -6,19 +6,10 @@ package com.github.yoojia.events.supports;
  */
 public class Preconditions {
 
-    public static Object checkNull(Object obj, String message) {
-        notNull(obj, message);
-        return obj;
-    }
-
-    public static void notNull(Object obj, String message) {
+    public static <T> T notNull(T obj, String message) {
         if (obj == null) {
             throw new NullPointerException(message);
         }
-    }
-
-    public static Object checkNull(Object obj) {
-        notNull(obj);
         return obj;
     }
 
@@ -28,9 +19,10 @@ public class Preconditions {
         }
     }
 
-    public static void notEmpty(CharSequence value, String message) {
+    public static <T extends CharSequence> T notEmpty(T value, String message) {
         if (value == null || value.length() == 0) {
             throw new IllegalArgumentException(message);
         }
+        return value;
     }
 }

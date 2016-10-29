@@ -26,9 +26,9 @@ class MethodSubscriber implements EventSubscriber {
     public void onEvent(Object event) throws Exception {
         final EventPayload payload = (EventPayload) event;
         mMethod.setAccessible(true);
-        if (mDefine.isNoArgs) {
+        if (mDefine.isEmptyArgs) {
             mMethod.invoke(mObjectRef);
-        }else if (mDefine.isAny) {
+        }else if (mDefine.isAnyType) {
             mMethod.invoke(mObjectRef, new Any(payload.values, payload.types));
         }else{
             mMethod.invoke(mObjectRef, reorderArgs(mDefine.types, payload));
