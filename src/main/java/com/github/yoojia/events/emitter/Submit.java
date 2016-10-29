@@ -24,12 +24,8 @@ class Submit {
             mEmitter.emit(new DeadEvent(event));
         }else{
             // 1. 先处理 EventInterceptor 接口，这些接口可能会拦截事件的传递过程。
-            final int size = mEmitter.eventInterceptors.size();
-            for (int i = 0; i < size; i++) {
-                final EventInterceptor interceptor = mEmitter.eventInterceptors.get(i);
-                if (interceptor.handle(event)) {
-                    return;
-                }
+            for (EventInterceptor interceptor : mEmitter.interceptors) if (interceptor.handle(event)) {
+                return;
             }
             // 2. 再调度事件处理
             mEmitter.scheduler.schedule(event, subscribers);
@@ -44,12 +40,8 @@ class Submit {
      */
     private List<Subscriber> findSubscribers(Object event, EventEmitter emitter) {
         final ArrayList<Subscriber> out = new ArrayList<>(GUESS);
-        final int size = emitter.subscribers.size();
-        for (int i = 0; i < size; i++) {
-            final RealSubscriber subscriber = emitter.subscribers.get(i);
-            if (subscriber.accept(event)) {
-                out.add(subscriber.subscriber);
-            }
+        for (RealSubscriber item : emitter.subscribers) if (item.accept(event)) {
+            out.add(item.subscriber);
         }
         return out;
     }
